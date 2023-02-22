@@ -1,11 +1,12 @@
 {
   "name": "react-here-maps",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "React hooks, components and examples for HERE Maps API JS",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run:app": "pnpm --filter examples dev",
+    "build": "pnpm --filter @toyamarodrigo/react-here-maps build"
   },
-  "keywords": [],
+  "keywords": ["react", "here", "maps"],
   "author": "rodrigo.toyama",
-  "license": "ISC"
+  "license": "MIT"
 }

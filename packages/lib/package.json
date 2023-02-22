@@ -1,15 +1,33 @@
 {
-  "name": "@rodritodev/react-here-maps",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@toyamarodrigo/react-here-maps",
+  "version": "0.1.0",
+  "description": "React hooks and components for HERE Maps API",
+  "homepage": "https://github.com/toyamarodrigo/react-here-maps",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toyamarodrigo/react-here-maps"
+  },
+  "bugs": {
+    "url": "https://github.com/toyamarodrigo/react-here-maps/issues"
+  },
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "here",
+    "maps",
+    "api",
+    "typescript",
+    "herewego"
+  ],
   "author": "rodrigo.toyama",
-  "license": "ISC",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
     "@here/maps-api-for-javascript": "^1.38.0",
     "react": "^18.2.0"

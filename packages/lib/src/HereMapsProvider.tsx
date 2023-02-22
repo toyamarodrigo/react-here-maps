@@ -8,6 +8,7 @@ interface HereMapsProviderProps {
   options?: H.Map.Options;
   mapContainer: HTMLElement | null;
   children: React.ReactNode;
+  localization?: string | H.ui.i18n.Localization;
 };
 
 export const HereMapsContext = createContext<H.Map | undefined>(undefined);
@@ -17,6 +18,7 @@ export const HereMapsProvider = ({
   options,
   mapContainer,
   children,
+  localization = "en-US",
 }: HereMapsProviderProps) => {
   const [map, setMap] = useState<H.Map>();
   const size = useWindowSize();
@@ -47,7 +49,7 @@ export const HereMapsProvider = ({
       });
 
       new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-      H.ui.UI.createDefault(map, defaultLayers, "es-ES");
+      H.ui.UI.createDefault(map, defaultLayers, localization);
 
       setMap(map);
     }

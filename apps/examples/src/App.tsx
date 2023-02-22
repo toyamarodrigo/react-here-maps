@@ -13,6 +13,13 @@ function App() {
     <HereMapsProvider
       apiKey={HERE_MAPS_APIKEY}
       mapContainer={mapContainer}
+      options={{
+        center: {
+          lat: -34.603722,
+          lng: -58.381592,
+        },
+        zoom: 12,
+      }}
     >
       <div
         ref={(node) => setMapContainer(node)}
