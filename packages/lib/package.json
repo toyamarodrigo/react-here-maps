@@ -1,5 +1,5 @@
 {
-  "name": "react-here-maps",
+  "name": "@rodritodev/react-here-maps",
   "version": "1.0.0",
   "description": "",
   "types": "dist/index.d.ts",
