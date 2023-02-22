@@ -1,8 +1,7 @@
+import React, { createContext, useState, useEffect } from "react";
 import H from "@here/maps-api-for-javascript";
-import { createContext, useState, useEffect } from "react";
 import { useWindowSize } from "./hooks/useWindowSize";
 import { DefaultLayer } from "./models/default-layer.type";
-
 
 interface HereMapsProviderProps {
   apiKey: string;
