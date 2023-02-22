@@ -1,0 +1,69 @@
+# Here Maps Provider
+
+This is a React component that provides a Here Maps API-based map for a web application. The component creates a `H.Map` object, which can be used to render and interact with the map.
+
+## Dependencies
+- `@here/maps-api-for-javascript`
+
+## Installation
+
+To install this component, you can use a package manager like `npm`:
+
+```sh
+npm install @here/maps-api-for-javascript
+```
+
+## Usage
+
+```jsx
+import { HereMapsProvider } from './HereMapsProvider';
+import '@here/maps-api-for-javascript/dist/mapsjs-ui.css';
+
+function App() {
+  return (
+    <div style={{ width: '100%', height: '500px' }} ref={(el) => setMapContainer(el)}>
+      <HereMapsProvider apiKey={HERE_API_KEY} mapContainer={mapContainer}>
+        <YourContent />
+      </HereMapsProvider>
+    </div>
+  );
+}
+```
+## Props
+
+The HereMapsProvider component takes the following props:
+
+- apiKey (required): A string containing your HERE API Key.
+- options (optional): An object containing options to customize the map. Available options are:
+  - autoColor (boolean): Indicates whether to apply a default color scheme to the map elements. Defaults to true.
+  - bounds (H.geo.Rect): The geographic bounds of the map.
+  - center (H.geo.IPoint): The center of the map.
+  - engineType (H.Map.EngineType): The rendering engine to use for the map. Defaults to H.Map.EngineType.WEBGL.
+  - imprint (H.ui.Imprint.Options): Options for the map imprint.
+  - layers (H.map.layer.Layer[]): An array of layers to display on the map.
+  - margin (number): The margin in pixels around the map.
+  - padding (H.map.ViewPort.Padding): The padding in pixels around the map.
+  - pixelRatio (number): The pixel ratio to use for rendering the map.
+  - renderBaseBackground (H.Map.BackgroundRange): A range of zoom levels at which to render the base map.
+  - zoom (number): The zoom level of the map. Defaults to 10.
+- mapContainer (required): A reference to an HTML element that will contain the map.
+- children (required): The content to be rendered inside the HereMapsProvider component.
+
+## Context
+
+The HereMapsProvider component creates a context with a H.Map object, which can be used in child components to access the map. To access the context, use the hook `useHereMap`:
+
+```js
+import { useHereMap } from './HereMapsProvider';
+
+function YourContent() {
+  const map = useHereMap();
+
+  return (
+    <div>
+      <p>Map center: {map.getCenter()}</p>
+    </div>
+  );
+}
+
+```
