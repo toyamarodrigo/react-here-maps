@@ -9,3 +9,7 @@ This package provides React hooks, components and examples for HERE Maps API for
 ```bash
 npm install @toyamarodrigo/react-here-maps
 ```
+
+## HERE Maps API Docs
+
+<https://developer.here.com/documentation/maps/3.1.38.0/dev_guide/index.html>
