@@ -3,21 +3,20 @@
 This is a React component that provides a Here Maps API-based map for a web application. The component creates a `H.Map` object, which can be used to render and interact with the map.
 
 ## Dependencies
-- `@here/maps-api-for-javascript`
+- `@toyamarodrigo/react-here-maps`
 
 ## Installation
 
 To install this component, you can use a package manager like `npm`:
 
 ```sh
-npm install @here/maps-api-for-javascript
+npm install @toyamarodrigo/react-here-maps
 ```
 
 ## Usage
 
 ```jsx
-import { HereMapsProvider } from './HereMapsProvider';
-import '@here/maps-api-for-javascript/dist/mapsjs-ui.css';
+import { HereMapsProvider } from '@toyamarodrigo/react-here-maps';
 
 function App() {
   return (
@@ -54,7 +53,7 @@ The HereMapsProvider component takes the following props:
 The HereMapsProvider component creates a context with a H.Map object, which can be used in child components to access the map. To access the context, use the hook `useHereMap`:
 
 ```js
-import { useHereMap } from './HereMapsProvider';
+import { useHereMap } from '@toyamarodrigo/react-here-maps';
 
 function YourContent() {
   const map = useHereMap();
