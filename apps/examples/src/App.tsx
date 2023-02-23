@@ -1,9 +1,15 @@
 import { useState } from 'react'
-import { HereMapsProvider } from 'react-here-maps'
+import { HereMapsProvider, HereMarker } from 'react-here-maps'
 import { HERE_MAPS_APIKEY } from './constants'
 
 function App() {
   const [mapContainer, setMapContainer] = useState<HTMLDivElement | null>(null)  
+
+  const positions = [
+    { lat: -34.603722, lng: -58.381592 },
+    { lat: -34.602722, lng: -58.381592 },
+    { lat: -34.601722, lng: -58.381592 },
+  ]
 
   return (
     <div style={{
@@ -25,6 +31,15 @@ function App() {
         ref={(node) => setMapContainer(node)}
         style={{ width: "100%", height: "100vh" }}
       />
+      {positions.map((position, index) => (
+        <HereMarker 
+          key={index}
+          positions={position}
+          data={{
+            title: `Marker ${index}`,
+          }}
+          />
+      ))}
     </HereMapsProvider>
     </div>
   )

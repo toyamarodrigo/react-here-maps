@@ -6,6 +6,12 @@ This package provides a React hooks and components for HERE Maps.
 
 ```bash
 npm install @toyamarodrigo/react-here-maps
+
+# or
+yarn add @toyamarodrigo/react-here-maps
+
+# or
+pnpm add @toyamarodrigo/react-here-maps
 ```
 
 ## Usage

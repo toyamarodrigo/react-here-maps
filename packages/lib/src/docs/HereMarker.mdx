@@ -1,0 +1,38 @@
+# HereMarker
+
+The `HereMarker` component is a React component that renders a Here Maps Marker on a map. This component uses the `useHereMaps` hook to obtain a reference to the Here Maps instance.
+
+## Installation
+
+To use the `HereMarker` component, you must first install the `@here/maps-api-for-javascript` package:
+
+```bash
+npm install @here/maps-api-for-javascript
+```
+
+## Usage
+
+To use the HereMarker component, you need to import it and use it like any other React component:
+
+```jsx
+import React from "react";
+import { HereMarker } from "./HereMarker";
+
+const App = () => {
+  const positions = [
+    { lat: 52.530932, lng: 13.384915 },
+    { lat: 52.520932, lng: 13.374915 },
+    { lat: 52.510932, lng: 13.364915 },
+  ];
+
+  return (
+    <div style={{ width: '100%', height: '500px' }} ref={(el) => setMapContainer(el)}>
+      <HereMapsProvider apiKey={HERE_API_KEY} mapContainer={mapContainer}>
+        {positions.map((position, index) => (
+          <HereMarker key={index} position={position} />
+        ))}
+      </HereMapsProvider>
+    </div>
+  );
+};
+```
