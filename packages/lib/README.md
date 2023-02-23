@@ -42,17 +42,17 @@ const App = () => {
 
 - Components
   - [x] Map Provider
-  - [] Markers
-  - [] Polygons
-  - [] Polyline
-  - [] Circles
-  - [] InfoWindows
-  - [] Directions
+  - [x] Markers
+  - [ ] Polygons
+  - [ ] Polyline
+  - [ ] Circles
+  - [ ] InfoWindows
+  - [ ] Directions
 
 - Hooks
   - [x] Map Instance - useHereMaps
-  - [] Routing - useHereMapsRouting
-  - [] Geocoding & Search - useHereMapsGeocoding
-  - [] Isoline - useHereMapsIsoline
-  - [] Waypoints - useHereMapsWaypoints
-  - [] Matrix - useHereMapsMatrix
+  - [ ] Routing - useHereMapsRouting
+  - [ ] Geocoding & Search - useHereMapsGeocoding
+  - [ ] Isoline - useHereMapsIsoline
+  - [ ] Waypoints - useHereMapsWaypoints
+  - [ ] Matrix - useHereMapsMatrix
