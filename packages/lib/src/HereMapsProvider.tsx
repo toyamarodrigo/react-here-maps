@@ -2,20 +2,27 @@ import React, { createContext, useState, useEffect } from "react";
 import H from "@here/maps-api-for-javascript";
 import { useWindowSize } from "./hooks/useWindowSize";
 import { DefaultLayer } from "./models/default-layer.type";
+import { getMapStyles } from "./utils/getMapStyles";
+import { MapStyle } from "./models/map-style";
 
 interface HereMapsProviderProps {
   apiKey: string;
-  options?: H.Map.Options;
+  mapOptions?: H.Map.Options;
+  layerOptions?: H.service.Platform.DefaultLayersOptions;
   mapContainer: HTMLElement | null;
   children: React.ReactNode;
   localization?: string | H.ui.i18n.Localization;
-};
+}
 
 export const HereMapsContext = createContext<H.Map | undefined>(undefined);
 
 export const HereMapsProvider = ({
   apiKey,
-  options,
+  mapOptions,
+  layerOptions = {
+    ppi: 72,
+    style: "normal",
+  },
   mapContainer,
   children,
   localization = "en-US",
@@ -28,28 +35,35 @@ export const HereMapsProvider = ({
   });
 
   // @ts-ignore
-  const defaultLayers: DefaultLayer = platform.createDefaultLayers({
-    ppi: 320,
+  const defaultLayer: DefaultLayer = platform.createDefaultLayers({
+    ...layerOptions,
   });
 
   useEffect(() => {
     if (mapContainer) {
-      const map = new H.Map(mapContainer, defaultLayers.vector.normal.map, {
-        autoColor: options?.autoColor || true,
-        bounds: options?.bounds || undefined,
-        center: options?.center || { lat: 52.5, lng: 13.4 },
-        engineType: options?.engineType || H.Map.EngineType.WEBGL,
-        imprint: options?.imprint || undefined,
-        layers: options?.layers || undefined,
-        margin: options?.margin || undefined,
-        padding: options?.padding || undefined,
-        pixelRatio: options?.pixelRatio || window.devicePixelRatio || 1,
-        renderBaseBackground: options?.renderBaseBackground,
-        zoom: options?.zoom || 10,
-      });
+      const map = new H.Map(
+        mapContainer,
+        getMapStyles({
+          map: { style: layerOptions?.style || "normal" },
+          defaultLayer,
+        }),
+        {
+          autoColor: mapOptions?.autoColor || true,
+          bounds: mapOptions?.bounds || undefined,
+          center: mapOptions?.center || { lat: 52.5, lng: 13.4 },
+          engineType: mapOptions?.engineType || H.Map.EngineType.WEBGL,
+          imprint: mapOptions?.imprint || undefined,
+          layers: mapOptions?.layers || undefined,
+          margin: mapOptions?.margin || undefined,
+          padding: mapOptions?.padding || undefined,
+          pixelRatio: mapOptions?.pixelRatio || window.devicePixelRatio || 1,
+          renderBaseBackground: mapOptions?.renderBaseBackground,
+          zoom: mapOptions?.zoom || 10,
+        }
+      );
 
       new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-      H.ui.UI.createDefault(map, defaultLayers, localization);
+      H.ui.UI.createDefault(map, defaultLayer, localization);
 
       setMap(map);
     }
@@ -57,7 +71,6 @@ export const HereMapsProvider = ({
     return () => {
       map?.dispose();
     };
-
   }, [mapContainer]);
 
   useEffect(() => {

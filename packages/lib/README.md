@@ -42,7 +42,8 @@ const App = () => {
 
 - Components
   - [x] Map Provider
-  - [x] Markers
+  - [x] Marker
+  - [ ] DOM Marker
   - [ ] Polygons
   - [ ] Polyline
   - [ ] Circles
