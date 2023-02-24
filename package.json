@@ -4,7 +4,8 @@
   "description": "React hooks, components and examples for HERE Maps API JS",
   "scripts": {
     "run:app": "pnpm --filter examples dev",
-    "build": "pnpm --filter @toyamarodrigo/react-here-maps build"
+    "build": "pnpm --filter @toyamarodrigo/react-here-maps build",
+    "publish:package": "pnpm --filter react-here-maps publish --access public"
   },
   "keywords": ["react", "here", "maps"],
   "author": "rodrigo.toyama",
