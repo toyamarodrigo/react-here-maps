@@ -1,6 +1,6 @@
 {
   "name": "@toyamarodrigo/react-here-maps",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "React hooks and components for HERE Maps API",
   "homepage": "https://github.com/toyamarodrigo/react-here-maps",
   "repository": {
