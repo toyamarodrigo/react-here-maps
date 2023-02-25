@@ -2,19 +2,7 @@
 
 This package provides a React hooks and components for HERE Maps.
 
-## Installation
-
-```bash
-npm install @toyamarodrigo/react-here-maps
-
-# or
-yarn add @toyamarodrigo/react-here-maps
-
-# or
-pnpm add @toyamarodrigo/react-here-maps
-```
-
-## Usage
+## HERE Maps Provider Example
 
 ```jsx
 import React from 'react';
@@ -37,23 +25,3 @@ const App = () => {
   );
 };
 ```
-
-## TODO
-
-- Components
-  - [x] Map Provider
-  - [x] Marker
-  - [ ] DOM Marker
-  - [ ] Polygons
-  - [ ] Polyline
-  - [ ] Circles
-  - [ ] InfoWindows
-  - [ ] Directions
-
-- Hooks
-  - [x] Map Instance - useHereMaps
-  - [ ] Routing - useHereMapsRouting
-  - [ ] Geocoding & Search - useHereMapsGeocoding
-  - [ ] Isoline - useHereMapsIsoline
-  - [ ] Waypoints - useHereMapsWaypoints
-  - [ ] Matrix - useHereMapsMatrix
