@@ -38,7 +38,7 @@ function App() {
         }}
         layerOptions={{
           style: "normal",
-          ppi: 320,
+          ppi: 72,
         }}
       >
         <div
