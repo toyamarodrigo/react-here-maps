@@ -21,6 +21,27 @@ interface UseCreateMapProps {
   node: HTMLElement | null;
 }
 
+/**
+ * @name useCreateMap
+ * @description
+ * This hook is used to create a map instance.
+ * @param {string} apiKey - Your API key
+ * @param {H.Map.Options} mapOptions - Map options
+ * @param {H.service.Platform.DefaultLayersOptions} layerOptions - Layer options
+ * @param {string | H.ui.i18n.Localization} localization - Localization
+ * @param {H.ui.LayoutAlignment} zoomAlign - Zoom control alignment
+ * @param {boolean} zoomVisible - Zoom control visibility
+ * @param {boolean} zoomDisabled - Zoom control disabled
+ * @param {H.ui.LayoutAlignment} mapSettingsAlign - Map settings control alignment
+ * @param {boolean} mapSettingsVisible - Map settings control visibility
+ * @param {boolean} mapSettingsDisabled - Map settings control disabled
+ * @param {H.ui.LayoutAlignment} scaleBarAlign - Scale bar control alignment
+ * @param {boolean} scaleBarVisible - Scale bar control visibility
+ * @param {boolean} scaleBarDisabled - Scale bar control disabled
+ * @param {HTMLElement | null} node - HTML element
+ * @returns {UseCreateMapProps} - Map instance
+ */
+
 export const useCreateMap = ({
   apiKey,
   layerOptions,

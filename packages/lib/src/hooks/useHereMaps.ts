@@ -7,6 +7,15 @@ interface UseHereMapsProps {
   platform: H.service.Platform | undefined;
 }
 
+/**
+ * @name useHereMaps
+ * @description
+ * This hook is used to get the map instance.
+ * @returns {UseHereMapsProps} - Map instance
+ * @example
+ * const { map } = useHereMaps();
+ */
+
 export const useHereMaps = (): UseHereMapsProps => {
   const context = useContext(HereMapsContext);
 
