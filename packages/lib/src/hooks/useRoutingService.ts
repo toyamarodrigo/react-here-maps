@@ -14,6 +14,16 @@ interface CalculateRouteProps {
   returns?: string[];
 }
 
+
+/**
+ * @name useRoutingService
+ * @description
+ * This hook is used to create a routing service instance. It returns a function to calculate a route and a function to clear the route.
+ * @param {string} apiKey - Your API key
+ * @returns {RoutingServiceProps} - Routing service instance
+ * @example
+ * const { route, clearRoute, isFetching, calculateRoute } = useRoutingService({ apiKey });
+ * */
 export const useRoutingService = ({ apiKey }: RoutingServiceProps) => {
   const { map } = useHereMaps();
   const [isFetching, setIsFetching] = useState(false);
