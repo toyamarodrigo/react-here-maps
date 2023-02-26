@@ -2,7 +2,7 @@
 
 This package provides React hooks, components and examples for HERE Maps API for JavaScript.
 
-![image](https://user-images.githubusercontent.com/41844101/221042793-070b16eb-dfdd-420a-bdcb-7b46628557fd.png)
+![image](https://user-images.githubusercontent.com/41844101/221401034-f8fa4f3c-4da5-4dd7-9ec5-323c19206a00.png)
 
 ## Installation
 
@@ -51,20 +51,20 @@ const App = () => {
 - Components
   - [x] Map Provider
   - [x] Marker
-  - [ ] DOM Marker
+  - [x] DOM Marker
   - [ ] Polygons
-  - [ ] Polyline
+  - [x] Polyline
   - [ ] Circles
   - [ ] InfoWindows
   - [ ] Directions
 
 - Hooks
   - [x] Map Instance - useHereMaps
-  - [ ] Routing - useHereMapsRouting
-  - [ ] Geocoding & Search - useHereMapsGeocoding
-  - [ ] Isoline - useHereMapsIsoline
-  - [ ] Waypoints - useHereMapsWaypoints
-  - [ ] Matrix - useHereMapsMatrix
+  - [x] Routing - useRoutingService
+  - [ ] Geocoding & Search - useGeocodingService
+  - [ ] Isoline - useIsolineService
+  - [ ] Waypoints - useWaypointsService
+  - [ ] Matrix - useMatrixService
 
 ## HERE Maps API Docs
 
