@@ -37,13 +37,18 @@ export const useCreateMap = ({
   scaleBarDisabled,
   node,
 }: UseCreateMapProps) => {
-  const [map, setMap] = useState<H.Map | null>(null);
+  const [map, setMap] = useState<H.Map | undefined>(undefined);
+  const [platform, setPlatform] = useState<H.service.Platform | undefined>(
+    undefined
+  );
 
   const createMap = useCallback((node: HTMLElement | null) => {
     if (node !== null) {
       const platform = new H.service.Platform({
         apikey: apiKey || "",
       });
+
+      setPlatform(platform);
 
       // @ts-ignore
       const defaultLayer: DefaultLayer = platform.createDefaultLayers({
@@ -88,5 +93,5 @@ export const useCreateMap = ({
     return () => map?.dispose();
   }, [node]);
 
-  return map;
+  return { map, platform };
 };

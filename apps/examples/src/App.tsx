@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { HereMapsProvider, HereMarker } from "react-here-maps";
+import {
+  HereMapsProvider,
+  HereMarker,
+  useRoutingService,
+  HerePolyline,
+} from "react-here-maps";
 
 import { HERE_MAPS_APIKEY } from "./constants";
 
@@ -58,9 +63,56 @@ function App() {
             }}
           />
         ))}
+        <Routing />
+        
       </HereMapsProvider>
     </div>
   );
 }
+
+const Routing = () => {
+  const { route, clearRoute, calculateRoute } = useRoutingService({
+    apiKey: HERE_MAPS_APIKEY,
+  });
+
+  return (
+    <div style={{
+      position: "absolute",
+      top: "10px",
+      left: "10px",
+    }}>
+      <button onClick={() => calculateRoute({
+        origin: "-34.603722,-58.401592", // Brandenburg Gate
+        destination: "-34.601722,-58.421592", // Friedrichstraße Railway Station
+        transportMode: "car",
+        returns: ["polyline"],
+      })}
+        style={{
+          padding: "10px",
+          backgroundColor: "blue",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Calculate Route
+      </button>
+      <button onClick={() => clearRoute()}
+        style={{
+          padding: "10px",
+          backgroundColor: "red",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Clear Route
+      </button>
+      {route && <HerePolyline route={route}/>}
+    </div>
+  );
+};
 
 export default App;
