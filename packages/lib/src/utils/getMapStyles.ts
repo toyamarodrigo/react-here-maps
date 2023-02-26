@@ -1,13 +1,13 @@
-import { MapStyle } from "./../models/map-style";
 import { DefaultLayer } from "../models/default-layer.type";
+import { MapStyles } from "../models/map-style";
 
 interface Args {
-  map: MapStyle;
+  style: MapStyles | undefined;
   defaultLayer: DefaultLayer;
 }
 
-export const getMapStyles = ({ map, defaultLayer }: Args) => {
-  switch (map.style) {
+export const getMapStyles = ({ style, defaultLayer }: Args) => {
+  switch (style) {
     case "normal":
       return defaultLayer.vector.normal.map;
     case "traffic":

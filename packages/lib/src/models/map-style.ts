@@ -1,3 +1,1 @@
-export interface MapStyle {
-  style: string | "normal" | "traffic" | "trafficincidents";
-}
+export type MapStyles = string | "normal" | "traffic" | "trafficincidents";
