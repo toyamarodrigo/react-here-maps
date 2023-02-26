@@ -9,13 +9,13 @@ interface HereMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
 }
 
 /**
- * A marker which supports HTML (and SVG) content, which can be dynamic. 
+ * A marker which supports HTML (and SVG) content, which can be dynamic.
  * Markers of this type are best displayed individually or in small sets.
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export const HereMarker = (props: HereMarkerProps) => {
-  const map = useHereMaps();
+  const { map } = useHereMaps();
   const { positions, icon, iconOptions, ...options } = props;
   const [marker, setMarker] = useState<H.map.Marker | null>(null);
 

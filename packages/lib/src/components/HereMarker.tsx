@@ -9,14 +9,14 @@ interface HereMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
 }
 
 /**
- * A "normal" marker that uses a static image as an icon. 
- * Large numbers of markers of this types can be added 
+ * A "normal" marker that uses a static image as an icon.
+ * Large numbers of markers of this types can be added
  * to the map very quickly and efficiently.
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export const HereMarker = (props: HereMarkerProps) => {
-  const map = useHereMaps();
+  const { map } = useHereMaps();
   const { positions, icon, iconOptions, ...options } = props;
   const [marker, setMarker] = useState<H.map.Marker | null>(null);
 

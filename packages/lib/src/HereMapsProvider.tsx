@@ -21,7 +21,13 @@ interface HereMapsProviderProps {
   scaleBarDisabled?: boolean;
 }
 
-export const HereMapsContext = createContext<H.Map | undefined>(undefined);
+export const HereMapsContext = createContext<{
+  map: H.Map | undefined;
+  platform: H.service.Platform | undefined;
+}>({
+  map: undefined,
+  platform: undefined,
+});
 
 export const HereMapsProvider = ({
   apiKey,
@@ -43,7 +49,7 @@ export const HereMapsProvider = ({
   scaleBarVisible = true,
   scaleBarDisabled = false,
 }: HereMapsProviderProps) => {
-  const map = useCreateMap({
+  const { map, platform } = useCreateMap({
     apiKey,
     layerOptions,
     mapOptions,
@@ -61,12 +67,19 @@ export const HereMapsProvider = ({
   });
   const size = useWindowSize();
 
+  const value = {
+    map,
+    platform,
+  };
+
   useEffect(() => {
     if (map) map.getViewPort().resize();
   }, [size]);
 
   return (
-    <HereMapsContext.Provider value={map ?? undefined}>
+    <HereMapsContext.Provider value={
+      value
+    }>
       {children}
     </HereMapsContext.Provider>
   );
