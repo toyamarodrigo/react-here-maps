@@ -6,3 +6,6 @@ export * from "./components/HereMarker"
 
 // Hooks
 export * from "./hooks/useHereMaps"
+
+// Utils
+export * from "./utils/setMapViewBounds"

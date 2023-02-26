@@ -1,9 +1,7 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import H from "@here/maps-api-for-javascript";
 import { useWindowSize } from "./hooks/useWindowSize";
-import { DefaultLayer } from "./models/default-layer.type";
-import { getMapStyles } from "./utils/getMapStyles";
-import { MapStyle } from "./models/map-style";
+import { useCreateMap } from "./hooks/useCreateMap";
 
 interface HereMapsProviderProps {
   apiKey: string;
@@ -12,6 +10,15 @@ interface HereMapsProviderProps {
   mapContainer: HTMLElement | null;
   children: React.ReactNode;
   localization?: string | H.ui.i18n.Localization;
+  zoomAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
+  zoomVisible?: boolean;
+  zoomDisabled?: boolean;
+  mapSettingsAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
+  mapSettingsVisible?: boolean;
+  mapSettingsDisabled?: boolean;
+  scaleBarAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
+  scaleBarVisible?: boolean;
+  scaleBarDisabled?: boolean;
 }
 
 export const HereMapsContext = createContext<H.Map | undefined>(undefined);
@@ -26,58 +33,41 @@ export const HereMapsProvider = ({
   mapContainer,
   children,
   localization = "en-US",
+  zoomAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
+  zoomVisible = true,
+  zoomDisabled = false,
+  mapSettingsAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
+  mapSettingsVisible = true,
+  mapSettingsDisabled = false,
+  scaleBarAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
+  scaleBarVisible = true,
+  scaleBarDisabled = false,
 }: HereMapsProviderProps) => {
-  const [map, setMap] = useState<H.Map>();
+  const map = useCreateMap({
+    apiKey,
+    layerOptions,
+    mapOptions,
+    node: mapContainer,
+    localization,
+    zoomAlign,
+    zoomVisible,
+    zoomDisabled,
+    mapSettingsAlign,
+    mapSettingsVisible,
+    mapSettingsDisabled,
+    scaleBarAlign,
+    scaleBarVisible,
+    scaleBarDisabled,
+  });
   const size = useWindowSize();
-
-  const platform = new H.service.Platform({
-    apikey: apiKey,
-  });
-
-  // @ts-ignore
-  const defaultLayer: DefaultLayer = platform.createDefaultLayers({
-    ...layerOptions,
-  });
-
-  useEffect(() => {
-    if (mapContainer) {
-      const map = new H.Map(
-        mapContainer,
-        getMapStyles({
-          map: { style: layerOptions?.style || "normal" },
-          defaultLayer,
-        }),
-        {
-          autoColor: mapOptions?.autoColor || true,
-          bounds: mapOptions?.bounds || undefined,
-          center: mapOptions?.center || { lat: 52.5, lng: 13.4 },
-          engineType: mapOptions?.engineType || H.Map.EngineType.WEBGL,
-          imprint: mapOptions?.imprint || undefined,
-          layers: mapOptions?.layers || undefined,
-          margin: mapOptions?.margin || undefined,
-          padding: mapOptions?.padding || undefined,
-          pixelRatio: mapOptions?.pixelRatio || window.devicePixelRatio || 1,
-          renderBaseBackground: mapOptions?.renderBaseBackground,
-          zoom: mapOptions?.zoom || 10,
-        }
-      );
-
-      new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-      H.ui.UI.createDefault(map, defaultLayer, localization);
-
-      setMap(map);
-    }
-
-    return () => {
-      map?.dispose();
-    };
-  }, [mapContainer]);
 
   useEffect(() => {
     if (map) map.getViewPort().resize();
   }, [size]);
 
   return (
-    <HereMapsContext.Provider value={map}>{children}</HereMapsContext.Provider>
+    <HereMapsContext.Provider value={map ?? undefined}>
+      {children}
+    </HereMapsContext.Provider>
   );
 };
