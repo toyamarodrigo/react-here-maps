@@ -2,7 +2,7 @@
 
 This package provides React hooks, components and examples for HERE Maps API for JavaScript.
 
-![image](https://user-images.githubusercontent.com/41844101/221401034-f8fa4f3c-4da5-4dd7-9ec5-323c19206a00.png)
+![image](https://user-images.githubusercontent.com/41844101/221454450-4d1128e0-fb35-4385-969d-c7fae5493beb.png)
 
 ## Installation
 
