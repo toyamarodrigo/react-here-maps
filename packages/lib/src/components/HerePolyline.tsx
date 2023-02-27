@@ -2,14 +2,20 @@ import { useHereMaps } from "../hooks/useHereMaps";
 
 interface HerePolylineProps {
   route: any;
+  style?: H.map.SpatialStyle.Options;
 }
 
 /**
+ * HerePolyline
  * Polyline component that draws a polyline on the map with H.map.Polyline
  * @param routes
- * @returns 
+ * @param style
+ * @returns
  */
-export const HerePolyline = ({ route }: HerePolylineProps) => {
+export const HerePolyline = ({
+  route,
+  style = { lineWidth: 4, strokeColor: "rgba(0, 128, 255, 0.7)" },
+}: HerePolylineProps) => {
   const { map } = useHereMaps();
   if (!map) return null;
 
@@ -22,10 +28,7 @@ export const HerePolyline = ({ route }: HerePolylineProps) => {
       );
       const polyline = new H.map.Polyline(lineString, {
         data: undefined,
-        style: {
-          lineWidth: 4,
-          strokeColor: "rgba(0, 128, 255, 0.7)",
-        },
+        style: { ...style }
       });
       map.addObject(polyline);
     });

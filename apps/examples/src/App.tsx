@@ -22,6 +22,9 @@ function App() {
     { lat: -34.603722, lng: -58.401592 },
     { lat: -34.602722, lng: -58.411592, icon: customIcon },
     { lat: -34.601722, lng: -58.421592 },
+    { lat: -34.612722, lng: -58.421592 },
+    { lat: -34.622722, lng: -58.391592 },
+    { lat: -34.632722, lng: -58.381592 },
   ];
 
   return (
@@ -64,7 +67,6 @@ function App() {
           />
         ))}
         <Routing />
-        
       </HereMapsProvider>
     </div>
   );
@@ -76,17 +78,36 @@ const Routing = () => {
   });
 
   return (
-    <div style={{
-      position: "absolute",
-      top: "10px",
-      left: "10px",
-    }}>
-      <button onClick={() => calculateRoute({
-        origin: "-34.603722,-58.401592", // Brandenburg Gate
-        destination: "-34.601722,-58.421592", // Friedrichstraße Railway Station
-        transportMode: "car",
-        returns: ["polyline"],
-      })}
+    <div
+      style={{
+        position: "absolute",
+        top: "10px",
+        left: "10px",
+      }}
+    >
+      <button
+        onClick={() =>
+          calculateRoute({
+            origin: { lat: -34.603722, lng: -58.401592 },
+            destination: { lat: -34.601722, lng: -58.421592 },
+            vias: [
+              {
+                lat: -34.612722,
+                lng: -58.421592,
+              },
+              {
+                lat: -34.622722,
+                lng: -58.391592,
+              },
+              {
+                lat: -34.632722,
+                lng: -58.381592,
+              },
+            ],
+            transportMode: "car",
+            returns: ["polyline"],
+          })
+        }
         style={{
           padding: "10px",
           backgroundColor: "blue",
@@ -98,7 +119,8 @@ const Routing = () => {
       >
         Calculate Route
       </button>
-      <button onClick={() => clearRoute()}
+      <button
+        onClick={() => clearRoute()}
         style={{
           padding: "10px",
           backgroundColor: "red",
@@ -110,7 +132,7 @@ const Routing = () => {
       >
         Clear Route
       </button>
-      {route && <HerePolyline route={route}/>}
+      {route && <HerePolyline route={route} />}
     </div>
   );
 };

@@ -1,19 +1,11 @@
 import { useHereMaps } from "./useHereMaps";
 import { useState } from "react";
 import { ROUTING_SERVICE } from "../utils/constant";
+import { CalculateRouteProps } from "../models/routing-service.type";
 
 interface RoutingServiceProps {
   apiKey?: string;
 }
-
-interface CalculateRouteProps {
-  transportMode: string;
-  origin: string;
-  destination: string;
-  vias?: string[];
-  returns?: string[];
-}
-
 
 /**
  * @name useRoutingService
@@ -33,16 +25,46 @@ export const useRoutingService = ({ apiKey }: RoutingServiceProps) => {
   const url = `${ROUTING_SERVICE}?apiKey=${apiKey}`;
 
   const calculateRoute = async ({
-    transportMode,
+    transportMode = "car",
     origin,
+    originOptions,
     destination,
-    vias,
+    destinationOptions,
+    vias = [],
+    viaOptions = [],
     returns = ["polyline"],
   }: CalculateRouteProps) => {
-    const via = vias?.join(",");
-    const viaParams = via ? `&via=${via}` : "";
+    const originCourse = originOptions?.course ? `&course=${originOptions.course}` : "";
+    const originSideOfStreetHint = originOptions?.sideOfStreetHint ? `&sideOfStreetHint=${originOptions.sideOfStreetHint.lat},${originOptions.sideOfStreetHint.lng}` : "";
+    const originMatchSideOfStreet = originOptions?.matchSideOfStreet ? `&matchSideOfStreet=${originOptions.matchSideOfStreet}` : "";
+    const originPlaceOptions = [originCourse, originSideOfStreetHint, originMatchSideOfStreet].filter(Boolean).join(";") ? ";" + [originCourse, originSideOfStreetHint, originMatchSideOfStreet].filter(Boolean).join(";") : "";
+
+    const destinationCourse = destinationOptions?.course ? `&course=${destinationOptions.course}` : "";
+    const destinationSideOfStreetHint = destinationOptions?.sideOfStreetHint ? `&sideOfStreetHint=${destinationOptions.sideOfStreetHint.lat},${destinationOptions.sideOfStreetHint.lng}` : "";
+    const destinationMatchSideOfStreet = destinationOptions?.matchSideOfStreet ? `&matchSideOfStreet=${destinationOptions.matchSideOfStreet}` : "";
+    const destinationPlaceOptions = [destinationCourse, destinationSideOfStreetHint, destinationMatchSideOfStreet].filter(Boolean).join(";") ? ";" + [destinationCourse, destinationSideOfStreetHint, destinationMatchSideOfStreet].filter(Boolean).join(";") : "";
+
+    let viaPlaceOptions;
+    
+    if (vias.length > 0) {
+      if (viaOptions.length > 0) {
+        return viaPlaceOptions = viaOptions.map((viaOption, index) => {
+          const viaCourse = viaOption?.course ? `&course=${viaOption.course}` : "";
+          const viaSideOfStreetHint = viaOption?.sideOfStreetHint ? `&sideOfStreetHint=${viaOption.sideOfStreetHint.lat},${viaOption.sideOfStreetHint.lng}` : "";
+          const viaMatchSideOfStreet = viaOption?.matchSideOfStreet ? `&matchSideOfStreet=${viaOption.matchSideOfStreet}` : "";
+          const viaStopDuration = viaOption?.stopDuration ? `&stopDuration=${viaOption.stopDuration}` : "";
+          const viaPassThrough = viaOption?.passThrough ? `&passThrough=${viaOption.passThrough}` : "";
+          const viaPlaceOption = [viaCourse, viaSideOfStreetHint, viaMatchSideOfStreet, viaStopDuration, viaPassThrough].filter(Boolean).join(";");
+
+          return viaPlaceOption ? `&via=${vias[index].lat},${vias[index].lng};${viaPlaceOption}` : `&via=${vias[index].lat},${vias[index].lng}`;
+        }).filter(Boolean).join("");
+      }
+      
+      viaPlaceOptions = vias.map((via) => `&via=${via.lat},${via.lng}`).join("");
+    }
+    
     const returnParams = returns?.join(",");
-    const urlWithParams = `${url}&transportMode=${transportMode}&origin=${origin}&destination=${destination}${viaParams}&return=${returnParams}`;
+    const urlWithParams = `${url}&transportMode=${transportMode}&origin=${origin.lat},${origin.lng}${originPlaceOptions}&destination=${destination.lat},${destination.lng}${destinationPlaceOptions}${viaPlaceOptions ? viaPlaceOptions : ""}&return=${returnParams}`;
 
     setIsFetching(true);
     try {
