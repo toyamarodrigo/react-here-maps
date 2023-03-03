@@ -4,6 +4,8 @@ This package provides React hooks, components and examples for HERE Maps API for
 
 ![image](https://user-images.githubusercontent.com/41844101/221454450-4d1128e0-fb35-4385-969d-c7fae5493beb.png)
 
+Demo: <https://react-here-maps-web.vercel.app/>
+
 ## Installation
 
 ```bash
