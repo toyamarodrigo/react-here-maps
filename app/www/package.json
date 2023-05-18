@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@toyamarodrigo/react-here-maps": "workspace:^",
+    "@toyamarodrigo/react-here-maps": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

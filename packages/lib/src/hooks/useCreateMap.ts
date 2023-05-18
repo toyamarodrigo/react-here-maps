@@ -60,68 +60,53 @@ export const useCreateMap = ({
   const [map, setMap] = useState<H.Map | undefined>(undefined);
   const [platform, setPlatform] = useState<H.service.Platform | undefined>(undefined);
 
-  const createMap = useCallback(
-    (node: HTMLElement | null) => {
-      if (node !== null) {
-        const platform = new H.service.Platform({
-          apikey: apiKey || "",
-        });
+  const createMap = useCallback((node: HTMLElement | null) => {
+    if (node !== null) {
+      const platform = new H.service.Platform({
+        apikey: apiKey || "",
+      });
 
-        setPlatform(platform);
+      setPlatform(platform);
 
-        const defaultLayer = platform.createDefaultLayers({
-          ...layerOptions,
-        }) as DefaultLayer;
+      const defaultLayer = platform.createDefaultLayers({
+        ...layerOptions,
+      }) as DefaultLayer;
 
-        const map = new H.Map(
-          node,
-          getMapStyles({
-            style: layerOptions?.style,
-            defaultLayer,
-          }),
-          getMapOptions({ mapOptions }),
-        );
+      const map = new H.Map(
+        node,
+        getMapStyles({
+          style: layerOptions?.style,
+          defaultLayer,
+        }),
+        getMapOptions({ mapOptions }),
+      );
 
-        new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-        const ui = H.ui.UI.createDefault(map, defaultLayer, localization);
+      new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+      const ui = H.ui.UI.createDefault(map, defaultLayer, localization);
 
-        const zoom = ui.getControl("zoom");
-        const mapSettings = ui.getControl("mapsettings");
-        const scaleBar = ui.getControl("scalebar");
+      const zoom = ui.getControl("zoom");
+      const mapSettings = ui.getControl("mapsettings");
+      const scaleBar = ui.getControl("scalebar");
 
-        zoom?.setAlignment(zoomAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
-        zoom?.setVisibility(zoomVisible ? true : false);
-        zoom?.setDisabled(zoomDisabled ? true : false);
-        mapSettings?.setAlignment(mapSettingsAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
-        mapSettings?.setVisibility(mapSettingsVisible ? true : false);
-        mapSettings?.setDisabled(mapSettingsDisabled ? true : false);
-        scaleBar?.setAlignment(scaleBarAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
-        scaleBar?.setVisibility(scaleBarVisible ? true : false);
-        scaleBar?.setDisabled(scaleBarDisabled ? true : false);
+      zoom?.setAlignment(zoomAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
+      zoom?.setVisibility(zoomVisible ? true : false);
+      zoom?.setDisabled(zoomDisabled ? true : false);
+      mapSettings?.setAlignment(mapSettingsAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
+      mapSettings?.setVisibility(mapSettingsVisible ? true : false);
+      mapSettings?.setDisabled(mapSettingsDisabled ? true : false);
+      scaleBar?.setAlignment(scaleBarAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
+      scaleBar?.setVisibility(scaleBarVisible ? true : false);
+      scaleBar?.setDisabled(scaleBarDisabled ? true : false);
 
-        setMap(map);
-      }
-    },
-    [
-      apiKey,
-      layerOptions,
-      mapOptions,
-      localization,
-      zoomAlign,
-      zoomVisible,
-      zoomDisabled,
-      mapSettingsAlign,
-      mapSettingsVisible,
-      mapSettingsDisabled,
-      scaleBarAlign,
-      scaleBarVisible,
-      scaleBarDisabled,
-    ],
-  );
+      setMap(map);
+    }
+  }, []);
 
   useEffect(() => {
     createMap(node);
-  }, [createMap, node]);
+
+    return () => map?.dispose();
+  }, [node]);
 
   return { map, platform };
 };

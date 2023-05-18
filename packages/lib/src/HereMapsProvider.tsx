@@ -1,15 +1,15 @@
-import type { ReactNode } from "react";
+import type React from "react";
 import { createContext, useEffect } from "react";
-import type H from "@here/maps-api-for-javascript";
-import useWindowSize from "./hooks/useWindowSize";
+import H from "@here/maps-api-for-javascript";
 import { useCreateMap } from "./hooks/useCreateMap";
+import useWindowSize from "./hooks/useWindowSize";
 
 interface HereMapsProviderProps {
   apiKey: string;
   mapOptions?: H.Map.Options;
   layerOptions?: H.service.Platform.DefaultLayersOptions;
   mapContainer: HTMLElement | null;
-  children: ReactNode;
+  children: React.ReactNode;
   localization?: string | H.ui.i18n.Localization;
   zoomAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
   zoomVisible?: boolean;
@@ -33,19 +33,22 @@ export const HereMapsContext = createContext<{
 export const HereMapsProvider = ({
   apiKey,
   mapOptions,
-  layerOptions,
+  layerOptions = {
+    ppi: 72,
+    style: "normal",
+  },
   mapContainer,
   children,
-  localization,
-  zoomAlign,
-  zoomVisible,
-  zoomDisabled,
-  mapSettingsAlign,
-  mapSettingsVisible,
-  mapSettingsDisabled,
-  scaleBarAlign,
-  scaleBarVisible,
-  scaleBarDisabled,
+  localization = "en-US",
+  zoomAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
+  zoomVisible = true,
+  zoomDisabled = false,
+  mapSettingsAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
+  mapSettingsVisible = true,
+  mapSettingsDisabled = false,
+  scaleBarAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
+  scaleBarVisible = true,
+  scaleBarDisabled = false,
 }: HereMapsProviderProps) => {
   const { map, platform } = useCreateMap({
     apiKey,
@@ -72,7 +75,7 @@ export const HereMapsProvider = ({
 
   useEffect(() => {
     if (map) map.getViewPort().resize();
-  }, [size, map]);
+  }, [size]);
 
   return <HereMapsContext.Provider value={value}>{children}</HereMapsContext.Provider>;
 };
