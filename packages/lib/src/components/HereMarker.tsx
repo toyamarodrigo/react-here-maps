@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { useHereMaps } from "../hooks/useHereMaps";
 
 interface HereMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
@@ -22,6 +23,7 @@ export const HereMarker = (props: HereMarkerProps) => {
 
   const createMarker = () => {
     let iconMarker: H.map.Icon | undefined;
+
     if (icon) {
       iconMarker = new H.map.Icon(icon, iconOptions);
     }
@@ -30,6 +32,7 @@ export const HereMarker = (props: HereMarkerProps) => {
       ...options,
       icon: iconMarker,
     });
+
     setMarker(marker);
   };
 

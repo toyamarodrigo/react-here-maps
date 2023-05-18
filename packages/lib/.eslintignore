@@ -1,0 +1,26 @@
+# Ignore build output
+/dist/
+dist
+
+# Ignore dependencies
+/node_modules/
+node_modules
+
+# Ignore TypeScript output
+/*.js
+/*.d.ts
+/*.map
+*.js
+*.d.ts
+*.map
+
+# Ignore Storybook output
+.storybook
+
+# Ignore Vite cache
+/.vite
+.vite
+
+# Ignore Rollup cache
+/.rollup_cache/
+.rollup_cache
