@@ -8,7 +8,8 @@
     "build:storybook-web": "pnpm --filter @toyamarodrigo/react-here-maps build-storybook",
     "build:lib": "pnpm --filter @toyamarodrigo/react-here-maps build",
     "lint:web": "pnpm --filter @toyamarodrigo/www lint",
-    "publish:package": "pnpm --filter @toyamarodrigo/react-here-maps publish --access public --dry-run"
+    "check:lib": "pnpm --filter @toyamarodrigo/react-here-maps publish --access public --dry-run",
+    "publish:lib": "pnpm --filter @toyamarodrigo/react-here-maps publish --access public"
   },
   "keywords": [
     "react",
