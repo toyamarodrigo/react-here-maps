@@ -1,8 +1,7 @@
 import H from "@here/maps-api-for-javascript";
 import { useState, useCallback, useEffect } from "react";
-import { DefaultLayer } from "../models/default-layer.type";
-import { getMapStyles } from "../utils/getMapStyles";
-import { getMapOptions } from "../utils/getMapOptions";
+import { getMapOptions, getMapStyles } from "../utils/map-helpers";
+import type { DefaultLayer } from "../models";
 
 interface UseCreateMapProps {
   apiKey: string;
@@ -59,9 +58,7 @@ export const useCreateMap = ({
   node,
 }: UseCreateMapProps) => {
   const [map, setMap] = useState<H.Map | undefined>(undefined);
-  const [platform, setPlatform] = useState<H.service.Platform | undefined>(
-    undefined
-  );
+  const [platform, setPlatform] = useState<H.service.Platform | undefined>(undefined);
 
   const createMap = useCallback((node: HTMLElement | null) => {
     if (node !== null) {
@@ -71,10 +68,9 @@ export const useCreateMap = ({
 
       setPlatform(platform);
 
-      // @ts-ignore
-      const defaultLayer: DefaultLayer = platform.createDefaultLayers({
+      const defaultLayer = platform.createDefaultLayers({
         ...layerOptions,
-      });
+      }) as DefaultLayer;
 
       const map = new H.Map(
         node,
@@ -82,8 +78,9 @@ export const useCreateMap = ({
           style: layerOptions?.style,
           defaultLayer,
         }),
-        getMapOptions({ mapOptions })
+        getMapOptions({ mapOptions }),
       );
+
       new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
       const ui = H.ui.UI.createDefault(map, defaultLayer, localization);
 
@@ -94,14 +91,10 @@ export const useCreateMap = ({
       zoom?.setAlignment(zoomAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
       zoom?.setVisibility(zoomVisible ? true : false);
       zoom?.setDisabled(zoomDisabled ? true : false);
-      mapSettings?.setAlignment(
-        mapSettingsAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT
-      );
+      mapSettings?.setAlignment(mapSettingsAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
       mapSettings?.setVisibility(mapSettingsVisible ? true : false);
       mapSettings?.setDisabled(mapSettingsDisabled ? true : false);
-      scaleBar?.setAlignment(
-        scaleBarAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT
-      );
+      scaleBar?.setAlignment(scaleBarAlign || H.ui.LayoutAlignment.BOTTOM_RIGHT);
       scaleBar?.setVisibility(scaleBarVisible ? true : false);
       scaleBar?.setDisabled(scaleBarDisabled ? true : false);
 
@@ -111,6 +104,7 @@ export const useCreateMap = ({
 
   useEffect(() => {
     createMap(node);
+
     return () => map?.dispose();
   }, [node]);
 

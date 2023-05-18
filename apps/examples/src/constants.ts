@@ -1,1 +1,0 @@
-export const HERE_MAPS_APIKEY = import.meta.env.VITE_HERE_MAPS_APIKEY

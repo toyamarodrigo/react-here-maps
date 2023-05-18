@@ -3,11 +3,19 @@
   "version": "0.1.0",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "scripts": {
-    "run:app": "pnpm --filter examples dev",
-    "build": "pnpm --filter @toyamarodrigo/react-here-maps build",
+    "run:web": "pnpm --filter @toyamarodrigo/www dev",
+    "run:storybook": "pnpm --filter @toyamarodrigo/react-here-maps storybook",
+    "build:web": "pnpm --filter @toyamarodrigo/www build",
+    "build:storybook-web": "pnpm --filter @toyamarodrigo/react-here-maps build-storybook",
+    "build:lib": "pnpm --filter @toyamarodrigo/react-here-maps build",
+    "lint:web": "pnpm --filter @toyamarodrigo/www lint",
     "publish:package": "pnpm --filter @toyamarodrigo/react-here-maps publish --access public"
   },
-  "keywords": ["react", "here", "maps"],
+  "keywords": [
+    "react",
+    "here",
+    "maps"
+  ],
   "author": "rodrigo.toyama",
   "license": "MIT"
 }
