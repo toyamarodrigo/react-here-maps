@@ -13,7 +13,10 @@
   "keywords": [
     "react",
     "here",
-    "maps"
+    "maps",
+    "api",
+    "typescript",
+    "herewego"
   ],
   "author": "rodrigo.toyama",
   "license": "MIT"
