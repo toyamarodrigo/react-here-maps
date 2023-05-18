@@ -1,4 +1,4 @@
-import H from "@here/maps-api-for-javascript";
+import type H from "@here/maps-api-for-javascript";
 import { useContext } from "react";
 import { HereMapsContext } from "../HereMapsProvider";
 
