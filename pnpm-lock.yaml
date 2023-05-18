@@ -6,6 +6,9 @@ importers:
 
   app/www:
     dependencies:
+      '@toyamarodrigo/react-here-maps':
+        specifier: workspace:^
+        version: link:../../packages/lib
       react:
         specifier: ^18.2.0
         version: 18.2.0

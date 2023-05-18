@@ -42,27 +42,28 @@ export const HereMap = ({
 
   return (
     <>
-      <div ref={(node) => setMapContainer(node)} style={{ width: "100%", height: "100%" }} />
-      {mapContainer && (
-        <HereMapsProvider
-          apiKey={apiKey}
-          layerOptions={layerOptions}
-          localization={localization}
-          mapContainer={mapContainer}
-          mapOptions={mapOptions}
-          mapSettingsAlign={mapSettingsAlign}
-          mapSettingsDisabled={mapSettingsDisabled}
-          mapSettingsVisible={mapSettingsVisible}
-          scaleBarAlign={scaleBarAlign}
-          scaleBarDisabled={scaleBarDisabled}
-          scaleBarVisible={scaleBarVisible}
-          zoomAlign={zoomAlign}
-          zoomDisabled={zoomDisabled}
-          zoomVisible={zoomVisible}
-        >
-          {children}
-        </HereMapsProvider>
-      )}
+      <div ref={(node) => setMapContainer(node)} style={{ width: "100%", height: "100%" }}>
+        {mapContainer && (
+          <HereMapsProvider
+            apiKey={apiKey}
+            layerOptions={layerOptions}
+            localization={localization}
+            mapContainer={mapContainer}
+            mapOptions={mapOptions}
+            mapSettingsAlign={mapSettingsAlign}
+            mapSettingsDisabled={mapSettingsDisabled}
+            mapSettingsVisible={mapSettingsVisible}
+            scaleBarAlign={scaleBarAlign}
+            scaleBarDisabled={scaleBarDisabled}
+            scaleBarVisible={scaleBarVisible}
+            zoomAlign={zoomAlign}
+            zoomDisabled={zoomDisabled}
+            zoomVisible={zoomVisible}
+          >
+            {children}
+          </HereMapsProvider>
+        )}
+      </div>
     </>
   );
 };
