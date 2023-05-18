@@ -13,3 +13,6 @@ export * from "./hooks/useRoutingService";
 
 // Utils
 export * from "./utils/map-helpers";
+
+// Types
+export * from "./models";

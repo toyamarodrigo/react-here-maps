@@ -1,23 +1,20 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "dist",
-    "lib": ["es2015", "dom"],
-    "allowJs": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true, // skips type checking declaration files
+    "jsx": "react-jsx",
+    "module": "ESNext", // indicates that we will be compiling the code into the latest version of JavaScript modules
     "declaration": true,
     "declarationDir": "types",
+    "rootDir": "./src",
     "sourceMap": true, // tells the compiler that we want source map generation
-    "skipLibCheck": true, // skips type checking declaration files
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext", // indicates that we will be compiling the code into the latest version of JavaScript modules
+    "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "jsx": "react-jsx"
+    "emitDeclarationOnly": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.json", "./src/**/*.d.ts"],
   "exclude": [
     "dist",
     "node_modules",
