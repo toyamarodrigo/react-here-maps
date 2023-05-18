@@ -3,6 +3,7 @@
     "rootDir": "./src",
     "outDir": "dist",
     "lib": ["es2015", "dom"],
+    "allowJs": true,
     "declaration": true,
     "declarationDir": "types",
     "sourceMap": true, // tells the compiler that we want source map generation
@@ -14,10 +15,9 @@
     "module": "ESNext", // indicates that we will be compiling the code into the latest version of JavaScript modules
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": ["vite/client"],
     "jsx": "react-jsx"
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.json", "./src/**/*.d.ts"],
   "exclude": [
     "dist",
     "node_modules",
