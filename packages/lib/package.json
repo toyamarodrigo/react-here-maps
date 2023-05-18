@@ -1,10 +1,10 @@
 {
   "name": "@toyamarodrigo/react-here-maps",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types.d.ts",
   "author": "rodrigo.toyama",
   "license": "MIT",
   "files": [
