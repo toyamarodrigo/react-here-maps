@@ -5,7 +5,7 @@ export * from "./HereMapsProvider";
 export * from "./components/HereMarker";
 export * from "./components/HerePolyline";
 export * from "./components/HereDomMarker";
-export * from "./components/HereMap";
+// export * from "./components/HereMap";
 
 // Hooks
 export * from "./hooks/useHereMaps";

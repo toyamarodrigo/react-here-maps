@@ -36,11 +36,13 @@ const App = () => {
 
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <HereMap
+      <HereMapsProvider
+        apiKey="YOUR_API_KEY"
+        mapContainer={mapContainer}
         mapOptions={{
           center: {
-            lat: -34.6083,
-            lng: -58.3712,
+            lat: -34.603722,
+            lng: -58.381592,
           },
           zoom: 12,
         }}
@@ -49,8 +51,12 @@ const App = () => {
           ppi: 72,
         }}
       >
-      {/* Markers, Polylines and stuff */}
-      </HereMap>
+        <div
+          ref={(node) => setMapContainer(node)}
+          style={{ width: "100%", height: "100%" }}
+        />
+        {/* Markers, Polylines and stuff */}
+      </HereMapsProvider>
     </div>
   );
 };
