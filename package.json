@@ -1,6 +1,6 @@
 {
   "name": "react-here-maps",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "scripts": {
     "run:web": "pnpm --filter @toyamarodrigo/www dev",
