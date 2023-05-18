@@ -1,6 +1,7 @@
-import React, { createContext, useEffect } from "react";
-import H from "@here/maps-api-for-javascript";
-import { useWindowSize } from "./hooks/useWindowSize";
+import type { ReactNode } from "react";
+import { createContext, useEffect } from "react";
+import type H from "@here/maps-api-for-javascript";
+import useWindowSize from "./hooks/useWindowSize";
 import { useCreateMap } from "./hooks/useCreateMap";
 
 interface HereMapsProviderProps {
@@ -8,7 +9,7 @@ interface HereMapsProviderProps {
   mapOptions?: H.Map.Options;
   layerOptions?: H.service.Platform.DefaultLayersOptions;
   mapContainer: HTMLElement | null;
-  children: React.ReactNode;
+  children: ReactNode;
   localization?: string | H.ui.i18n.Localization;
   zoomAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
   zoomVisible?: boolean;
@@ -32,22 +33,19 @@ export const HereMapsContext = createContext<{
 export const HereMapsProvider = ({
   apiKey,
   mapOptions,
-  layerOptions = {
-    ppi: 72,
-    style: "normal",
-  },
+  layerOptions,
   mapContainer,
   children,
-  localization = "en-US",
-  zoomAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
-  zoomVisible = true,
-  zoomDisabled = false,
-  mapSettingsAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
-  mapSettingsVisible = true,
-  mapSettingsDisabled = false,
-  scaleBarAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
-  scaleBarVisible = true,
-  scaleBarDisabled = false,
+  localization,
+  zoomAlign,
+  zoomVisible,
+  zoomDisabled,
+  mapSettingsAlign,
+  mapSettingsVisible,
+  mapSettingsDisabled,
+  scaleBarAlign,
+  scaleBarVisible,
+  scaleBarDisabled,
 }: HereMapsProviderProps) => {
   const { map, platform } = useCreateMap({
     apiKey,
@@ -74,13 +72,7 @@ export const HereMapsProvider = ({
 
   useEffect(() => {
     if (map) map.getViewPort().resize();
-  }, [size]);
+  }, [size, map]);
 
-  return (
-    <HereMapsContext.Provider value={
-      value
-    }>
-      {children}
-    </HereMapsContext.Provider>
-  );
+  return <HereMapsContext.Provider value={value}>{children}</HereMapsContext.Provider>;
 };

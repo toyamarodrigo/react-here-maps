@@ -45,4 +45,3 @@ interface DestinationOptions {
   sideOfStreetHint: Origin;
   matchSideOfStreet: "always" | "onlyIfDivided";
 }
-
