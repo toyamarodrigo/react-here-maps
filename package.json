@@ -2,7 +2,7 @@
   "name": "react-here-maps",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "workspaces": [
-    "apps/**",
+    "app/**",
     "packages/*"
   ],
   "scripts": {
