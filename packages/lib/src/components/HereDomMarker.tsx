@@ -2,7 +2,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { useHereMaps } from "../hooks/useHereMaps";
 
-interface HereMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
+export interface HereDomMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
   children?: React.ReactNode;
   icon?: string;
   iconOptions?: H.map.Icon.Options;
@@ -15,7 +15,7 @@ interface HereMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
  * @param props
  * @returns
  */
-export const HereDomMarker = (props: HereMarkerProps) => {
+export const HereDomMarker = (props: HereDomMarkerProps) => {
   const { map } = useHereMaps();
   const { positions, icon, iconOptions, ...options } = props;
   const [marker, setMarker] = useState<H.map.Marker | null>(null);

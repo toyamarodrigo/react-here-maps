@@ -4,7 +4,7 @@ import H from "@here/maps-api-for-javascript";
 import { useCreateMap } from "../hooks/useCreateMap";
 import useWindowSize from "../hooks/useWindowSize";
 
-interface HereMapProps {
+export interface HereMapProps {
   apiKey: string;
   mapOptions?: H.Map.Options;
   layerOptions?: H.service.Platform.DefaultLayersOptions;
