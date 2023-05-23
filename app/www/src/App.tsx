@@ -1,14 +1,10 @@
-import { HereMapsProvider } from "@toyamarodrigo/react-here-maps";
-import { useState } from "react";
+import { HereMap, HereMarker } from "@toyamarodrigo/react-here-maps";
 
 function App() {
-  const [mapContainer, setMapContainer] = useState<HTMLDivElement | null>(null);
-
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <HereMapsProvider
-        apiKey="n1nKN-IRXE0oQUMkkfD_47KZzXRDKS0C51lt1BtRo-k"
-        mapContainer={mapContainer}
+      <HereMap
+        apiKey={import.meta.env.VITE_HERE_MAPS_APIKEY}
         mapOptions={{
           center: {
             lat: -34.603722,
@@ -21,11 +17,16 @@ function App() {
           ppi: 72,
         }}
       >
-        <div
-          ref={(node) => setMapContainer(node)}
-          style={{ width: "100%", height: "100%" }}
-        />
-      </HereMapsProvider>
+      <HereMarker
+        data={{
+          title: "Buenos Aires",
+        }}
+        positions={{
+          lat: -34.603722,
+          lng: -58.401592,
+        }}
+      />
+      </HereMap>
     </div>
   );
 }

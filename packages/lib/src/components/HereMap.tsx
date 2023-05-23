@@ -1,15 +1,14 @@
 import type React from "react";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import H from "@here/maps-api-for-javascript";
-import { useCreateMap } from "./hooks/useCreateMap";
-import useWindowSize from "./hooks/useWindowSize";
+import { useCreateMap } from "../hooks/useCreateMap";
+import useWindowSize from "../hooks/useWindowSize";
 
-interface HereMapsProviderProps {
+interface HereMapProps {
   apiKey: string;
   mapOptions?: H.Map.Options;
   layerOptions?: H.service.Platform.DefaultLayersOptions;
-  mapContainer: HTMLElement | null;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   localization?: string | H.ui.i18n.Localization;
   zoomAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
   zoomVisible?: boolean;
@@ -30,14 +29,13 @@ export const HereMapsContext = createContext<{
   platform: undefined,
 });
 
-export const HereMapsProvider = ({
+export const HereMap = ({
   apiKey,
   mapOptions,
   layerOptions = {
     ppi: 72,
     style: "normal",
   },
-  mapContainer,
   children,
   localization = "en-US",
   zoomAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
@@ -49,7 +47,8 @@ export const HereMapsProvider = ({
   scaleBarAlign = H.ui.LayoutAlignment.BOTTOM_RIGHT,
   scaleBarVisible = true,
   scaleBarDisabled = false,
-}: HereMapsProviderProps) => {
+}: HereMapProps) => {
+  const [mapContainer, setMapContainer] = useState<HTMLDivElement | null>(null);
   const { map, platform } = useCreateMap({
     apiKey,
     layerOptions,
@@ -75,7 +74,13 @@ export const HereMapsProvider = ({
 
   useEffect(() => {
     if (map) map.getViewPort().resize();
-  }, [size]);
+  }, [size, map]);
 
-  return <HereMapsContext.Provider value={value}>{children}</HereMapsContext.Provider>;
+  return (
+    <HereMapsContext.Provider value={value}>
+      <div ref={(node) => setMapContainer(node)} style={{ width: "100%", height: "100%" }}>
+        {map ? children : null}
+      </div>
+    </HereMapsContext.Provider>
+  );
 };
