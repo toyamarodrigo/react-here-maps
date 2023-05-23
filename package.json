@@ -1,6 +1,10 @@
 {
   "name": "react-here-maps",
   "description": "React hooks, components and examples for HERE Maps API JS",
+  "workspaces": [
+    "apps/**",
+    "packages/*"
+  ],
   "scripts": {
     "run:web": "pnpm --filter @toyamarodrigo/www dev",
     "run:storybook": "pnpm --filter @toyamarodrigo/react-here-maps storybook",
