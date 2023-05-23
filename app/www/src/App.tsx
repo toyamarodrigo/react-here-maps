@@ -1,9 +1,9 @@
-// import { HereMap, HereMarker } from "@toyamarodrigo/react-here-maps";
+import { HereMap, HereMarker } from "@toyamarodrigo/react-here-maps";
 
 function App() {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      {/* <HereMap
+      <HereMap
         apiKey={import.meta.env.VITE_HERE_MAPS_APIKEY}
         mapOptions={{
           center: {
@@ -26,8 +26,7 @@ function App() {
           lng: -58.401592,
         }}
       />
-      </HereMap> */}
-      <h1>Hello World</h1>
+      </HereMap>
     </div>
   );
 }
