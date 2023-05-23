@@ -30,19 +30,14 @@ To use `@toyamarodrigo/react-here-maps`, you will need to obtain an API key from
 import React from 'react';
 import { HereMap } from '@toyamarodrigo/react-here-maps';
 
-
 const App = () => {
-  const [mapContainer, setMapContainer] = React.useState(null);
-
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <HereMapsProvider
-        apiKey="YOUR_API_KEY"
-        mapContainer={mapContainer}
+      <HereMap
         mapOptions={{
           center: {
-            lat: -34.603722,
-            lng: -58.381592,
+            lat: -34.6083,
+            lng: -58.3712,
           },
           zoom: 12,
         }}
@@ -51,12 +46,8 @@ const App = () => {
           ppi: 72,
         }}
       >
-        <div
-          ref={(node) => setMapContainer(node)}
-          style={{ width: "100%", height: "100%" }}
-        />
-        {/* Markers, Polylines and stuff */}
-      </HereMapsProvider>
+      {/* Markers, Polylines and stuff */}
+      </HereMap>
     </div>
   );
 };
@@ -65,7 +56,7 @@ const App = () => {
 ## TODO
 
 - Components
-  - [x] Map Provider
+  - [x] Map
   - [x] Marker
   - [x] DOM Marker
   - [ ] Polygons
