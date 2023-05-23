@@ -32,8 +32,6 @@ import { HereMap } from '@toyamarodrigo/react-here-maps';
 
 
 const App = () => {
-  const [mapContainer, setMapContainer] = React.useState(null);
-
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <HereMap
@@ -59,7 +57,7 @@ const App = () => {
 ## TODO
 
 - Components
-  - [x] Map Provider
+  - [x] Map
   - [x] Marker
   - [x] DOM Marker
   - [ ] Polygons
