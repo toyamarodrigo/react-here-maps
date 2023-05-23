@@ -9,6 +9,9 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "workspaces": [
+    "app/*"
+  ],
   "dependencies": {
     "@toyamarodrigo/react-here-maps": "workspace:^",
     "react": "^18.2.0",
