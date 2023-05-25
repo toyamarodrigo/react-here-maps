@@ -1,10 +1,10 @@
 import type H from "@here/maps-api-for-javascript";
 import { useContext } from "react";
-import { HereMapsContext } from "../components/HereMap";
+import { HereMapsContext } from "../components/HereMap/HereMap.provider";
 
 interface UseHereMapsProps {
-  map: H.Map | undefined;
-  platform: H.service.Platform | undefined;
+  map: H.Map;
+  platform: H.service.Platform;
 }
 
 /**

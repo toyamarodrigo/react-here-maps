@@ -1,9 +1,5 @@
-import { useHereMaps } from "../hooks/useHereMaps";
-
-export interface HerePolylineProps {
-  route: any;
-  style?: H.map.SpatialStyle.Options;
-}
+import { useHereMaps } from "../../hooks/useHereMaps";
+import type { HerePolylineProps } from "./HerePolyline.types";
 
 /**
  * HerePolyline

@@ -1,15 +1,11 @@
 // Components
-export * from "./components/HereMarker";
-export * from "./components/HerePolyline";
-export * from "./components/HereDomMarker";
-export * from "./components/HereMap";
+export * from "./components";
 
 // Hooks
-export * from "./hooks/useHereMaps";
-export * from "./hooks/useRoutingService";
+export * from "./hooks";
 
 // Utils
-export * from "./utils/map-helpers";
+export * from "./utils";
 
 // Types
 export * from "./models";
