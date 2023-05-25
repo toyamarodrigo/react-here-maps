@@ -68,7 +68,7 @@ const App = () => {
 
 - Hooks
   - [x] Map Instance - useHereMaps
-  - [x] Routing - useRoutingService
+  - [x] Routing - useRoutingService v8
   - [ ] Geocoding & Search - useGeocodingService
   - [ ] Isoline - useIsolineService
   - [ ] Waypoints - useWaypointsService
