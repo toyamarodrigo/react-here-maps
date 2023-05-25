@@ -1,33 +1,9 @@
-import type React from "react";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import H from "@here/maps-api-for-javascript";
-import { useCreateMap } from "../hooks/useCreateMap";
-import useWindowSize from "../hooks/useWindowSize";
-
-export interface HereMapProps {
-  apiKey: string;
-  mapOptions?: H.Map.Options;
-  layerOptions?: H.service.Platform.DefaultLayersOptions;
-  children?: React.ReactNode;
-  localization?: string | H.ui.i18n.Localization;
-  zoomAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
-  zoomVisible?: boolean;
-  zoomDisabled?: boolean;
-  mapSettingsAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
-  mapSettingsVisible?: boolean;
-  mapSettingsDisabled?: boolean;
-  scaleBarAlign?: H.ui.LayoutAlignment.BOTTOM_RIGHT;
-  scaleBarVisible?: boolean;
-  scaleBarDisabled?: boolean;
-}
-
-export const HereMapsContext = createContext<{
-  map: H.Map | undefined;
-  platform: H.service.Platform | undefined;
-}>({
-  map: undefined,
-  platform: undefined,
-});
+import { useCreateMap } from "../../hooks/useCreateMap";
+import useWindowSize from "../../hooks/useWindowSize";
+import { HereMapsContext } from "./HereMap.provider";
+import type { HereMapProps } from "./HereMap.types";
 
 export const HereMap = ({
   apiKey,
@@ -70,7 +46,7 @@ export const HereMap = ({
   const value = {
     map,
     platform,
-  };
+  } as { map: H.Map; platform: H.service.Platform };
 
   useEffect(() => {
     if (map) map.getViewPort().resize();

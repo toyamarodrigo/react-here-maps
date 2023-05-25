@@ -1,13 +1,6 @@
-import type React from "react";
-import { useState, useEffect } from "react";
-import { useHereMaps } from "../hooks/useHereMaps";
-
-export interface HereDomMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
-  children?: React.ReactNode;
-  icon?: string;
-  iconOptions?: H.map.Icon.Options;
-  positions: H.geo.IPoint;
-}
+import { useState, useEffect, useCallback } from "react";
+import { useHereMaps } from "../../hooks/useHereMaps";
+import type { HereDomMarkerProps } from "./HereDomMarker.types";
 
 /**
  * A marker which supports HTML (and SVG) content, which can be dynamic.
@@ -20,7 +13,7 @@ export const HereDomMarker = (props: HereDomMarkerProps) => {
   const { positions, icon, iconOptions, ...options } = props;
   const [marker, setMarker] = useState<H.map.Marker | null>(null);
 
-  const createDomMarker = () => {
+  const createDomMarker = useCallback(() => {
     let iconMarker: H.map.Icon | undefined;
 
     if (icon) {
@@ -33,11 +26,11 @@ export const HereDomMarker = (props: HereDomMarkerProps) => {
     });
 
     setMarker(marker);
-  };
+  }, [positions, icon, iconOptions, options]);
 
   useEffect(() => {
     if (map && !marker) createDomMarker();
-  }, [map, marker]);
+  }, [map, marker, createDomMarker]);
 
   useEffect(() => {
     if (map && marker) map.addObject(marker);

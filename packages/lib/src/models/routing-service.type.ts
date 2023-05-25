@@ -1,47 +1,62 @@
-export interface CalculateRouteProps {
-  transportMode: "car" | "pedestrian" | "truck" | "scooter";
-  origin: Origin;
-  destination: Destination;
-  returns: string[];
-  originOptions?: OriginOptions;
-  destinationOptions?: DestinationOptions;
-  vias?: Via[];
-  viaOptions?: ViaOptions[];
-  radius?: number;
+export interface Route {
+  routes: RouteElement[];
 }
 
-interface Origin {
+export interface RouteElement {
+  id: string;
+  sections: Section[];
+}
+
+export interface Section {
+  id: string;
+  type: string;
+  actions: Action[];
+  departure: Arrival;
+  arrival: Arrival;
+  summary: Summary;
+  polyline: string;
+  spans: Span[];
+  transport: Transport;
+}
+
+export interface Action {
+  action: string;
+  duration: number;
+  instruction: string;
+  offset: number;
+}
+
+export interface Arrival {
+  time: Date;
+  place: Place;
+}
+
+export interface Place {
+  type: string;
+  location: Location;
+}
+
+export interface Location {
   lat: number;
   lng: number;
 }
 
-interface Destination {
-  lat: number;
-  lng: number;
+export interface Span {
+  offset: number;
+  names: Name[];
+  length: number;
 }
 
-interface Via {
-  lat: number;
-  lng: number;
+export interface Name {
+  value: string;
+  language: string;
 }
 
-interface ViaOptions {
-  course?: number;
-  sideOfStreetHint: Via;
-  matchSideOfStreet: "always" | "onlyIfDivided";
-  stopDuration?: number;
-  passThrough?: boolean;
+export interface Summary {
+  duration: number;
+  length: number;
 }
 
-interface OriginOptions {
-  course?: number;
-  sideOfStreetHint: Origin;
-  matchSideOfStreet: "always" | "onlyIfDivided";
-}
-
-interface DestinationOptions {
-  course?: number;
-  stopDuration?: number;
-  sideOfStreetHint: Origin;
-  matchSideOfStreet: "always" | "onlyIfDivided";
+export interface Transport {
+  mode: string;
 }

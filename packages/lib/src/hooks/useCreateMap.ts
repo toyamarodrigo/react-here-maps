@@ -57,8 +57,8 @@ export const useCreateMap = ({
   scaleBarDisabled,
   node,
 }: UseCreateMapProps) => {
-  const [map, setMap] = useState<H.Map | undefined>(undefined);
-  const [platform, setPlatform] = useState<H.service.Platform | undefined>(undefined);
+  const [map, setMap] = useState<H.Map>();
+  const [platform, setPlatform] = useState<H.service.Platform>();
 
   const createMap = useCallback((node: HTMLElement | null) => {
     if (node !== null) {

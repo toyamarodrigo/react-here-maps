@@ -1,13 +1,6 @@
-import type React from "react";
-import { useState, useEffect } from "react";
-import { useHereMaps } from "../hooks/useHereMaps";
-
-export interface HereMarkerProps extends Omit<H.map.Marker.Options, "icon"> {
-  children?: React.ReactNode;
-  icon?: string;
-  iconOptions?: H.map.Icon.Options;
-  positions: H.geo.IPoint;
-}
+import { useState, useEffect, useCallback } from "react";
+import { useHereMaps } from "../../hooks/useHereMaps";
+import type { HereMarkerProps } from "./HereMarker.types";
 
 /**
  * A "normal" marker that uses a static image as an icon.
@@ -21,7 +14,7 @@ export const HereMarker = (props: HereMarkerProps) => {
   const { positions, icon, iconOptions, ...options } = props;
   const [marker, setMarker] = useState<H.map.Marker | null>(null);
 
-  const createMarker = () => {
+  const createMarker = useCallback(() => {
     let iconMarker: H.map.Icon | undefined;
 
     if (icon) {
@@ -34,11 +27,11 @@ export const HereMarker = (props: HereMarkerProps) => {
     });
 
     setMarker(marker);
-  };
+  }, [positions, icon, iconOptions, options]);
 
   useEffect(() => {
     if (map && !marker) createMarker();
-  }, [map, marker]);
+  }, [map, marker, createMarker]);
 
   useEffect(() => {
     if (map && marker) map.addObject(marker);
