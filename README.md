@@ -35,6 +35,7 @@ const App = () => {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <HereMap
+        apiKey={"YOUR_API_KEY"}
         mapOptions={{
           center: {
             lat: -34.6083,
