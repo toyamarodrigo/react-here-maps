@@ -1,12 +1,20 @@
 {
   "name": "@toyamarodrigo/react-here-maps",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types.d.ts",
-  "author": "rodrigo.toyama",
+  "author": "toyamarodrigo",
   "license": "MIT",
+  "homepage": "https://github.com/toyamarodrigo/react-here-maps",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toyamarodrigo/react-here-maps"
+  },
+  "bugs": {
+    "url": "https://github.com/toyamarodrigo/react-here-maps/issues"
+  },
   "files": [
     "dist"
   ],
@@ -19,7 +27,6 @@
     "react",
     "here",
     "maps",
-    "api",
     "typescript",
     "herewego"
   ],
