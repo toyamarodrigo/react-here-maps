@@ -4,7 +4,7 @@ This package provides React hooks, components and examples for HERE Maps API for
 
 ![image](https://user-images.githubusercontent.com/41844101/221454450-4d1128e0-fb35-4385-969d-c7fae5493beb.png)
 
-Demo: <https://react-here-maps-web.vercel.app/>
+Demo: <https://react-here-maps.vercel.app/>
 
 ## Installation
 
@@ -24,12 +24,11 @@ To use `@toyamarodrigo/react-here-maps`, you will need to obtain an API key from
 
 <https://developer.here.com/tutorials/getting-here-credentials/>
 
-## Examples
+## Example
 
 ```jsx
 import React from 'react';
 import { HereMap } from '@toyamarodrigo/react-here-maps';
-
 
 const App = () => {
   return (
