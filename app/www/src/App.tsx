@@ -3,7 +3,11 @@ import {
   HereMarker,
   HerePolyline,
   useRoutingService,
+  useGeocoding,
+  useDebounce,
 } from "@toyamarodrigo/react-here-maps";
+import { useEffect, useState } from "react";
+import AsyncSelect from "react-select/async";
 
 const customIcon = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
   <rect stroke="white" fill="#1b468d" x="1" y="1" width="22" height="22" />
@@ -52,6 +56,7 @@ function App() {
           />
         ))}
         <Routing />
+        <Geocoding />
       </HereMap>
     </div>
   );
@@ -123,6 +128,67 @@ const Routing = () => {
         Clear Route
       </button>
       {data && <HerePolyline route={data} />}
+    </div>
+  );
+};
+
+const Geocoding = () => {
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
+  const { geocode, clearGeocoding, addMarker } = useGeocoding();
+
+  useEffect(() => {
+    const handleGeocode = async () => {
+      if (debouncedQuery) {
+        await geocode(debouncedQuery);
+      }
+    };
+
+    handleGeocode();
+  }, [debouncedQuery]);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "10px",
+        right: "10px",
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      <AsyncSelect
+        isClearable
+        isSearchable
+        placeholder="Search"
+        styles={{
+          container: (provided) => ({
+            ...provided,
+            width: "300px",
+          }),
+        }}
+        loadOptions={(inputValue, callback) => {
+          if (!inputValue) return callback([]);
+
+          geocode(inputValue).then((res) => {
+            const options = res?.items.map((item) => ({
+              label: item.address.label,
+              value: item.position,
+            }));
+
+            return callback(options);
+          });
+        }}
+        onInputChange={(value) => setQuery(value)}
+        onChange={(option: any) => {
+          console.log("option", option);
+          if (!option?.label) return clearGeocoding();
+          addMarker({
+            label: option.label,
+            value: option.value,
+          });
+        }}
+      />
     </div>
   );
 };
