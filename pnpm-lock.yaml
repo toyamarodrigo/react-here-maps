@@ -1,4 +1,8 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 importers:
 
@@ -52,9 +56,6 @@ importers:
 
   packages/lib:
     dependencies:
-      '@here/maps-api-for-javascript':
-        specifier: ^1.41.1
-        version: 1.41.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -62,6 +63,9 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@here/maps-api-for-javascript':
+        specifier: ^1.41.1
+        version: 1.41.1
       '@rollup/plugin-commonjs':
         specifier: ^25.0.0
         version: 25.0.0(rollup@3.23.0)
@@ -1816,7 +1820,7 @@ packages:
 
   /@here/maps-api-for-javascript@1.41.1:
     resolution: {integrity: sha1-O4puv6dTZe1DhA2gY4LfZ4h6GDQ=, tarball: https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/-/@here/maps-api-for-javascript-1.41.1.tgz}
-    dev: false
+    dev: true
 
   /@humanwhocodes/config-array@0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
