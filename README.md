@@ -9,6 +9,12 @@ Demo: <https://react-here-maps.vercel.app/>
 ## Installation
 
 ```bash
+# First Install you need to install @here/@here/maps-api-for-javascript
+npm install --save-dev @here/maps-api-for-javascript --registry=https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/
+```
+
+```bash
+# Then install @toyamarodrigo/react-here-maps with your favorite package manager
 npm install @toyamarodrigo/react-here-maps
 
 # or
