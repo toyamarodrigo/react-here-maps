@@ -21,7 +21,6 @@ export const useRoutingService = () => {
       origin: H.geo.IPoint;
       destination: H.geo.IPoint;
       vias?: H.geo.IPoint[];
-      // vias?: (string | number)[];
       transportMode?: "car" | "truck" | "pedestrian" | "bicycle";
     }) => {
       return new Promise((resolve: (value: Route) => void, reject) => {
