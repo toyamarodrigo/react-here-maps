@@ -51,6 +51,7 @@ module.exports = {
         argsIgnorePattern: "^_.*?$",
       },
     ],
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/consistent-type-imports": ["warn"],
     "import/order": [
       "warn",
