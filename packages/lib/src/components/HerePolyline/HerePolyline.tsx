@@ -4,7 +4,7 @@ import type { HerePolylineProps } from "./HerePolyline.types";
 /**
  * HerePolyline
  * Polyline component that draws a polyline on the map with H.map.Polyline
- * @param {H.service.RoutingServiceResult} route - The route to draw.
+ * @param {H.service.ServiceResult} route - The route to draw.
  * @param {H.map.SpatialStyle.Options} style - The style of the polyline.
  * @returns
  */
