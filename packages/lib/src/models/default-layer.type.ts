@@ -39,10 +39,24 @@ export interface Terrain {
 
 export interface Vector {
   normal: VectorNormal;
+  traffic: VectorTraffic;
 }
 
 export interface VectorNormal {
   map: H.map.layer.Layer;
+  mapnight: H.map.layer.Layer;
+  lite: H.map.layer.Layer;
+  litenight: H.map.layer.Layer;
+  roadnetwork: H.map.layer.Layer;
+  roadnetworknight: H.map.layer.Layer;
+  truck: H.map.layer.Layer;
   traffic: H.map.layer.Layer;
   trafficincidents: H.map.layer.Layer;
+}
+
+export interface VectorTraffic {
+  map: H.map.layer.Layer;
+  mapnight: H.map.layer.Layer;
+  lite: H.map.layer.Layer;
+  litenight: H.map.layer.Layer;
 }
