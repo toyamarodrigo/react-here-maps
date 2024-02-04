@@ -1,12 +1,10 @@
 import {
-  HereMap,
-  HereMarker,
-  HerePolyline,
   useRoutingService,
   useGeocoding,
-  useDebounce,
+  HereMap,
+  HerePolyline,
+  HereMarker,
 } from "@toyamarodrigo/react-here-maps";
-import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 
 const customIcon = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
@@ -28,19 +26,11 @@ const positions = [
 function App() {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <HereMap
-        apiKey={import.meta.env.VITE_HERE_MAPS_APIKEY}
-        mapOptions={{
-          center: {
-            lat: -34.603722,
-            lng: -58.381592,
-          },
-          zoom: 12,
-        }}
-        layerOptions={{
-          style: "normal",
-          ppi: 72,
-        }}
+      <HereMap apiKey={import.meta.env.VITE_HERE_MAPS_APIKEY} mapOptions={{
+        center: { lat: -34.603722, lng: -58.401592 },
+        zoom: 12,
+        style: "map"
+      }}
       >
         {positions.map((position, index) => (
           <HereMarker
@@ -85,6 +75,7 @@ const Routing = () => {
         position: "absolute",
         top: "10px",
         left: "10px",
+        zIndex: 1,
       }}
     >
       {isFetching && (
@@ -133,19 +124,7 @@ const Routing = () => {
 };
 
 const Geocoding = () => {
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query, 500);
   const { geocode, clearGeocoding, addMarker } = useGeocoding();
-
-  useEffect(() => {
-    const handleGeocode = async () => {
-      if (debouncedQuery) {
-        await geocode(debouncedQuery);
-      }
-    };
-
-    handleGeocode();
-  }, [debouncedQuery]);
 
   return (
     <div
@@ -155,6 +134,7 @@ const Geocoding = () => {
         right: "10px",
         display: "flex",
         flexDirection: "row",
+        zIndex: 1,
       }}
     >
       <AsyncSelect
@@ -179,9 +159,11 @@ const Geocoding = () => {
             return callback(options);
           });
         }}
-        onInputChange={(value) => setQuery(value)}
-        onChange={(option: any) => {
-          console.log("option", option);
+        onChange={(option: {
+          label: string;
+          value: { lat: number; lng: number };
+        } | null
+        ) => {
           if (!option?.label) return clearGeocoding();
           addMarker({
             label: option.label,
