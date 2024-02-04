@@ -48,10 +48,6 @@ const App = () => {
           },
           zoom: 12,
         }}
-        layerOptions={{
-          style: "normal",
-          ppi: 72,
-        }}
       >
       {/* Markers, Polylines and stuff */}
       </HereMap>
