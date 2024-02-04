@@ -8,8 +8,23 @@ Demo: <https://react-here-maps.vercel.app/>
 
 ## Installation
 
+First, you need to include the HERE Maps API for JavaScript CSS in your HTML file.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+
+```
+
 ```bash
-# First you need to install @here/maps-api-for-javascript
+# After that, install the HERE Maps API for JavaScript with your favorite package manager
 npm install --save-dev @here/maps-api-for-javascript --registry=https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/
 ```
 
@@ -39,18 +54,11 @@ import { HereMap } from '@toyamarodrigo/react-here-maps';
 const App = () => {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <HereMap
-        apiKey={"YOUR_API_KEY"}
+      <HereMap 
+        apiKey={"YOUR_API_KEY"} 
         mapOptions={{
-          center: {
-            lat: -34.6083,
-            lng: -58.3712,
-          },
+          center: { lat: -34.603722, lng: -58.401592 },
           zoom: 12,
-        }}
-        layerOptions={{
-          style: "normal",
-          ppi: 72,
         }}
       >
       {/* Markers, Polylines and stuff */}
