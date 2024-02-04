@@ -20,6 +20,6 @@
     "dist",
     "node_modules",
     "src/**/*.test.tsx",
-    "src/**/*.stories.tsx"
-  ]
+  ],
+  "include": ["src", ".storybook/*.tsx"]
 }
