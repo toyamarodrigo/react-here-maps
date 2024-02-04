@@ -38,7 +38,7 @@ export const HereMarker = ({ icon, iconOptions, positions, ...options }: HereMar
   }, [map, marker, createMarker]);
 
   useEffect(() => {
-    if (map && marker) map.addObject(marker);
+    if (map.current && marker) map.current.addObject(marker);
   }, [map, marker]);
 
   return null;
