@@ -37,7 +37,7 @@ export const HereDomMarker = ({ icon, iconOptions, positions, ...options }: Here
   }, [map, marker, createDomMarker]);
 
   useEffect(() => {
-    if (map && marker) map.addObject(marker);
+    if (map.current && marker) map.current.addObject(marker);
   }, [map, marker]);
 
   return null;
