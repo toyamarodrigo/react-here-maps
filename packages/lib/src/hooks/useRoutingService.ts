@@ -9,7 +9,7 @@ export const useRoutingService = () => {
   const [error, setError] = useState<any>();
   const { map, platform } = useHereMaps();
 
-  const router = platform.getRoutingService(undefined, 8);
+  const router = platform.current?.getRoutingService(undefined, 8);
 
   const calculateRoute = useCallback(
     ({
@@ -27,6 +27,9 @@ export const useRoutingService = () => {
         const viasArray = vias.map((via) => via.lat + "," + via.lng);
 
         setIsFetching(true);
+
+        if (!router) return reject(new Error("Router not found"));
+
         router.calculateRoute(
           {
             origin: origin.lat + "," + origin.lng,
@@ -53,13 +56,13 @@ export const useRoutingService = () => {
   );
 
   const clearRoute = () => {
-    if (map) {
-      map.getObjects().forEach((object: any) => {
-        if (object instanceof H.map.Polyline) {
-          map.removeObject(object);
-        }
-      });
-    }
+    if (!map.current) return;
+
+    map.current.getObjects().forEach((object: any) => {
+      if (object instanceof H.map.Polyline) {
+        if (map.current) map.current.removeObject(object);
+      }
+    });
   };
 
   return { data, error, isFetching, router, calculateRoute, clearRoute };
