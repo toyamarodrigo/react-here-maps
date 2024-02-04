@@ -1,4 +1,4 @@
-import { useHereMaps } from "../../hooks/useHereMaps";
+import { useHereMaps } from "../../hooks";
 import type { HerePolylineProps } from "./HerePolyline.types";
 
 /**
@@ -14,11 +14,12 @@ export const HerePolyline = ({
 }: HerePolylineProps) => {
   const { map } = useHereMaps();
 
-  if (!map) return null;
+  if (!map.current) return null;
 
   route.routes.map((route: any) => {
     route.sections.forEach((section: any) => {
       if (section.polyline === undefined) return;
+      if (!map.current) return;
 
       const lineString = H.geo.LineString.fromFlexiblePolyline(section.polyline);
       const polyline = new H.map.Polyline(lineString, {
@@ -26,7 +27,7 @@ export const HerePolyline = ({
         style: { ...style },
       });
 
-      map.addObject(polyline);
+      map.current.addObject(polyline);
     });
   });
 
