@@ -14,19 +14,19 @@ npm install --save-dev @here/maps-api-for-javascript --registry=https://repo.pla
 ```
 
 ```bash
-# Then install @toyamarodrigo/react-here-maps with your favorite package manager
-npm install @toyamarodrigo/react-here-maps
+# Then install @rodrito/react-here-maps with your favorite package manager
+npm install @rodrito/react-here-maps
 
 # or
-yarn add @toyamarodrigo/react-here-maps
+yarn add @rodrito/react-here-maps
 
 # or
-pnpm add @toyamarodrigo/react-here-maps
+pnpm add @rodrito/react-here-maps
 ```
 
 ## Usage
 
-To use `@toyamarodrigo/react-here-maps`, you will need to obtain an API key from HERE Maps. You can sign up for a free account and obtain an API key here.
+To use `@rodrito/react-here-maps`, you will need to obtain an API key from HERE Maps. You can sign up for a free account and obtain an API key here.
 
 <https://developer.here.com/tutorials/getting-here-credentials/>
 
@@ -34,7 +34,7 @@ To use `@toyamarodrigo/react-here-maps`, you will need to obtain an API key from
 
 ```jsx
 import React from "react";
-import { HereMap } from "@toyamarodrigo/react-here-maps";
+import { HereMap } from "@rodrito/react-here-maps";
 
 const App = () => {
   return (
