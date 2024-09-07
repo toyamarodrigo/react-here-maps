@@ -33,7 +33,6 @@ To use `@rodrito/react-here-maps`, you will need to obtain an API key from HERE 
 ## Example
 
 ```jsx
-import React from "react";
 import { HereMap } from "@rodrito/react-here-maps";
 
 const App = () => {
@@ -64,13 +63,6 @@ const App = () => {
   - [x] Map Settings (Basic)
   - [x] Polyline
   - [ ] Polygons
-
-- Hooks
-  - [x] Map Instance - useHereMaps
-  - [ ] Geocoding & Search - useGeocodingService
-  - [ ] Isoline - useIsolineService
-  - [ ] Waypoints - useWaypointsService
-  - [ ] Matrix - useMatrixService
 
 ## HERE Maps API Docs
 

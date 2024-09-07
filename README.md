@@ -48,7 +48,6 @@ To use `@rodrito/react-here-maps`, you will need to obtain an API key from HERE 
 ## Example
 
 ```jsx
-import React from 'react';
 import { HereMap } from '@rodrito/react-here-maps';
 
 const App = () => {
@@ -73,21 +72,12 @@ const App = () => {
 - Components
   - [x] Map
   - [x] Marker
-  - [x] DOM Marker
-  - [ ] Polygons
+  - [x] Zoom Control (Basic)
+  - [x] Scale Bar (Basic)
+  - [x] Map Settings (Basic)
   - [x] Polyline
-  - [ ] Circles
-  - [ ] InfoWindows
-  - [ ] Directions
-
-- Hooks
-  - [x] Map Instance - useHereMaps
-  - [x] Routing - useRoutingService v8
-  - [ ] Geocoding & Search - useGeocodingService
-  - [ ] Isoline - useIsolineService
-  - [ ] Waypoints - useWaypointsService
-  - [ ] Matrix - useMatrixService
+  - [ ] Polygons
 
 ## HERE Maps API Docs
 
-<https://developer.here.com/documentation/maps/3.1.38.0/dev_guide/index.html>
+<https://www.here.com/docs/bundle/maps-api-for-javascript-developer-guide/page/README.html>
