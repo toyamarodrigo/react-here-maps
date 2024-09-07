@@ -25,5 +25,6 @@
     "herewego"
   ],
   "author": "rodrigo.toyama",
-  "license": "MIT"
+  "license": "MIT",
+  "version": "1.0.3"
 }
