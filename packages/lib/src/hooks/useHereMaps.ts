@@ -1,11 +1,13 @@
 import type H from "@here/maps-api-for-javascript";
 import type { MutableRefObject } from "react";
 import { useContext } from "react";
-import { MapContext } from "../components/HereMap/HereMap.provider";
+import { MapContext } from "../components/here-map/here-map.context";
 
 interface UseHereMapProps {
   map: MutableRefObject<H.Map | null>;
   platform: MutableRefObject<H.service.Platform | null>;
+  ui: MutableRefObject<H.ui.UI | null>;
+  behavior: MutableRefObject<H.mapevents.Behavior | null>;
 }
 
 /**
@@ -24,5 +26,10 @@ export const useHereMaps = (): UseHereMapProps => {
     throw new Error("useHereMaps must be used within a MapProvider");
   }
 
-  return context;
+  return {
+    map: context.map,
+    platform: { current: context.platform },
+    ui: context.ui,
+    behavior: context.behavior,
+  };
 };
