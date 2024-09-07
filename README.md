@@ -49,14 +49,14 @@ To use `@rodrito/react-here-maps`, you will need to obtain an API key from HERE 
 
 ```jsx
 import React from 'react';
-import { HereMap } from '@rodrigo/react-here-maps';
+import { HereMap } from '@rodrito/react-here-maps';
 
 const App = () => {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <HereMap 
-        apiKey={"YOUR_API_KEY"} 
-        mapOptions={{
+        apikey={"YOUR_API_KEY"}
+        options={{
           center: { lat: -34.603722, lng: -58.401592 },
           zoom: 12,
         }}
