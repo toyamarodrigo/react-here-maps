@@ -33,23 +33,20 @@ To use `@toyamarodrigo/react-here-maps`, you will need to obtain an API key from
 ## Example
 
 ```jsx
-import React from 'react';
-import { HereMap } from '@toyamarodrigo/react-here-maps';
+import React from "react";
+import { HereMap } from "@toyamarodrigo/react-here-maps";
 
 const App = () => {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <HereMap
-        apiKey={"YOUR_API_KEY"}
-        mapOptions={{
-          center: {
-            lat: -34.6083,
-            lng: -58.3712,
-          },
+        apikey={"YOUR_API_KEY"}
+        options={{
+          center: { lat: -34.603722, lng: -58.401592 },
           zoom: 12,
         }}
       >
-      {/* Markers, Polylines and stuff */}
+        {/* Markers, Polylines and stuff */}
       </HereMap>
     </div>
   );
@@ -59,18 +56,17 @@ const App = () => {
 ## TODO
 
 - Components
+
   - [x] Map
   - [x] Marker
-  - [x] DOM Marker
-  - [ ] Polygons
+  - [x] Zoom Control (Basic)
+  - [x] Scale Bar (Basic)
+  - [x] Map Settings (Basic)
   - [x] Polyline
-  - [ ] Circles
-  - [ ] InfoWindows
-  - [ ] Directions
+  - [ ] Polygons
 
 - Hooks
   - [x] Map Instance - useHereMaps
-  - [x] Routing - useRoutingService
   - [ ] Geocoding & Search - useGeocodingService
   - [ ] Isoline - useIsolineService
   - [ ] Waypoints - useWaypointsService
@@ -78,4 +74,4 @@ const App = () => {
 
 ## HERE Maps API Docs
 
-<https://developer.here.com/documentation/maps/3.1.38.0/dev_guide/index.html>
+<https://www.here.com/docs/bundle/maps-api-for-javascript-developer-guide/page/README.html>
