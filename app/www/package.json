@@ -1,5 +1,5 @@
 {
-  "name": "@toyamarodrigo/www",
+  "name": "@rodrito/www",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,7 +13,7 @@
     "app/*"
   ],
   "dependencies": {
-    "@toyamarodrigo/react-here-maps": "workspace:^",
+    "@rodrito/react-here-maps": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-select": "^5.8.0"
