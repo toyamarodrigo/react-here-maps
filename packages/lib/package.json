@@ -1,6 +1,6 @@
 {
   "name": "@rodrito/react-here-maps",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
