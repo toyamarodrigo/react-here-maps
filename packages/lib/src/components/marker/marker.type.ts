@@ -12,7 +12,12 @@ const BaseMarkerSchema = z.object({
 });
 
 const IconOptionsSchema = z.object({
-  icon: z.union([z.string(), z.instanceof(HTMLImageElement), z.instanceof(HTMLCanvasElement), z.null()]),
+  icon: z.union([
+    z.string(),
+    z.instanceof(HTMLImageElement),
+    z.instanceof(HTMLCanvasElement),
+    z.null(),
+  ]),
   stickColor: z.string().optional(),
   stickHeight: z.number().optional(),
   iconSize: z.object({ w: z.number(), h: z.number() }).optional(),
@@ -22,7 +27,10 @@ const IconOptionsSchema = z.object({
 const MarkerWithIconSchema = BaseMarkerSchema.merge(IconOptionsSchema);
 const MarkerWithoutIconSchema = BaseMarkerSchema;
 
-export const MarkerSchema = z.union([MarkerWithIconSchema, MarkerWithoutIconSchema]);
+export const MarkerSchema = z.union([
+  MarkerWithIconSchema,
+  MarkerWithoutIconSchema,
+]);
 
 export type MarkerProps = z.infer<typeof MarkerSchema>;
 export type MarkerWithIconProps = z.infer<typeof MarkerWithIconSchema>;

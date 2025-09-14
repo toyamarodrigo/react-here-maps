@@ -1,3 +1,6 @@
-export const setControlVisibility = (control: H.ui.Control, visibility: boolean) => {
+export const setControlVisibility = (
+  control: H.ui.Control,
+  visibility: boolean,
+) => {
   return control.setVisibility(visibility);
 };

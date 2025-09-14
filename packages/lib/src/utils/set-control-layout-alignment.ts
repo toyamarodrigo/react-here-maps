@@ -1,6 +1,9 @@
 import type { Alignments } from "../components/here-map/here-map.type";
 
-export const setControlLayoutAlignment = (control: H.ui.Control, alignment: Alignments) => {
+export const setControlLayoutAlignment = (
+  control: H.ui.Control,
+  alignment: Alignments,
+) => {
   const layoutAlignment = {
     "bottom-center": H.ui.LayoutAlignment.BOTTOM_CENTER,
     "bottom-left": H.ui.LayoutAlignment.BOTTOM_LEFT,

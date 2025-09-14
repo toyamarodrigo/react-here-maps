@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { setControlLayoutAlignment } from "../../utils/set-control-layout-alignment";
-import { setControlDisable } from "../../utils/set-control-disable";
-import { setControlVisibility } from "../../utils/set-control-visibility";
-import type { MapSettingsControlProps } from "../../models";
 import { useHereMaps } from "../../hooks";
+import type { MapSettingsControlProps } from "../../models";
+import { setControlDisable } from "../../utils/set-control-disable";
+import { setControlLayoutAlignment } from "../../utils/set-control-layout-alignment";
+import { setControlVisibility } from "../../utils/set-control-visibility";
 
 export const MapSettings = ({
   alignment = "right-top",

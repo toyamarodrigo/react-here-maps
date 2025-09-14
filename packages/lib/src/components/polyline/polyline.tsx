@@ -6,10 +6,7 @@ type PolylineProps = {
   options: Omit<H.map.Polyline.Options, "data">;
 };
 
-export const Polyline = ({
-  points,
-  options,
-}: PolylineProps) => {
+export const Polyline = ({ points, options }: PolylineProps) => {
   const { map } = useHereMaps();
   const polylineRef = useRef<H.map.Polyline | null>(null);
 
