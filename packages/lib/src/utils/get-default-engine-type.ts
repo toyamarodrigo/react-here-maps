@@ -1,4 +1,6 @@
-export const getDefaultEngineType = (engineType: "webgl" | "p2d" | "harp" | undefined) => {
+export const getDefaultEngineType = (
+  engineType: "webgl" | "p2d" | "harp" | undefined,
+) => {
   if (!engineType) return H.Map.EngineType.WEBGL;
 
   const engineTypeMap: {

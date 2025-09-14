@@ -1,6 +1,11 @@
 import type { RefObject } from "react";
 import { useEffect, useMemo, useRef } from "react";
-import { getDefaultCenter, getDefaultEngineType, getDefaultZoom, getMapStyle } from "../../utils";
+import {
+  getDefaultCenter,
+  getDefaultEngineType,
+  getDefaultZoom,
+  getMapStyle,
+} from "../../utils";
 import type { DefaultLayers, UseCreateMapProps } from "./here-map.type";
 
 export const useCreateMap = ({
@@ -27,15 +32,21 @@ export const useCreateMap = ({
 
     if (!mapRef.current) return;
 
-    const newMap = new H.Map(mapRef.current, getMapStyle(defaultLayers, mapStyle), {
-      ...options,
-      pixelRatio: window.devicePixelRatio,
-      center: getDefaultCenter(options.center),
-      zoom: getDefaultZoom(options.zoom),
-      engineType: getDefaultEngineType(options.engineType),
-    });
+    const newMap = new H.Map(
+      mapRef.current,
+      getMapStyle(defaultLayers, mapStyle),
+      {
+        ...options,
+        pixelRatio: window.devicePixelRatio,
+        center: getDefaultCenter(options.center),
+        zoom: getDefaultZoom(options.zoom),
+        engineType: getDefaultEngineType(options.engineType),
+      },
+    );
 
-    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(newMap));
+    const behavior = new H.mapevents.Behavior(
+      new H.mapevents.MapEvents(newMap),
+    );
     const ui = H.ui.UI.createDefault(newMap, defaultLayers);
 
     uiRef.current = ui;

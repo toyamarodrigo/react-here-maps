@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useHereMaps } from "../../hooks/useHereMaps";
 import type { MarkerWithIconProps } from "./marker.type";
-import { MarkerSchema, type MarkerProps } from "./marker.type";
+import { type MarkerProps, MarkerSchema } from "./marker.type";
 
 export const Marker = (props: MarkerProps) => {
   const { map, behavior } = useHereMaps();
@@ -33,7 +33,7 @@ export const Marker = (props: MarkerProps) => {
           mapInstance.removeObject(markerRef.current);
         }
       };
-    } catch (error) {
+    } catch (_error) {
       throw new Error("Invalid marker props");
     }
   }, [map, props, behavior]);
@@ -41,7 +41,10 @@ export const Marker = (props: MarkerProps) => {
   return null;
 };
 
-function addDragListeners(mapInstance: H.Map, behavior: H.mapevents.Behavior | null) {
+function addDragListeners(
+  mapInstance: H.Map,
+  behavior: H.mapevents.Behavior | null,
+) {
   mapInstance.addEventListener("dragstart", onDragStart);
   mapInstance.addEventListener("drag", onDrag);
   mapInstance.addEventListener("dragend", onDragEnd);
@@ -49,7 +52,9 @@ function addDragListeners(mapInstance: H.Map, behavior: H.mapevents.Behavior | n
   function onDragStart(event: H.mapevents.Event) {
     if (event.target instanceof H.map.Marker) {
       behavior?.disable();
-      const targetPosition = mapInstance.geoToScreen(event.target.getGeometry() as H.geo.IPoint);
+      const targetPosition = mapInstance.geoToScreen(
+        event.target.getGeometry() as H.geo.IPoint,
+      );
 
       if (targetPosition) {
         event.target.setData({

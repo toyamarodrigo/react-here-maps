@@ -14,12 +14,16 @@
     "emitDeclarationOnly": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "es2017", "es2018", "es2019", "es2020", "esnext", "esnext.asynciterable"]
+    "lib": [
+      "dom",
+      "es2017",
+      "es2018",
+      "es2019",
+      "es2020",
+      "esnext",
+      "esnext.asynciterable"
+    ]
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "src/**/*.test.tsx",
-  ],
+  "exclude": ["dist", "node_modules", "src/**/*.test.tsx"],
   "include": ["src", ".storybook/*.tsx"]
 }

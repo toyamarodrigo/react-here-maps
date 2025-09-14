@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { setControlLayoutAlignment } from "../../utils/set-control-layout-alignment";
-import { setControlDisable } from "../../utils/set-control-disable";
-import { setControlVisibility } from "../../utils/set-control-visibility";
-import type { ZoomControlProps } from "../../models";
 import { useHereMaps } from "../../hooks";
+import type { ZoomControlProps } from "../../models";
+import { setControlDisable } from "../../utils/set-control-disable";
+import { setControlLayoutAlignment } from "../../utils/set-control-layout-alignment";
+import { setControlVisibility } from "../../utils/set-control-visibility";
 
 export const ZoomControl = ({
   alignment = "right-top",

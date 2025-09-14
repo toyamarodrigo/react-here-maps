@@ -1,6 +1,12 @@
-import type { DefaultLayers, mapLayerStyles } from "../components/here-map/here-map.type";
+import type {
+  DefaultLayers,
+  mapLayerStyles,
+} from "../components/here-map/here-map.type";
 
-export const getMapStyle = (defaultLayer: DefaultLayers, style: keyof typeof mapLayerStyles) => {
+export const getMapStyle = (
+  defaultLayer: DefaultLayers,
+  style: keyof typeof mapLayerStyles,
+) => {
   if (!defaultLayer || !style) return defaultLayer.vector.normal.map;
 
   const layer =
@@ -10,7 +16,8 @@ export const getMapStyle = (defaultLayer: DefaultLayers, style: keyof typeof map
       "raster.normal.labels": defaultLayer.raster.normal.labels,
       "raster.normal.map": defaultLayer.raster.normal.map,
       "raster.normal.mapnight": defaultLayer.raster.normal.mapnight,
-      "raster.normal.trafficincidents": defaultLayer.raster.normal.trafficincidents,
+      "raster.normal.trafficincidents":
+        defaultLayer.raster.normal.trafficincidents,
       "raster.normal.transit": defaultLayer.raster.normal.transit,
       "raster.normal.xbase": defaultLayer.raster.normal.xbase,
       "raster.normal.xbasenight": defaultLayer.raster.normal.xbasenight,
@@ -24,7 +31,8 @@ export const getMapStyle = (defaultLayer: DefaultLayers, style: keyof typeof map
       "raster.terrain.xbase": defaultLayer.raster.terrain.xbase,
       "vector.normal.map": defaultLayer.vector.normal.map,
       "vector.normal.traffic": defaultLayer.vector.normal.traffic,
-      "vector.normal.trafficincidents": defaultLayer.vector.normal.trafficincidents,
+      "vector.normal.trafficincidents":
+        defaultLayer.vector.normal.trafficincidents,
     }[style] || defaultLayer.vector.normal.map;
 
   return layer;

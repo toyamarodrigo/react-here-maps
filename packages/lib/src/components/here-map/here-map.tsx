@@ -1,10 +1,11 @@
-import { HereMapPropsSchema, type HereMapProps } from "./here-map.type";
 import { MapContext } from "./here-map.context";
 import { useCreateMap, useMapResize } from "./here-map.hooks";
+import { type HereMapProps, HereMapPropsSchema } from "./here-map.type";
 import "@here/maps-api-for-javascript";
 
 export const HereMap = (props: HereMapProps) => {
-  const { children, apikey, options, mapStyle, ...rest } = HereMapPropsSchema.parse(props);
+  const { children, apikey, options, mapStyle, ...rest } =
+    HereMapPropsSchema.parse(props);
   const { map, mapRef, platform, ui, behavior } = useCreateMap({
     apikey,
     options,
