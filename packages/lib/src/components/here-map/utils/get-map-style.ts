@@ -1,7 +1,4 @@
-import type {
-  DefaultLayers,
-  mapLayerStyles,
-} from "../components/here-map/here-map.type";
+import type { DefaultLayers, mapLayerStyles } from "../types";
 
 export const getMapStyle = (
   defaultLayer: DefaultLayers,

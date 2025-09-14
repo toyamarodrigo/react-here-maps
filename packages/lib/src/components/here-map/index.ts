@@ -1,3 +1,4 @@
 export * from "./here-map";
 export * from "./here-map.context";
-export * from "./here-map.type";
+export * from "./hooks";
+export * from "./types";

@@ -1,12 +1,9 @@
-import type { RefObject } from "react";
-import { useEffect, useMemo, useRef } from "react";
-import {
-  getDefaultCenter,
-  getDefaultEngineType,
-  getDefaultZoom,
-  getMapStyle,
-} from "../../utils";
-import type { DefaultLayers, UseCreateMapProps } from "./here-map.type";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import type { DefaultLayers, UseCreateMapProps } from "../types";
+import { getDefaultCenter } from "../utils/get-default-center";
+import { getDefaultEngineType } from "../utils/get-default-engine-type";
+import { getDefaultZoom } from "../utils/get-default-zoom";
+import { getMapStyle } from "../utils/get-map-style";
 
 export const useCreateMap = ({
   apikey,
@@ -20,17 +17,15 @@ export const useCreateMap = ({
 
   const platform = useMemo(() => {
     if (!apikey) throw new Error("apikey is required");
-
     return new H.service.Platform({ apikey });
   }, [apikey]);
 
-  useEffect(() => {
+  const initializeMap = useCallback(() => {
     if (!mapRef.current || mapInstance.current) return;
+
     const defaultLayers = platform.createDefaultLayers({
       pois: true,
     }) as DefaultLayers;
-
-    if (!mapRef.current) return;
 
     const newMap = new H.Map(
       mapRef.current,
@@ -54,6 +49,10 @@ export const useCreateMap = ({
     mapInstance.current = newMap;
   }, [platform, options, mapStyle]);
 
+  useEffect(() => {
+    initializeMap();
+  }, [initializeMap]);
+
   return {
     map: mapInstance,
     mapRef,
@@ -62,20 +61,3 @@ export const useCreateMap = ({
     platform,
   };
 };
-
-export function useMapResize(mapRef: RefObject<H.Map | null>) {
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const resizeMap = () => {
-      mapRef.current?.getViewPort().resize();
-    };
-
-    resizeMap();
-    window.addEventListener("resize", resizeMap);
-
-    return () => {
-      window.removeEventListener("resize", resizeMap);
-    };
-  }, [mapRef]);
-}

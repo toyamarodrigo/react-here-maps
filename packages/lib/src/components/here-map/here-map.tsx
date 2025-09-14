@@ -1,36 +1,52 @@
-import { MapContext } from "./here-map.context";
-import { useCreateMap, useMapResize } from "./here-map.hooks";
-import { type HereMapProps, HereMapPropsSchema } from "./here-map.type";
+import { memo, useMemo } from "react";
+import { MapContext, type MapContextValue } from "./here-map.context";
+import { type HereMapProps, HereMapPropsSchema } from "./types";
 import "@here/maps-api-for-javascript";
+import { useCreateMap } from "./hooks";
+import { useMapResize } from "./hooks/use-map-resize";
 
-export const HereMap = (props: HereMapProps) => {
-  const { children, apikey, options, mapStyle, ...rest } =
-    HereMapPropsSchema.parse(props);
+export const HereMap = memo<HereMapProps>((props: HereMapProps) => {
+  const {
+    children,
+    apikey,
+    options = {},
+    mapStyle = "vector.normal.map",
+    ...rest
+  } = HereMapPropsSchema.parse(props);
+
   const { map, mapRef, platform, ui, behavior } = useCreateMap({
     apikey,
     options,
-    mapStyle: mapStyle as
-      | "raster.normal.map"
-      | "raster.normal.mapnight"
-      | "raster.satellite.map"
-      | "raster.terrain.map"
-      | "vector.normal.map",
+    mapStyle,
   });
 
   useMapResize(map);
 
-  const value = {
-    map,
-    platform,
-    ui,
-    behavior,
-  };
+  const contextValue = useMemo<MapContextValue>(
+    () => ({
+      map,
+      platform,
+      ui,
+      behavior,
+    }),
+    [map, platform, ui, behavior],
+  );
+
+  const containerStyle = useMemo(
+    () => ({
+      width: "100%",
+      height: "100%",
+    }),
+    [],
+  );
 
   return (
-    <MapContext.Provider value={value}>
-      <div ref={mapRef} style={{ width: "100%", height: "100%" }} {...rest}>
+    <MapContext.Provider value={contextValue}>
+      <div ref={mapRef} style={containerStyle} {...rest}>
         {children}
       </div>
     </MapContext.Provider>
   );
-};
+});
+
+HereMap.displayName = "HereMap";

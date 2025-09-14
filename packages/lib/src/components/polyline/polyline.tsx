@@ -1,40 +1,49 @@
-import { useEffect, useRef } from "react";
-import { useHereMaps } from "../../hooks";
+import { memo, useCallback, useEffect, useRef } from "react";
+import { useMapContext } from "../here-map/hooks/use-map-context";
 
-type PolylineProps = {
+export interface PolylineProps {
   points: H.geo.IPoint[];
-  options: Omit<H.map.Polyline.Options, "data">;
-};
+  options?: Omit<H.map.Polyline.Options, "data">;
+}
 
-export const Polyline = ({ points, options }: PolylineProps) => {
-  const { map } = useHereMaps();
-  const polylineRef = useRef<H.map.Polyline | null>(null);
+export const Polyline = memo<PolylineProps>(
+  ({ points, options = {} }: PolylineProps) => {
+    const { map } = useMapContext();
+    const polylineRef = useRef<H.map.Polyline | null>(null);
 
-  useEffect(() => {
-    const mapInstance = map.current;
+    const createPolyline = useCallback(() => {
+      if (!points.length) return null;
 
-    if (!mapInstance) return;
-
-    const lineString = new H.geo.LineString();
-
-    for (const point of points) {
-      lineString.pushPoint(point);
-    }
-
-    const newPolyline = new H.map.Polyline(lineString, {
-      ...options,
-      data: {},
-    });
-
-    mapInstance.addObject(newPolyline);
-    polylineRef.current = newPolyline;
-
-    return () => {
-      if (polylineRef.current) {
-        mapInstance.removeObject(polylineRef.current);
+      const lineString = new H.geo.LineString();
+      for (const point of points) {
+        lineString.pushPoint(point);
       }
-    };
-  }, [map, points, options]);
 
-  return null;
-};
+      return new H.map.Polyline(lineString, {
+        ...options,
+        data: {},
+      });
+    }, [points, options]);
+
+    useEffect(() => {
+      const mapInstance = map.current;
+      if (!mapInstance) return;
+
+      const polyline = createPolyline();
+      if (!polyline) return;
+
+      mapInstance.addObject(polyline);
+      polylineRef.current = polyline;
+
+      return () => {
+        if (polylineRef.current) {
+          mapInstance.removeObject(polylineRef.current);
+        }
+      };
+    }, [map, createPolyline]);
+
+    return null;
+  },
+);
+
+Polyline.displayName = "Polyline";
