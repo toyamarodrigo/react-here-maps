@@ -24,8 +24,8 @@ First, you need to include the HERE Maps API for JavaScript CSS in your HTML fil
 ```
 
 ```bash
-# After that, install the HERE Maps API for JavaScript with your favorite package manager
-npm install --save-dev @here/maps-api-for-javascript --registry=https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/
+# First add to .npmrc
+@here:registry=https://repo.platform.here.com/artifactory/api/npm/maps-api-for-javascript/
 ```
 
 ```bash
