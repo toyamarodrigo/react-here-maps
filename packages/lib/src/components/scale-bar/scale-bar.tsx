@@ -1,28 +1,36 @@
-import { useEffect } from "react";
-import { useHereMaps } from "../../hooks";
+import { memo, useCallback, useEffect } from "react";
 import type { ScaleBarControlProps } from "../../models";
 import { setControlDisable } from "../../utils/set-control-disable";
 import { setControlLayoutAlignment } from "../../utils/set-control-layout-alignment";
 import { setControlVisibility } from "../../utils/set-control-visibility";
+import { useMapContext } from "../here-map/hooks/use-map-context";
 
-export const ScaleBar = ({
-  alignment = "bottom-right",
-  disabled = false,
-  visibility = true,
-}: ScaleBarControlProps) => {
-  const { ui } = useHereMaps();
+export const ScaleBar = memo<ScaleBarControlProps>(
+  ({
+    alignment = "bottom-right",
+    disabled = false,
+    visibility = true,
+  }: ScaleBarControlProps) => {
+    const { ui } = useMapContext();
 
-  useEffect(() => {
-    const uiInstance = ui.current;
+    const configureScaleBar = useCallback(() => {
+      const uiInstance = ui.current;
+      if (!uiInstance) return;
 
-    if (!uiInstance) return;
-    const zoom = uiInstance.getControl("scalebar");
+      const scaleBar = uiInstance.getControl("scalebar");
+      if (!scaleBar) return;
 
-    if (!zoom) return;
-    setControlLayoutAlignment(zoom, alignment);
-    setControlDisable(zoom, disabled);
-    setControlVisibility(zoom, visibility);
-  }, [alignment, disabled, visibility, ui]);
+      setControlLayoutAlignment(scaleBar, alignment);
+      setControlDisable(scaleBar, disabled);
+      setControlVisibility(scaleBar, visibility);
+    }, [alignment, disabled, visibility, ui]);
 
-  return null;
-};
+    useEffect(() => {
+      configureScaleBar();
+    }, [configureScaleBar]);
+
+    return null;
+  },
+);
+
+ScaleBar.displayName = "ScaleBar";

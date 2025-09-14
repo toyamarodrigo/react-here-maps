@@ -49,9 +49,7 @@
     "packages/*"
   ],
   "peerDependencies": {
-    "@here/maps-api-for-javascript": "^1.50.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@here/maps-api-for-javascript": "^1.50.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
@@ -66,10 +64,11 @@
     "@storybook/react-vite": "^9.1.5",
     "@storybook/test": "^8.2.9",
     "@types/heremaps": "^3.1.14",
-    "@types/react": "^19.1.13",
+    "@types/react": "^18.2.52",
+    "@types/react-dom": "^18.2.18",
     "prop-types": "^15.8.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "storybook": "^9.1.5",
     "tslib": "^2.6.2",
     "tsup": "^8.5.0",

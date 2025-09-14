@@ -1,4 +1,4 @@
-import type { Alignments } from "../components/here-map/here-map.type";
+import type { Alignments } from "../components";
 
 export const setControlLayoutAlignment = (
   control: H.ui.Control,
