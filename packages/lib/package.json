@@ -43,7 +43,8 @@
     "here",
     "maps",
     "typescript",
-    "herewego"
+    "herewego",
+    "react-here-maps"
   ],
   "workspaces": [
     "packages/*"
