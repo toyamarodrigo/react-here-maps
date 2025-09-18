@@ -1,0 +1,1612 @@
+---
+alwaysApply: false
+---
+================
+CODE SNIPPETS
+================
+
+TITLE: Display Indoor Map with Zurich Airport Example
+DESCRIPTION: Demonstrates loading and displaying an indoor map of Zurich Airport. It utilizes `H.venues.Service2` to fetch map data and `H.venues.Provider` to render the map. The example also shows how to get a list of indoor maps, disable the base map layer, switch to different indoor map levels, and override default label text preferences.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/indoor-map/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+/**
+ * Initializes a new instance of the Map.
+ */
+var map = new H.Map(document.getElementById('map'), platform.createDefaultLayers().normal.map);
+
+// Map event listeners
+map.addEventListener('mapviewchangeend', onMapviewChangeEnd);
+
+// Add behavior controls to the map
+Herm.ui.UI.createDefault(map, defaultLayers, 'en-US');
+
+// Now use the map as required.
+// Example: Move map to Zurich Airport
+map.setCenter({lat: 47.4542, lng: 8.5696});
+map.setZoom(16);
+
+/**
+ * Callback function to handle map view changes.
+ */
+function onMapviewChangeEnd(evt) {
+  // Check if the current map is an indoor map
+  if (map.getRealState() === H.Map.MapState.NORMAL) {
+    console.log('Currently viewing a normal map layer.');
+  } else if (map.getRealState() === H.Map.MapState.INDOOR) {
+    console.log('Currently viewing an indoor map.');
+    // Additional logic for indoor map view
+  }
+}
+```
+
+--------------------------------
+
+TITLE: Calculate and Display Pedestrian Route from A to B
+DESCRIPTION: This example demonstrates how to request and display a pedestrian route between two points using the HERE Maps API for JavaScript. It utilizes the routing service to calculate the shortest walking path and allows for custom styling of the route on the map.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-pedestrian-route-from-a-to-b/demo.html#_snippet_1>
+
+LANGUAGE: javascript
+CODE:
+
+```
+// Access the routing service
+const routingService = platform.getRoutingService(null, 8);
+
+// Calculate the shortest pedestrian route
+routingService.calculateRoute(
+  [
+    { lat: 51.5141, lng: -0.0999 },
+    { lat: 51.5081, lng: -0.0985 }
+  ],
+  { mode: 'pedestrian' },
+  (result) => {
+    // Display the route on the map (implementation specific)
+  },
+  (error) => {
+    // Handle errors
+  }
+);
+```
+
+--------------------------------
+
+TITLE: Marker Clustering with mapsjs-clustering
+DESCRIPTION: This snippet demonstrates the core logic for marker clustering using the mapsjs-clustering module. It involves initializing a clustering provider and adding it to the map. The H.clustering.Provider class is essential for this functionality.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/marker-clustering/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var clusterProvider = new H.clustering.Provider(dataPoints);
+var clusteringLayer = new H.map.layer.ObjectLayer(clusterProvider);
+map.addLayer(clusteringLayer);
+```
+
+--------------------------------
+
+TITLE: CSS for Map Object Event Delegation Example
+DESCRIPTION: Provides styling for the log display used in the map objects event delegation example. It defines styles for the container, scrollable area, and individual log entries to ensure clear visual feedback.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-objects-event-delegation/demo.html#_snippet_0>
+
+LANGUAGE: css
+CODE:
+
+```
+.log { position: absolute; top: 5px; left: 5px; height: 150px; width: 250px; overflow: scroll; background: white; margin: 0; padding: 0; list-style: none; font-size: 12px; }
+.log-entry { padding: 5px; border-bottom: 1px solid #d0d9e9; }
+.log-entry:nth-child(odd) { background-color: #e1e7f1; }
+```
+
+--------------------------------
+
+TITLE: JavaScript: Add Overlay with ImageTileProvider
+DESCRIPTION: This snippet shows how to use H.map.provider.ImageTileProvider to fetch custom map tiles and H.map.layer.TileLayer to display them as an overlay on the map. The getUrl() method is crucial for constructing tile URLs.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/custom-tile-overlay/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+const tileProvider = new H.map.provider.ImageTileProvider({
+  // Configuration for the tile provider, including URL template
+  url: "https://example.com/tiles/{z}/{x}/{y}.png"
+});
+
+const tileLayer = new H.map.layer.TileLayer(tileProvider, {
+  // Layer specific options
+});
+
+// Add the tile layer to the map
+map.addLayer(tileLayer);
+```
+
+--------------------------------
+
+TITLE: Create and Display Polyline
+DESCRIPTION: This code snippet shows how to create a polyline using H.map.Polyline and H.geo.LineString to connect specific geographical points. It also mentions styling options for the polyline.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/polyline-on-the-map/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var polyline = new H.map.Polyline(
+  new H.geo.LineString("53.3477, -6.2597 51.5008, 0.1224 48.8567, 2.3508 52.5166, 13.3833"),
+  {
+    style: {
+      lineWidth: 2,
+      strokeColor: "rgba(0, 128, 255, 0.7)"
+    }
+  }
+);
+
+// Add the polyline to the map
+map.addObject(polyline);
+```
+
+--------------------------------
+
+TITLE: Instantiate Map with Custom Style - JavaScript
+DESCRIPTION: This code snippet shows how to create a H.map.render.harp.Style instance to load a user-defined style (e.g., 'night.json'). It then uses this style to initialize an H.map.layer.TileLayer, which is provided to the map constructor.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/change-harp-style-at-load/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var style = new H.map.render.harp.Style("night.json");
+var tileLayer = new H.map.layer.TileLayer(tileProvider, {
+  style: style
+});
+
+var map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+  center: new H.geo.Point(52.5169, 13.3777),
+  zoom: 14,
+  layer: tileLayer
+});
+```
+
+--------------------------------
+
+TITLE: Indoor Map UI Controls for Levels and Buildings
+DESCRIPTION: Demonstrates using H.venues.ui.LevelControl to change levels and H.venues.ui.DrawingControl to switch between buildings within an indoor map. Requires the HERE Maps API.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/indoor-map-ui-interaction/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  apikey: "YOUR_API_KEY"
+});
+
+var defaultLayers = platform.createDefaultLayers();
+
+var map = new H.Map(document.getElementById('map'), defaultLayers.vectorTileLayer(H.Map.Options.getVectorTileServiceOptions().layerId, 'explore.satellite'), {
+  center: new H.geo.Point(52.5065, 13.2777),
+  zoom: 18,
+  pixelRatio: window.devicePixelRatio || 1
+});
+
+var ui = H.ui.UI.createDefault(map, defaultLayers, "en-US");
+
+// Indoor map specific UI controls
+var levelControl = new H.venues.ui.LevelControl(map);
+var drawingControl = new H.venues.ui.DrawingControl(map);
+
+// Add controls to the UI
+ui.addControl('level_control', levelControl);
+ui.addControl('drawing_control', drawingControl);
+```
+
+--------------------------------
+
+TITLE: Display Info-Bubble on Indoor Map Geometry Click
+DESCRIPTION: Shows how to display an information bubble when a user clicks on a geometry within an indoor map. This involves adding an event listener for 'tap' events on the map and creating/showing the info-bubble.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/indoor-map-ui-interaction/demo.html#_snippet_1>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.addEventListener('tap', function (evt) {
+  var feature = map.getFeatureAtEvent(evt);
+  if (feature && feature.type === 'Feature' && feature.properties && feature.properties.name) {
+    var bubble = new H.ui.InfoBubble(evt.target.getPosition(), {
+      content: '<h2>' + feature.properties.name + '</h2>'
+    });
+    bubble.open();
+  }
+});
+```
+
+--------------------------------
+
+TITLE: Create and Display a DOM Marker
+DESCRIPTION: This snippet shows how to create a DOM Marker using the H.map.DomMarker class and H.map.DomIcon. It allows the marker to receive DOM events, such as mouseenter and mouseleave, for interactive behavior.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-dom-marker/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var marker = new H.map.DomMarker({
+  lat: 41.8625,
+  lng: -87.6166
+}, {
+  icon: new H.map.DomIcon(document.createElement('div'), {
+    onStateChange: function(ev) {
+      // Example of DOM event handling
+      if (ev.currentTarget.className.indexOf('map-marker--active') === -1) {
+        ev.currentTarget.className = 'map-marker map-marker--active';
+      } else {
+        ev.currentTarget.className = 'map-marker';
+      }
+    }
+  })
+});
+```
+
+--------------------------------
+
+TITLE: Map with Driving Route from A to B
+DESCRIPTION: This snippet defines CSS styles for displaying driving route information on a map, specifically focusing on arrow indicators for different turns and arrival points.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-pedestrian-route-from-a-to-b/demo.html#_snippet_0>
+
+LANGUAGE: css
+CODE:
+
+```
+.directions li span.arrow {
+  display:inline-block;
+  min-width:28px;
+  min-height:28px;
+  background-position:0px;
+  background-image: url("https://heremaps.github.io/maps-api-for-javascript-examples/map-with-pedestrian-route-from-a-to-b/img/arrows.png");
+  position:relative;
+  top:8px;
+}
+.directions li span.depart {
+  background-position:-28px;
+}
+.directions li span.rightturn {
+  background-position:-224px;
+}
+.directions li span.leftturn{
+  background-position:-252px;
+}
+.directions li span.arrive {
+  background-position:-1288px;
+}
+```
+
+--------------------------------
+
+TITLE: Get Location Coordinates from Mouse Click (JavaScript)
+DESCRIPTION: This snippet shows how to capture a mouse click event on the map and convert the screen coordinates to latitude and longitude using the `map.screenToGeo()` method. It logs the coordinates to the console.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/position-on-mouse-click/demo.html#_snippet_0>
+
+LANGUAGE: JavaScript
+CODE:
+
+```
+map.addEventListener('tap', function (evt) {
+  var geo = map.screenToGeo(evt.originalEvent.target.getBoundingClientRect());
+  console.log('Clicked at: ' + geo.latitude + ', ' + geo.longitude);
+});
+```
+
+--------------------------------
+
+TITLE: Open Infobubble on Marker Click (JavaScript)
+DESCRIPTION: Opens an infobubble when a map marker is clicked. It uses the 'tap' event and event delegation on a marker group to display custom HTML content. The `setData` and `getData` methods are utilized to bind specific data to map objects.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/open-infobubble/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.addEventListener('tap', function (evt) {
+    var target = evt.target;
+    if (target instanceof H.map.Marker) {
+        var bubble = new H.ui.InfoBubble(target.getPosition(), {
+            content: target.getData().infoText
+        });
+        ui.addBubble(bubble);
+    }
+});
+```
+
+--------------------------------
+
+TITLE: Zoom into Bounds with Max Level Limit (JavaScript)
+DESCRIPTION: This snippet demonstrates how to zoom into specific map bounds while enforcing a maximum zoom level. It relies on the HERE Maps API for JavaScript, specifically using `getBoundingBox` to get the boundaries and `H.map.ViewModel` to control the map's viewpoint and zoom.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/custom-zooming-into-bounds/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+function zoomToBoundsWithMaxLevel(map, bounds, maxZoomLevel) {
+  const viewModel = map.getViewModel();
+  const targetZoom = viewModel.getHAdjustedZoom(bounds);
+  
+  // Limit the zoom level if it exceeds the maximum allowed
+  const limitedZoom = Math.min(targetZoom, maxZoomLevel);
+  
+  viewModel.setLookAtData({
+    center: bounds.getCenter(),
+    zoom: limitedZoom
+  });
+}
+```
+
+--------------------------------
+
+TITLE: Configure UI Language with HERE Maps API for JavaScript
+DESCRIPTION: This snippet demonstrates how to set the language for UI controls like the default map controls. It uses the H.ui.UI.createDefault method and accepts either a language code string or a custom H.ui.i18n.Localization object.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-multi-language-support/demo.html#_snippet_1>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var ui = H.ui.UI.createDefault(map, maptypes, "zh-CN"); // Set UI language to Simplified Chinese
+```
+
+--------------------------------
+
+TITLE: Add Context Menu to Map Objects - JavaScript
+DESCRIPTION: Shows how to add a context menu to map objects by subscribing to the 'contextmenu' event. It utilizes H.util.ContextItem to define menu items and allows for customization of default and custom items.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/context-menu/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.addEventListener('contextmenu', function (event) {
+    // Check if the clicked object is a Circle
+    if (event.target instanceof H.map.Circle) {
+        var circle = event.target;
+        var menuItems = event.items;
+        
+        // Add a custom item to remove the circle
+        menuItems.push(new H.util.ContextItem({
+            text: 'Remove Circle',
+            onRender: function(element) {
+                element.addEventListener('click', function() {
+                    map.removeObject(circle);
+                });
+            }
+        }));
+    }
+
+    // Add a separator
+    event.items.push(H.util.ContextItem.SEPARATOR);
+
+    // Add a custom item for any map object
+    event.items.push(new H.util.ContextItem({
+        text: 'Custom Action',
+        onRender: function(element) {
+            element.addEventListener('click', function() {
+                alert('Custom action performed!');
+            });
+        }
+    }));
+});
+
+// Default context items for the map itself (click position, centering, etc.) are handled by default.
+```
+
+--------------------------------
+
+TITLE: Configure Map Language with HERE Maps API for JavaScript
+DESCRIPTION: This snippet shows how to set the map's language by adding the 'lg' parameter to tile requests. It utilizes H.service.Platform and its createTileLayer method. Supported languages can be found in the HERE Map Tile API and HERE Vector Tile API documentation.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-multi-language-support/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  apikey: "YOUR_API_KEY"
+});
+
+var maptypes = platform.createDefaultLayers({
+  lg: "zh-CN" // Set language to Simplified Chinese
+});
+
+var map = new H.Map(document.getElementById('map'), maptypes.vector.normal.map, {
+  center: new H.geo.Point(22.2917, 114.1872),
+  zoom: 12
+});
+```
+
+--------------------------------
+
+TITLE: Search and Highlight Geometries in Indoor Map
+DESCRIPTION: Provides functionality to search for specific geometries within an indoor map and visually highlight the found geometries. This typically involves using the HERE Maps API's search capabilities and applying visual styling to the map objects.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/indoor-map-ui-interaction/demo.html#_snippet_2>
+
+LANGUAGE: javascript
+CODE:
+
+```
+// Example of searching for a geometry (details depend on specific API methods)
+var searchManager = new H.venues.Search(platform);
+searchManager.searchGeometries({
+  locationId: 'YOUR_LOCATION_ID', // e.g., '773000'
+  query: 'Example Geometry Name'
+}, function(result) {
+  if (result.features) {
+    result.features.forEach(function(feature) {
+      // Add a marker or highlight the found geometry
+      var marker = new H.map.Marker(feature.geometry.getBounds().getCenter());
+      map.addObject(marker);
+    });
+  }
+});
+```
+
+--------------------------------
+
+TITLE: Zoom to Markers using H.map.Group
+DESCRIPTION: This snippet demonstrates adding multiple markers to a map and then adjusting the map's viewport to make all markers visible. It uses `H.map.Group` to manage the markers and `group.getBounds()` to calculate the bounding box that encompasses all markers, which is then passed to `map.viewBounds()`.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/zoom-to-set-of-markers/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var group = new H.map.Group();
+map.addObject(group);
+
+// add a series of markers to the group
+group.addObjects([
+  new H.map.Marker(new H.geo.Point(42.3582, -71.0570)), // Boston
+  new H.map.Marker(new H.geo.Point(38.9042, -77.0379)), // Washington D.C.
+  new H.map.Marker(new H.geo.Point(43.6532, -79.3832))  // Toronto
+]);
+
+// listen for the click event and display
+map.addEventListener('tap', function (evt) {
+  // event is the touch event
+  // evt.target is the H.map.Marker
+  group.getBounds();
+  map.getViewModel().setLookAtData({ bounds: group.getBounds() });
+});
+
+map.addObject(group);
+```
+
+--------------------------------
+
+TITLE: Display and Drag a Marker (JavaScript)
+DESCRIPTION: This snippet shows how to create a draggable marker using H.map.Marker and manage drag events. It requires disabling default map panning behavior during drag operations.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/draggable-marker/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+  marker.draggable = true;
+  map.addEventListener('drag', function(evt) {
+    // Handle drag event
+  });
+  behavior.disable(H.mapevents.Behavior.DRAGGING);
+  behavior.enable(H.mapevents.Behavior.DRAGGING);
+
+```
+
+--------------------------------
+
+TITLE: Handling Map Object Pointer Events
+DESCRIPTION: This snippet illustrates attaching event listeners for pointer events (pointerup, pointerdown, tap) to map objects. It requires the mapsjs-mapevents module and utilizes the addEventListener() method available on H.map.Object.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-object-events-displayed/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+    apikey: "YOUR_API_KEY"
+});
+
+var defaultLayers = platform.createDefaultLayers();
+var map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+    center: { lat: 52.5166, lng: 13.3777 },
+    zoom: 13,
+    pixelRatio: window.devicePixelRatio || 1
+});
+
+window.addEventListener('resize', () => map.getViewport().resize());
+
+H.ui.UI.createDefault(map, defaultLayers, 'en-US');
+
+// Create a marker object
+var marker = new H.map.Marker({ lat: 52.5166, lng: 13.3777 });
+
+// Add the marker to the map
+map.addObject(marker);
+
+// Add event listeners to the marker
+marker.addEventListener('tap', function(evt) {
+    console.log('Marker tapped!');
+    // Process the tap event
+});
+
+marker.addEventListener('pointerdown', function(evt) {
+    console.log('Pointer down on marker!');
+    // Process the pointer down event
+});
+
+marker.addEventListener('pointerup', function(evt) {
+    console.log('Pointer up on marker!');
+    // Process the pointer up event
+});
+
+// Example for a polyline
+var polyline = new H.map.Polyline([
+    { lat: 52.5166, lng: 13.3777 },
+    { lat: 52.5066, lng: 13.3777 },
+    { lat: 52.5066, lng: 13.3877 },
+    { lat: 52.5166, lng: 13.3877 }
+], {
+    style: {
+        strokeColor: '#0077cc',
+        lineWidth: 4
+    }
+});
+
+map.addObject(polyline);
+
+polyline.addEventListener('pointerenter', function() {
+    console.log('Pointer entered polyline!');
+    // Change polyline style or add visual feedback
+});
+
+polyline.addEventListener('pointerleave', function() {
+    console.log('Pointer left polyline!');
+    // Revert polyline style
+});
+
+```
+
+--------------------------------
+
+TITLE: Display Resizable Circle on Map - JavaScript
+DESCRIPTION: Demonstrates displaying a resizable circle on the HERE map. It uses H.map.Group to contain the H.map.Circle and an H.map.Polyline for the outline. The outline is shown on pointerenter, and the circle is set to be draggable with volatility enabled for smoother resizing.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/resizable-circle/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var map = new H.Map(document.getElementById('map'), defaultLayers, {
+  center: {lat: 50, lng: 7},
+  zoom: 12,
+  pixelRatio: window.devicePixelRatio || 1
+});
+
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+var ui = H.ui.UI.createDefault(map, defaultLayers, 'en-US');
+
+// Create a group to hold the circle and its outline
+var group = new H.map.Group();
+map.addObject(group);
+
+// Create a circle
+var circle = new H.map.Circle({lat: 50, lng: 7}, 5000, {
+  style: {
+    fillColor: '#FF0000',
+    strokeColor: '#FF0000',
+    lineWidth: 3
+  }
+});
+
+// Create an outline for resizing
+var outline = new H.map.Polyline(circle.getExteriorRing(), {
+  style: {
+    strokeColor: '#0000FF',
+    lineDash: [8, 4],
+    lineWidth: 3
+  }
+});
+
+// Add circle and outline to the group
+group.addObject(circle);
+group.addObject(outline);
+
+// Make the circle draggable and enable volatility for smoother resizing
+circle.draggable = true;
+circle.volatility = true;
+
+// Show the outline on pointerenter and hide on pointerleave
+group.addEventListener('pointerenter', function() {
+  outline.setVisibility(true);
+});
+group.addEventListener('pointerleave', function() {
+  outline.setVisibility(false);
+});
+
+// Listen for drag events on the circle
+map.addEventListener('drag', function(evt) {
+  var mapContainer = document.querySelector('.heresdk-map');
+  if (evt.target === circle) {
+    var pointer = evt.currentPointer;
+    var geoCoords = map.screenToGeo(pointer.viewportX, pointer.viewportY);
+    circle.setGeometry(new H.geo.Circle(geoCoords, circle.getRadius()));
+    outline.setGeometry(circle.getExteriorRing());
+  }
+});
+
+```
+
+--------------------------------
+
+TITLE: Display and Resize Polyline with Markers - JavaScript
+DESCRIPTION: This snippet shows how to create a resizable polyline using H.map.Polyline and H.map.Marker. Markers representing vertices are shown on hover and are draggable for resizing. The polyline's 'draggable' and 'volatility' properties are set for interactive resizing.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/resizable-polyline/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var group = new H.map.Group();
+map.addObject(group);
+
+// Add custom event listeners for the group to show/hide markers and enable drag for vertices
+group.addEventListener('pointerenter', function(evt) {
+  group.setVisibility(true);
+}, false);
+
+group.addEventListener('pointerleave', function(evt) {
+  group.setVisibility(false);
+}, false);
+
+// Add a polyline to the group
+var polyline = new H.map.Polyline([
+  {lat: 52.5164, lng: 13.3777},
+  {lat: 52.5074, lng: 13.3777},
+  {lat: 52.5074, lng: 13.3887},
+  {lat: 52.5164, lng: 13.3887}
+], {
+  style: {
+    strokeColor: '#007bff',
+    lineWidth: 3
+  }
+});
+
+polyline.draggable = true;
+polyline.volatility = true;
+group.addObject(polyline);
+```
+
+--------------------------------
+
+TITLE: Set Map Style During Instantiation (JavaScript)
+DESCRIPTION: This code snippet illustrates how to set a custom map style when initializing a map. It involves creating a H.map.Style instance to load and parse a user-defined style file ('dark.yaml') and then applying it to the map's vector provider.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/change-style-at-load/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  apikey: "YOUR_API_KEY"
+});
+
+var maptypes = platform.getMapTypes();
+
+// Define a custom map style
+var customStyle = new H.map.Style(
+  './dark.yaml', 
+  './resources/'
+);
+
+var map = new H.Map(document.getElementById('map'), maptypes.vector, {
+  center: {lat: 50.110924, lng: 8.682127},
+  zoom: 12,
+  style: customStyle
+});
+
+// Add map controls
+new H.ui.UI.Default(map, maptypes, 'en-US');
+```
+
+--------------------------------
+
+TITLE: Fetch and Match Advanced Data Sets with Routing Data (JavaScript)
+DESCRIPTION: Fetches data from the Advanced Data Sets service using H.service.extension.platformData.SearchRequest. It matches LINK_IDs from routing results with search results to color-code H.map.Marker for stations adjacent to the route. No external libraries beyond the HERE Maps API are required.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/search-match-fts/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.addEventListener('tap', function (evt) {
+  var data = platform.lookupDefaultAlias(evt.target);
+  if (data) {
+    // Display information about the charging station
+    var info = '<p>' + data.street + '<br>' + data.housenumber + '</p>';
+    info += '<p>' + data.postalcode + ' ' + data.city + '</p>';
+    info += '<p>Current: ' + data.currentType + '</p>';
+    info += '<p>Status: ' + data.status + '</p>';
+    info += '<p>Connector: ' + data.connectorTypes + '</p>';
+
+    var domWindow = infoWindow.open();
+    domWindow.setContent(info);
+    domWindow.open();
+  }
+});
+
+platform.getService(
+  new H.service.Platform({ apikey: APP_KEY }) 
+).then(function (platform) {
+  var routingService = platform.getRoutingService(),
+      requestParams = {
+        mode: 'fastest;truck;',
+        alternatives: 1,
+        representation: 'display'
+      };
+
+  routingService.calculateRoute(startPoint, endPoint, requestParams, {
+    useHTTPS: true
+  }, function (result) {
+    if (result.routes && result.routes.length) {
+      var route = result.routes[0],
+          polyline = H.decoder.Polyline.fromGeoJSON(route.geometry),
+          routePolyline = new H.map.Polyline(polyline, {
+            style: {
+              lineWidth: 10,
+              strokeColor: 'rgba(55, 255, 255, 0.7)'
+            }
+          });
+      map.addObjects([routePolyline]);
+      map.setCenter(route.bbox.center);
+      map.setZoom(14);
+
+      var boundingBox = route.bbox;
+      var searchRequest = new H.service.extension.platformData.SearchRequest(platform.getPlatformDataService(), boundingBox);
+      searchRequest.search(
+        {
+          'apiFilter': 'chargingStations'
+        },
+        function(result) {
+          if (result.chargingStations && result.chargingStations.length > 0) {
+            var markers = result.chargingStations.map(function(station) {
+              var marker = new H.map.Marker({
+                lat: station.location.latitude,
+                lng: station.location.longitude
+              });
+              marker.setData(station);
+              return marker;
+            });
+            map.addObjects(markers);
+          }
+        },
+        function(error) {
+          console.error(error);
+        }
+      );
+    } else {
+      alert('No route found!');
+    }
+  });
+});
+```
+
+--------------------------------
+
+TITLE: Enable Interactive Base Map Labels with Info Bubbles (JavaScript)
+DESCRIPTION: This JavaScript code enables interactions with base map labels (cities, towns, neighborhoods). It sets specific data layers as interactive and assigns a 'tap' event listener to display an info bubble with feature information when a label is clicked.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/interactive-basemap/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.addEventListener('tap', function (evt) {
+  var feature = dataLayers.getFeature(evt.target);
+  if (feature) {
+    infoBubble.open(feature.getGeometry(), feature.getData());
+  }
+});
+```
+
+--------------------------------
+
+TITLE: Capture Map Area with HERE Maps API for JavaScript
+DESCRIPTION: This code snippet demonstrates how to capture a specific rectangular area of the map. It utilizes the `capture` method of the `H.Map` class, requiring a callback function, a UI instance, and viewport coordinates to define the capture region. The functionality is part of the `mapsjs-core` module.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/capture-map-area/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.capture(
+  function(dataUrl) {
+    // Process the snapshot dataUrl here
+    console.log(dataUrl);
+  },
+  ui,
+  {
+    top: 50,
+    left: 50,
+    bottom: 500,
+    right: 200
+  }
+);
+```
+
+--------------------------------
+
+TITLE: Create Extruded Polygon and Circle - JavaScript
+DESCRIPTION: This code snippet shows how to create an extruded polygon and circle using the HERE Maps API for JavaScript. A polygon is created with `H.map.Polygon` and a circle with `H.map.Circle`. The extrusion effect is applied via the 'extrude' parameter.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/extruded-objects/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+const polygon = new H.map.Polygon(new H.geo.LineString([...]), {
+  extrude: 100
+});
+const circle = new H.map.Circle(new H.geo.Point(lat, lon), radius, {
+  extrude: 50
+});
+```
+
+--------------------------------
+
+TITLE: Animate DOM Markers with SVG Icon - JavaScript
+DESCRIPTION: This snippet shows how to place DOM markers with SVG icons on a map and animate their positions using the `setGeometry()` method. It leverages a custom `ease()` function within an update loop to achieve the animation effect, and `H.geo.Point#walk()` to calculate random coordinates within a radius.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/markers-update-position-with-animation/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+/**
+ * Creates a DOM marker with an SVG icon.
+ * @param {H.map.Icon} icon The SVG icon for the marker.
+ * @param {H.geo.IPoint} position The initial geographical position.
+ * @returns {H.map.DomMarker} The created DOM marker.
+ */
+function createAnimatedMarker(icon, position) {
+  const marker = new H.map.DomMarker(position, {
+    icon: icon
+  });
+  return marker;
+}
+
+/**
+ * Updates the positions of animated markers with a 'walk' animation.
+ * @param {Array<H.map.DomMarker>} markers Array of markers to animate.
+ * @param {H.Map} map The map instance.
+ * @param {number} radius The radius in kilometers for random coordinate generation.
+ */
+function updateMarkerPositions(markers, map, radius) {
+  const center = map.getCenter();
+  markers.forEach(marker => {
+    const currentPosition = marker.getPosition();
+    if (currentPosition) {
+      // Calculate a new random position within the radius
+      const newPosition = H.geo.Point.randomPointNear(currentPosition, radius * 1000); // Convert km to meters
+      // Use a simple ease-in-out function for animation
+      const ease = function(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      };
+      marker.setGeometry(newPosition, ease);
+    }
+  });
+}
+
+// Example Usage:
+// Assuming 'map' is an initialized H.Map instance and 'svgIcon' is an H.map.Icon instance
+// const markers = [];
+// for (let i = 0; i < 5; i++) {
+//   const randomPosition = new H.geo.Point(center.lat + Math.random() * 0.1, center.lng + Math.random() * 0.1);
+//   markers.push(createAnimatedMarker(svgIcon, randomPosition));
+// }
+// map.addObjects(markers);
+// setInterval(() => updateMarkerPositions(markers, map, 450), 5000); // Update every 5 seconds
+```
+
+--------------------------------
+
+TITLE: Reverse Geocode Location to Address using HERE Maps API for JavaScript
+DESCRIPTION: Retrieves address details for a given location using the reverseGeocode method from the HERE Maps API. It utilizes the geocoding service obtained from H.service.Platform. The response styling and display are developer-controlled.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/reverse-geocode-an-address-from-location/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  apikey: "YOUR_API_KEY"
+});
+
+var service = platform.getSearchService();
+
+service.reverseGeocode({
+  at: "52.5309,13.3847"
+}, {
+  limit: 1
+}, (result) => {
+  if (result.items.length > 0) {
+    var address = result.items[0].address.label;
+    console.log("Found address: " + address);
+  }
+}, (error) => {
+  console.error("Error during reverse geocoding: " + error.message);
+});
+```
+
+--------------------------------
+
+TITLE: Calculate Bicycle Route with Altitude Data
+DESCRIPTION: Calculates a bicycle route using the HERE Routing API v8. It retrieves route vertices with altitude information, which is then used to position markers on the map. Access to the routing service is obtained via `H.service.Platform.getRoutingService(null, 8)`. The `calculateRoute()` method takes routing parameters as input.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/markers-with-altitude/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+    'apikey': 'YOUR_API_KEY'
+});
+
+var routingService = platform.getRoutingService(null, 8);
+
+var routeRequestParams = {
+    mode: 'bicycle',
+    representation: 'navigation',
+    routeattributes: 'waypoints,legs,summary,shape,lines',
+    maneuverattributes: 'style',
+    alternatives: 3,
+    departure: '2023-01-01T10:00:00'
+};
+
+routingService.calculateRoute(startPoint, endPoint, routeRequestParams, {
+    callback: function(response) {
+        // Process route and altitude data here
+        var route = response.routes[0];
+        var shape = route.shape;
+        var legs = route.legs;
+
+        // Example: Accessing altitude for each segment
+        legs.forEach(function(leg) {
+            leg.steps.forEach(function(step) {
+                var altitude = step.maneuver.altitude;
+                // Use altitude for marker placement or styling
+            });
+        });
+    }
+}, function(error) {
+    console.error(error.message);
+});
+```
+
+--------------------------------
+
+TITLE: Change Scale Bar Units - JavaScript
+DESCRIPTION: Modifies the unit system of the map's scale bar by calling the `setUnitSystem()` method with an `H.ui.UnitSystem` enum value. This allows switching between metric, imperial (miles, yards, feet), and other units.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-scale-bar-changing-from-the-metric-system/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.getUI().getControl('scalebar').setUnitSystem(H.ui.UnitSystem.IMPERIAL);
+```
+
+--------------------------------
+
+TITLE: Create and Update Map View Bounds Visualizations
+DESCRIPTION: Creates H.map.Polygon and H.map.Marker objects to represent the center and view bounds of an interactive map. These objects are updated on mapviewchange events and are marked as volatile for smooth animation. No external dependencies are explicitly mentioned, and the code assumes an existing HERE Maps API JavaScript environment.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/tilted-map-bounds/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var polygon = new H.map.Polygon(bounds, {
+  style: {
+    fillColor: '#000000',
+    strokeColor: '#ffffff',
+    lineWidth: 2
+  }
+});
+
+var marker = new H.map.Marker(center, {
+  icon: new H.map.Icon('https://heremaps.github.io/maps-api-for-javascript-examples/examples/images/marker.png', {
+    size: {w: 20, h: 20}
+  }),
+  volatility: true
+});
+
+map.addEventListener('mapviewchange', function() {
+  // Update polygon and marker based on new map view
+});
+
+layerGroup.addObjects([polygon, marker]);
+```
+
+--------------------------------
+
+TITLE: Interleave Vector and Object Layers using Here Maps API for JavaScript
+DESCRIPTION: This JavaScript code snippet demonstrates interleaving an object layer between two vector layers. It involves extracting configuration from a base layer, creating new object and vector layers, and adding them sequentially to the map's layer collection for a specific rendering order.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/interleave-layers/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+/**
+ * Adds an object layer between two vector layers.
+ * @param {H.Map} map The map instance.
+ * @param {H.data.Layer} baseLayer The base vector layer.
+ */
+function interleaveLayers(map, baseLayer) {
+  // Extract buildings configuration from the base layer
+  const buildingsConfig = baseLayer.getProvider().getCollection('buildings');
+
+  // Create a new vector layer with the extracted buildings
+  const vectorLayer = new H.map.layer.ObjectLayer(new H.map.provider.ObjectProvider(buildingsConfig));
+
+  // Create a new object layer (e.g., for points of interest)
+  const objectLayer = new H.map.layer.ObjectLayer(new H.map.provider.ObjectProvider([])); // Assuming an empty provider initially
+
+  // Add layers sequentially to the map's layer collection
+  // The order of addition determines the rendering order
+  map.addLayer(baseLayer); // Add the original base layer first
+  map.addLayer(objectLayer); // Add the new object layer
+  map.addLayer(vectorLayer); // Add the new vector layer
+
+  // The default object layer remained on top of the layers collection
+  // If you want to control this, you might need to manage layer groups or remove default layers.
+}
+
+// Example usage (assuming map and baseLayer are already initialized):
+// const map = new H.Map(...);
+// const baseLayer = platform.createDefaultLayers().vector.normal;
+// interleaveLayers(map, baseLayer);
+
+```
+
+--------------------------------
+
+TITLE: Change Map Feature Style at Runtime using H.map.Style
+DESCRIPTION: Modifies the style of map features like 'landuse.park' and 'landuse.builtup' to dark green and dark grey respectively at runtime. This is achieved by adding a change event listener to the H.map.Style instance, extracting, modifying, and re-merging style sections.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/change-style-at-runtime/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+map.addObserver('change', function() {
+  var style = map.getStyle();
+  style.update(
+    'landuse.park', {
+      fillColor: 'rgba(0, 100, 0, 0.5)'
+    }
+  );
+  style.update(
+    'landuse.builtup', {
+      fillColor: 'rgba(100, 100, 100, 0.5)'
+    }
+  );
+  map.setStyle(style);
+});
+```
+
+--------------------------------
+
+TITLE: Calculate Truck Routes with Routing API
+DESCRIPTION: Calculates truck routes using the HERE Routing API v8. It demonstrates how to specify truck attributes like axle count, trailer count, and hazardous goods to influence the route. Access to the routing service is obtained via H.service.Platform. The response styling is developer-controlled.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/truck-routing-road-restrictions/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+const routingService = platform.getRoutingService(null, 8);
+routingService.calculateRoute(
+  {
+    origin: '52.530935,13.377199',
+    destination: '52.530935,13.377199',
+    transportMode: 'truck',
+    vehicle: {
+      axleCount: 4,
+      trailerCount: 1,
+      hazardousGoods: 'flammable'
+    }
+  },
+  (result) => {
+    // Handle route calculation results
+  },
+  console.error
+);
+```
+
+--------------------------------
+
+TITLE: Restrict Map Movement with ViewModel and Sync Event
+DESCRIPTION: This code snippet shows how to restrict a map's movement to a defined rectangular area. It utilizes the `H.map.ViewModel` to manage the map's position and listens to the `sync` event to enforce limits on the `map.center` property, preventing the map from being panned or zoomed outside the designated region.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/restrict-map/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+const platform = new H.service.Platform({
+  apikey: "YOUR_API_KEY"
+});
+
+const defaultLayers = platform.createDefaultLayers();
+const map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+  center: {
+    lat: 37.8265,
+    lng: -122.4233
+  },
+  zoom: 14,
+  pixelRatio: window.devicePixelRatio || 1
+});
+
+const behavior = new H.mapevents.Behavior(new H.mapevents.MapEngine(map));
+
+const restrictedArea = {
+  lat: 37.8265, // Center latitude of the restricted area
+  lng: -122.4233, // Center longitude of the restricted area
+  // Define the boundaries of the restricted area (e.g., in kilometers or degrees)
+  // For simplicity, let's define a bounding box based on latitude and longitude differences
+  latMin: 37.8150,
+  latMax: 37.8380,
+  lngMin: -122.4400,
+  lngMax: -122.4060
+};
+
+map.addEventListener('sync', () => {
+  const center = map.getCenter();
+
+  // Restrict latitude
+  if (center.lat < restrictedArea.latMin) {
+    center.lat = restrictedArea.latMin;
+  } else if (center.lat > restrictedArea.latMax) {
+    center.lat = restrictedArea.latMax;
+  }
+
+  // Restrict longitude
+  if (center.lng < restrictedArea.lngMin) {
+    center.lng = restrictedArea.lngMin;
+  } else if (center.lng > restrictedArea.lngMax) {
+    center.lng = restrictedArea.lngMax;
+  }
+
+  map.setCenter(center);
+});
+
+// Optional: Add a visual representation of the restricted area
+const polygon = new H.map.Polygon(new H.geo.Rect(restrictedArea.latMin, restrictedArea.lngMin, restrictedArea.latMax, restrictedArea.lngMax), {
+  style: {
+    fillColor: 'rgba(255, 0, 0, 0.2)',
+    strokeColor: 'red',
+    lineWidth: 2
+  }
+});
+map.addObject(polygon);
+```
+
+--------------------------------
+
+TITLE: Rotate DOM Marker SVG Icon with CSS
+DESCRIPTION: This snippet illustrates rotating a DOM Marker's SVG icon using CSS transformations. The rotation is applied to the child node's transform property within the marker's onAttach callback, as the API manipulates the parent element's transform property for positioning.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/dom-marker-rotation/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+// Assuming 'marker' is an instance of H.map.DomMarker
+// and its icon is a DOM node containing an SVG.
+
+marker.addEventListener('tap', function(evt) {
+  // Get the DOM element associated with the marker
+  var domElement = evt.target;
+  // Find the SVG element within the DOM element
+  var svgElement = domElement.querySelector('svg');
+  
+  if (svgElement) {
+    // Apply CSS transform for rotation
+    svgElement.style.transform = 'rotate(45deg)';
+    svgElement.style.transition = 'transform 1s linear';
+  }
+});
+
+// To achieve continuous rotation, you would typically use setInterval
+// within the 'onAttach' callback of the DomIcon.
+// Example (conceptual):
+// const domIcon = new H.map.DomIcon(svgContent, {
+//   onAttach: function(clonedElement) {
+//     const svgNode = clonedElement.querySelector('svg');
+//     if (svgNode) {
+//       let rotation = 0;
+//       setInterval(() => {
+//         rotation = (rotation + 45) % 360;
+//         svgNode.style.transform = `rotate(${rotation}deg)`;
+//       }, 1000);
+//     }
+//   }
+// });
+```
+
+--------------------------------
+
+TITLE: Access Public Transit Service and Calculate Route (JavaScript)
+DESCRIPTION: This snippet shows how to access the Public Transit API service via H.service.Platform and calculate the fastest public transport route. It uses the getPublicTransitService() and getRoutes() methods, passing necessary parameters for routing. The response styling is developer-controlled.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-route-from-a-to-b-using-public-transport/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+const platform = new H.service.Platform({
+  "app_id": "YOUR_APP_ID",
+  "app_code": "YOUR_APP_CODE",
+  useHTTPS: true
+});
+
+const transitService = platform.getPublicTransitService();
+
+const routingParams = {
+  "mode": "fastest;publicTransport",
+  "waypoint0": "geo!52.5208,13.4093", // Fernsehturm, Berlin
+  "waypoint1": "geo!52.5034,13.3295", // Kurfürstendamm, Berlin
+  "departure": "now"
+};
+
+transitService.getRoutes(routingParams, {
+  // Options for route calculation
+}, function(result) {
+  // Handle route calculation results
+  if (result.routes) {
+    // Process and display the routes on the map
+  }
+}, function(error) {
+  // Handle errors
+  console.error("Error calculating route:", error);
+});
+```
+
+--------------------------------
+
+TITLE: Calculate and Display Driving Route (JavaScript)
+DESCRIPTION: This snippet shows how to obtain the routing service from the H.service.Platform and use the calculateRoute() method to find the fastest car route. It highlights the use of Routing API v8 parameters and mentions that styling and display are developer-controlled.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-route-from-a-to-b/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  "app_id": "YOUR_APP_ID",
+  "app_code": "YOUR_APP_CODE",
+  "useHTTPS": true
+});
+
+var routingService = platform.getRoutingService(null, 8);
+
+var routeRequestParams = {
+  "routingMode": "fastest;car",
+  "transportMode": "car",
+  "origin": "52.51605,13.37787", // Brandenburg Gate
+  "destination": "52.52058,13.38615", // Friedrichstraße Railway Station
+  "returnGeometry": "true",
+  "mode": "fastest"
+};
+
+routingService.calculateRoute(routeRequestParams, {
+  success: function(result) {
+    var routeShape = result.routes[0].geometry,
+      polyline = new H.geo.LineString(routeShape);
+
+    // Add polyline to the map
+    var routePolyline = new H.map.Polyline(polyline, {
+      style: {
+        lineWidth: 5,
+        strokeColor: 'rgba(0, 128, 255, 0.7)'
+      }
+    });
+    map.addObject(routePolyline);
+
+    // Adjust map viewport to contain the route
+    map.getViewModel().fitRectangle(routePolyline.getBoundingBox());
+  },
+  error: function(error) {
+    alert(error.message);
+  }
+});
+```
+
+--------------------------------
+
+TITLE: Marker Clustering Custom Theme CSS
+DESCRIPTION: Defines CSS rules for styling clustered markers (bubbles) and their content, including images and text. This allows for a visually distinct presentation of clustered data points.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/custom-cluster-theme/demo.html#_snippet_0>
+
+LANGUAGE: css
+CODE:
+
+```
+.bubble { font-size: 11px; line-height: 15px; color: white; } 
+.bubble-image { width: 300px; height: 100px; background-size: cover; background-position: center; display: block; } 
+.bubble-logo { float: left; margin-right: 1em; margin-bottom: 4px; } 
+.bubble-footer { display: table; } 
+.bubble-desc { display: table-cell; vertical-align: middle; } 
+.bubble a { text-decoration: none; color: white !important; } 
+.bubble a:hover { text-decoration: underline; } 
+.bubble hr { margin: 5px 0px; }
+```
+
+--------------------------------
+
+TITLE: Access Routing Service and Calculate Isoline (JavaScript)
+DESCRIPTION: This snippet shows how to access the HERE Maps routing service and calculate an isoline for an EV. It uses `H.service.Platform.getRoutingService()` and the `calculateIsoline()` method, referencing the Isoline Routing API v8 for parameters. The display and styling of the results are developer-controlled.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-isoline-route/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+    apikey: "YOUR_API_KEY"
+});
+
+var routingService = platform.getRoutingService(null, 8);
+
+var calculateIsoline = function(position) {
+  var params = {
+    "modes": "fastest;car;heavyweight",
+    "start": position,
+    "range": "3600",
+    "departure": "now"
+  };
+
+  routingService.calculateIsoline(params, {
+    onSuccess: function(result) {
+      console.log(result);
+    },
+    onError: function(err) {
+      console.log(err);
+    }
+  });
+};
+
+// Example usage:
+calculateIsoline('52.5160,13.3779');
+```
+
+--------------------------------
+
+TITLE: Display map with custom SVG markers
+DESCRIPTION: This snippet shows how to create custom SVG markers for a map using the H.map.Icon class. The icon is then added as a parameter when creating an H.map.Marker. This allows for visually distinct markers on the map.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/map-with-svg-graphic-markers/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var svgMarkerIcon = new H.map.Icon(
+    '<svg width="30" height="30" version="1.1" xmlns="http://www.w3.org/2000/svg">' +
+      '<text x="15" y="15" fill="white" font-size="12" text-anchor="middle" alignment-baseline="middle">C</text>' +
+    '</svg>',
+    { )
+});
+
+var svgMarker = new H.map.Marker(
+    new H.geo.Point(41.8625, -87.6166), // Soldier Field coordinates
+    {
+      icon: svgMarkerIcon
+    }
+  );
+
+map.addObject(svgMarker);
+```
+
+--------------------------------
+
+TITLE: Geocode Location using Structured Address (JavaScript)
+DESCRIPTION: Access the geocoding service via H.service.Platform.getSearchService() and use the geocode() method with structured address parameters (country, city, street, housenumber) to find locations. The response data is then used to place markers on the map.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/geocode-a-location-from-structured-address/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  apikey: "YOUR_API_KEY"
+});
+
+var service = platform.getSearchService();
+
+var structuredAddress = {
+  country: "USA",
+  city: "Chicago",
+  street: "Randolph St",
+  housenumber: "425"
+};
+
+service.geocode({
+  qq: structuredAddress
+}, (result) => {
+  result.items.forEach((item) => {
+    var marker = new H.map.Marker({
+      lat: item.position.lat,
+      lng: item.position.lng
+    });
+    map.addObject(marker);
+  });
+}, (error) => {
+  console.error(error);
+});
+```
+
+--------------------------------
+
+TITLE: Geocode Location using HERE Maps API for JavaScript
+DESCRIPTION: This snippet shows how to access the geocoding service from the H.service.Platform and use the geocode() method to find a location based on an address. It retrieves latitude, longitude, and address details for display on a map. Dependencies include the HERE Maps API for JavaScript.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/geocode-a-location-from-address/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+  "apikey": "YOUR_API_KEY"
+});
+
+var service = platform.getSearchService();
+
+service.geocode({
+  q: '200 S Mathilda Ave, Sunnyvale, CA'
+}, (result) => {
+  // Process the geocoding result here
+  console.log(result.items[0].position);
+  console.log(result.items[0].address.label);
+}, (error) => {
+  console.error(error);
+});
+```
+
+--------------------------------
+
+TITLE: Display Postcode Boundaries and Centroids on Map
+DESCRIPTION: Configures TileProvider for postcode borders (POLYLINE) and centroids (MARKER) from the Fleet Telematics Advanced Data Sets service. Displays these as TileLayer and MarkerTileLayer on the map.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/postcodes-jsla-fts/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var platform = new H.service.Platform({
+    apikey: "YOUR_API_KEY"
+  });
+
+  var maptypes = platform.getMapTypes();
+  var defaultLayers = maptypes.createDefaultLayers();
+  var map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map,
+    {
+      center: {lat: 52.5159, lng: 13.3777},
+      zoom: 12
+    });
+
+  var postcodeProvider = new H.service.extension.platformData.TileProvider({
+    services: {
+      // the tile service for postcode boundaries
+      borders: new H.service.extension.platformData.TileProvider.Service({
+        url: "https://api.platform.here.com/data/2.5/tiles/polygon"
+      }, {
+        layer: H.service.extension.platformData.TileProvider.Layer.POSTAL_CODE
+      }),
+      // the tile service for postcode centroids
+      centroids: new H.service.extension.platformData.TileProvider.Service({
+        url: "https://api.platform.here.com/data/2.5/tiles/ புள்ள"
+      }, {
+        layer: H.service.extension.platformData.TileProvider.Layer.POSTAL_CODE,
+        resultType: H.service.extension.platformData.TileProvider.ResultType.MARKER
+      })
+    }
+  });
+
+  var postcodeTileLayer = new H.map.layer.TileLayer(postcodeProvider, {
+    max: 16
+  });
+  map.addLayer(postcodeTileLayer);
+
+  var postcodeMarkerTileLayer = new H.map.layer.MarkerTileLayer(postcodeProvider.getService("centroids"), {
+    max: 16,
+    clustering: {
+      enabled: true
+    }
+  });
+  map.addLayer(postcodeMarkerTileLayer);
+```
+
+--------------------------------
+
+TITLE: Create Polygon with Holes using HERE Maps API
+DESCRIPTION: This code snippet shows how to create a polygon with holes using the HERE Maps API for JavaScript. It involves instantiating H.map.Polygon with an H.geo.Polygon object that defines both the outer boundary and the inner holes. Styling options can be applied.
+
+SOURCE: <https://github.com/heremaps/maps-api-for-javascript-examples/blob/master/polygon-with-holes-on-the-map/demo.html#_snippet_0>
+
+LANGUAGE: javascript
+CODE:
+
+```
+var polygon = new H.map.Polygon(new H.geo.Polygon(
+    "52.5, 13.4; 52.5, 13.5; 52.4, 13.5; 52.4, 13.4; 52.5, 13.4", // Outer ring
+    [
+        "52.45, 13.45; 52.45, 13.48; 52.48, 13.48; 52.48, 13.45; 52.45, 13.45" // Inner ring
+    ]
+), {
+    style: {
+        fillColor: '#ffff00',
+        strokeColor: '#000000',
+        lineWidth: 2
+    }
+});
+map.addObject(polygon);
+```
