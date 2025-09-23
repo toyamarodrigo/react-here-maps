@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MapSettings } from "../map-settings/map-settings";
 import { Marker } from "../marker/marker";
 import { Polyline } from "../polyline/polyline";

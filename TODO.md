@@ -1,5 +1,106 @@
 # TODOs - Possible Features
 
+## @TODO: Documentation & Testing Migration (Priority)
+
+### Phase 1: Setup Nextra Documentation Site
+- [ ] Create new `apps/docs/` directory in monorepo
+- [ ] Install Nextra in `apps/docs/`
+- [ ] Configure Nextra with React HERE Maps theme
+- [ ] Add docs workspace to `pnpm-workspace.yaml`
+- [ ] Setup basic pages structure:
+  - [ ] Getting Started guide
+  - [ ] Component reference pages
+  - [ ] API documentation
+  - [ ] Examples gallery
+- [ ] Create interactive component playground
+- [ ] Configure to import from `@rodrito/react-here-maps`
+- [ ] Setup deployment to Vercel/Netlify
+
+### Phase 2: Modern Testing Setup
+- [ ] Create `tests/` directory in root
+- [ ] Install and configure Vitest
+- [ ] Setup React Testing Library
+- [ ] Install Playwright for component testing
+- [ ] Configure test utilities for HERE Maps components
+- [ ] Create test examples for each component
+- [ ] Setup CI/CD for automated testing
+
+### Phase 3: Migration from Storybook
+- [ ] **Keep Storybook for development** (useful for isolated component work)
+- [ ] **Remove Storybook from public docs** (use Nextra instead)
+- [ ] Migrate component examples from Storybook to `apps/docs/`
+- [ ] Convert Storybook stories to:
+  - [ ] Nextra MDX documentation pages in `apps/docs/`
+  - [ ] Vitest component tests in `tests/unit/`
+  - [ ] Playwright visual regression tests in `tests/integration/`
+- [ ] Update README to point to new Nextra docs site
+
+### Phase 4: Testing Strategy Implementation
+- [ ] **Unit Tests** (Vitest + RTL):
+  - [ ] Component rendering tests
+  - [ ] Props validation tests
+  - [ ] Hook behavior tests
+  - [ ] Event handling tests
+- [ ] **Integration Tests** (Playwright):
+  - [ ] Component interaction tests
+  - [ ] Visual regression tests
+  - [ ] Cross-browser compatibility
+  - [ ] Mobile responsiveness
+- [ ] **E2E Tests** (Playwright):
+  - [ ] Full user workflows
+  - [ ] API integration tests
+  - [ ] Performance testing
+
+### Tools & Dependencies to Install:
+```bash
+# Documentation (in apps/docs/)
+cd apps/docs
+pnpm add nextra nextra-theme-docs next react react-dom
+pnpm add @rodrito/react-here-maps
+
+# Testing (in root)
+cd ../..
+pnpm add -D vitest @vitejs/plugin-react
+pnpm add -D @testing-library/react @testing-library/jest-dom
+pnpm add -D @playwright/test @playwright/experimental-ct-react
+pnpm add -D jsdom happy-dom
+
+# Optional: Visual regression
+pnpm add -D @percy/playwright chromatic
+
+# Update workspace
+# Add "apps/docs" to pnpm-workspace.yaml
+```
+
+### File Structure After Migration:
+```
+/
+├── packages/
+│   └── lib/              # React HERE Maps library (keep Storybook for dev)
+├── apps/
+│   ├── www/              # Demo application (existing)
+│   └── docs/             # Nextra documentation site (new)
+│       ├── pages/
+│       │   ├── components/
+│       │   ├── guides/
+│       │   └── examples/
+│       └── components/   # Interactive examples
+├── tests/
+│   ├── unit/             # Vitest + RTL tests
+│   ├── integration/      # Playwright component tests
+│   └── e2e/             # End-to-end tests
+└── pnpm-workspace.yaml   # Update to include apps/docs
+```
+
+### Benefits of This Approach:
+- ✅ Keep Storybook for development workflow
+- ✅ Modern, fast documentation site for users
+- ✅ Comprehensive testing strategy
+- ✅ Better maintainability and performance
+- ✅ Professional documentation experience
+
+---
+
 ## Geometric Shapes
 
 - **Circle** - Display circular areas with radius

@@ -27,7 +27,7 @@ This is a monorepo using pnpm workspaces with two main packages:
 
 ### Library-specific Commands (from packages/lib)
 
-- `pnpm build` - Build library (runs prebuild, then tsup)
+- `pnpm build` - Build library (runs prebuild, then tsdown)
 - `pnpm dev` - Build in watch mode
 - `pnpm lint` - Run Biome linter
 - `pnpm lint:fix` - Run Biome linter with auto-fix
@@ -71,10 +71,11 @@ The `MapContext` provides map instance, platform, UI, and behavior objects to ch
 
 ### Build System
 
-- Uses tsup for efficient bundling
-- Outputs both CJS and ESM formats
+- Uses tsdown (powered by Rolldown) for efficient bundling
+- Outputs ESM format with optimized tree-shaking
 - Generates TypeScript declarations
 - External dependencies: react, react-dom, @here/maps-api-for-javascript
+- Browser-optimized with ~77% smaller bundle size than previous tsup build
 
 ### Code Quality
 

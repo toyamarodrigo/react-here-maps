@@ -1,15 +1,14 @@
 {
   "name": "@rodrito/react-here-maps",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "React hooks, components and examples for HERE Maps API JS",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "types": "dist/index.d.mts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
     }
   },
   "author": "toyamarodrigo",
@@ -26,8 +25,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm prebuild && tsup",
-    "dev": "tsup --watch",
+    "build": "pnpm prebuild && tsdown",
+    "dev": "tsdown --watch",
     "prebuild": "pnpm lint:fix && pnpm format:write && pnpm check:fix",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
@@ -56,25 +55,20 @@
     "@biomejs/biome": "2.2.4",
     "@chromatic-com/storybook": "^4.1.1",
     "@size-limit/preset-big-lib": "^11.0.2",
-    "@storybook/addon-essentials": "^8.2.9",
-    "@storybook/addon-interactions": "^8.2.9",
-    "@storybook/addon-links": "^9.1.5",
-    "@storybook/addon-mdx-gfm": "^8.2.9",
-    "@storybook/blocks": "^8.2.9",
-    "@storybook/react": "^9.1.5",
-    "@storybook/react-vite": "^9.1.5",
-    "@storybook/test": "^8.2.9",
+    "@storybook/addon-links": "^9.1.7",
+    "@storybook/react-vite": "^9.1.7",
     "@types/heremaps": "^3.1.14",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "storybook": "^9.1.5",
+    "storybook": "^9.1.7",
+    "tsdown": "^0.15.4",
     "tslib": "^2.6.2",
-    "tsup": "^8.5.0",
     "typescript": "^5.3.3",
     "vite": "^7.1.5",
-    "zod": "^4.1.8"
+    "zod": "^4.1.8",
+    "@storybook/addon-docs": "^9.1.7"
   }
 }
