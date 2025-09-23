@@ -2,7 +2,18 @@
 
 ## @TODO: Documentation & Testing Migration (Priority)
 
+### Phase 0: Tooling Migration
+
+- [ ] **Migrate Web App ESLint to Biome** (like lib package)
+  - [ ] Install `@biomejs/biome` in `app/www/`
+  - [ ] Create `biome.json` configuration based on lib package
+  - [ ] Update package.json scripts to use Biome instead of ESLint
+  - [ ] Remove ESLint dependencies and configuration files
+  - [ ] Test linting and formatting commands
+  - [ ] Update CI/CD workflows if needed
+
 ### Phase 1: Setup Nextra Documentation Site
+
 - [ ] Create new `apps/docs/` directory in monorepo
 - [ ] Install Nextra in `apps/docs/`
 - [ ] Configure Nextra with React HERE Maps theme
@@ -17,6 +28,7 @@
 - [ ] Setup deployment to Vercel/Netlify
 
 ### Phase 2: Modern Testing Setup
+
 - [ ] Create `tests/` directory in root
 - [ ] Install and configure Vitest
 - [ ] Setup React Testing Library
@@ -26,6 +38,7 @@
 - [ ] Setup CI/CD for automated testing
 
 ### Phase 3: Migration from Storybook
+
 - [ ] **Keep Storybook for development** (useful for isolated component work)
 - [ ] **Remove Storybook from public docs** (use Nextra instead)
 - [ ] Migrate component examples from Storybook to `apps/docs/`
@@ -36,6 +49,7 @@
 - [ ] Update README to point to new Nextra docs site
 
 ### Phase 4: Testing Strategy Implementation
+
 - [ ] **Unit Tests** (Vitest + RTL):
   - [ ] Component rendering tests
   - [ ] Props validation tests
@@ -51,7 +65,8 @@
   - [ ] API integration tests
   - [ ] Performance testing
 
-### Tools & Dependencies to Install:
+### Tools & Dependencies to Install
+
 ```bash
 # Documentation (in apps/docs/)
 cd apps/docs
@@ -72,8 +87,9 @@ pnpm add -D @percy/playwright chromatic
 # Add "apps/docs" to pnpm-workspace.yaml
 ```
 
-### File Structure After Migration:
-```
+### File Structure After Migration
+
+```txt
 /
 ├── packages/
 │   └── lib/              # React HERE Maps library (keep Storybook for dev)
@@ -92,7 +108,8 @@ pnpm add -D @percy/playwright chromatic
 └── pnpm-workspace.yaml   # Update to include apps/docs
 ```
 
-### Benefits of This Approach:
+### Benefits of This Approach
+
 - ✅ Keep Storybook for development workflow
 - ✅ Modern, fast documentation site for users
 - ✅ Comprehensive testing strategy
