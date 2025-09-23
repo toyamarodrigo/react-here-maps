@@ -2,12 +2,12 @@ import type { Decorator } from '@storybook/react-vite';
 import { HereMap } from '../src/components/here-map/here-map';
 
 export const withHereMap: Decorator = (Story, { args }) => {
-  const apikey = args.apikey || 'YOUR_API_KEY_HERE';
+  const apikey = (args.apikey as string) || 'YOUR_API_KEY_HERE';
 
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <HereMap
-        key={apikey}
+        key={apikey as string}
         apikey={apikey}
         options={{
           center: { lat: 52.52, lng: 13.405 },

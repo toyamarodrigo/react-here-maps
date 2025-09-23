@@ -1,14 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { withHereMap } from "../../../.storybook/decorators";
 import { Polygon } from "./polygon";
+import type { PolygonProps } from "./types";
 
-export default {
+type PolygonStoryArgs = PolygonProps & { apikey: string };
+
+const meta: Meta<PolygonStoryArgs> = {
   title: "Components/Polygon",
   component: Polygon,
   decorators: [withHereMap],
-} as Meta;
+};
 
-type Story = StoryObj<typeof Polygon>;
+export default meta;
+type Story = StoryObj<PolygonStoryArgs>;
 
 export const Default: Story = {
   args: {

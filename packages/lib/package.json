@@ -1,6 +1,6 @@
 {
   "name": "@rodrito/react-here-maps",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
@@ -25,9 +25,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm prebuild && tsdown",
+    "build": "pnpm prebuild && pnpm type-check && tsdown",
     "dev": "tsdown --watch",
     "prebuild": "pnpm lint:fix && pnpm format:write && pnpm check:fix",
+    "type-check": "tsc --noEmit",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format": "biome format .",

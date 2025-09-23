@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { withHereMap } from "../../../.storybook/decorators";
+import type { ZoomControlProps } from "./types";
 import { ZoomControl } from "./zoom-control";
 
-const meta: Meta<typeof ZoomControl> = {
+type ZoomControlStoryArgs = ZoomControlProps & { apikey: string };
+
+const meta: Meta<ZoomControlStoryArgs> = {
   title: "Components/ZoomControl",
   component: ZoomControl,
   decorators: [withHereMap],
@@ -15,7 +18,7 @@ const meta: Meta<typeof ZoomControl> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof ZoomControl>;
+type Story = StoryObj<ZoomControlStoryArgs>;
 
 export const Default: Story = {
   args: {

@@ -7,7 +7,7 @@
     "module": "ESNext", // indicates that we will be compiling the code into the latest version of JavaScript modules
     "declaration": true,
     "declarationDir": "types",
-    "rootDir": "./src",
+    "rootDir": ".",
     "sourceMap": true, // tells the compiler that we want source map generation
     "outDir": "dist",
     "moduleResolution": "node",

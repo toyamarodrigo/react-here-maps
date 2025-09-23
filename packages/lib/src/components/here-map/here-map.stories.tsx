@@ -6,8 +6,11 @@ import { ScaleBar } from "../scale-bar/scale-bar";
 import { ZoomControl } from "../zoom-control/zoom-control";
 import { HereMap } from "./here-map";
 import "@here/maps-api-for-javascript";
+import type { HereMapProps } from "./types";
 
-const meta: Meta<typeof HereMap> = {
+type HereMapStoryArgs = HereMapProps & { apikey: string };
+
+const meta: Meta<HereMapStoryArgs> = {
   title: "Components/HereMap",
   component: HereMap,
   parameters: {
@@ -16,7 +19,7 @@ const meta: Meta<typeof HereMap> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof HereMap>;
+type Story = StoryObj<HereMapStoryArgs>;
 
 export const Default: Story = {
   args: {

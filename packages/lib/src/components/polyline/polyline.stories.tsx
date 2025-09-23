@@ -1,14 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { withHereMap } from "../../../.storybook/decorators";
 import { Polyline } from "./polyline";
+import type { PolylineProps } from "./types";
 
-export default {
+type PolylineStoryArgs = PolylineProps & { apikey: string };
+
+const meta: Meta<PolylineStoryArgs> = {
   title: "Components/Polyline",
   component: Polyline,
   decorators: [withHereMap],
-} as Meta;
+};
 
-type Story = StoryObj<typeof Polyline>;
+export default meta;
+type Story = StoryObj<PolylineStoryArgs>;
 
 export const Default: Story = {
   args: {

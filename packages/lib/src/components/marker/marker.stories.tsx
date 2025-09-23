@@ -1,15 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { withHereMap } from "../../../.storybook/decorators";
 import { Marker } from "./marker";
+import type { MarkerProps } from "./types";
 
-const meta: Meta<typeof Marker> = {
+type MarkerStoryArgs = MarkerProps & { apikey: string };
+
+const meta: Meta<MarkerStoryArgs> = {
   title: "Components/Marker",
   component: Marker,
   decorators: [withHereMap],
 };
 
 export default meta;
-type Story = StoryObj<typeof Marker>;
+type Story = StoryObj<MarkerStoryArgs>;
 
 export const Default: Story = {
   args: {

@@ -1,15 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { withHereMap } from "../../../.storybook/decorators";
 import { MapSettings } from "./map-settings";
+import type { MapSettingsControlProps } from "./types";
 
-const meta: Meta<typeof MapSettings> = {
+type MapSettingsStoryArgs = MapSettingsControlProps & { apikey: string };
+
+const meta: Meta<MapSettingsStoryArgs> = {
   title: "Components/MapSettings",
   component: MapSettings,
   decorators: [withHereMap],
 };
 
 export default meta;
-type Story = StoryObj<typeof MapSettings>;
+type Story = StoryObj<MapSettingsStoryArgs>;
 
 export const Default: Story = {
   args: {
