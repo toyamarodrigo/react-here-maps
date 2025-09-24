@@ -5,8 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build": "pnpm prebuild && pnpm type-check && tsc && vite build",
+    "prebuild": "pnpm lint:fix && pnpm format:write && pnpm check:fix",
+    "type-check": "tsc --noEmit",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format .",
+    "format:write": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "preview": "vite preview"
   },
   "workspaces": [
@@ -19,14 +26,10 @@
     "react-select": "^5.8.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.4",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^8.43.0",
-    "@typescript-eslint/parser": "^8.43.0",
     "@vitejs/plugin-react": "^5.0.2",
-    "eslint": "^9.35.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.3.3",
     "vite": "^7.1.5"
   }
