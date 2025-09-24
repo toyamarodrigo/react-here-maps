@@ -1,0 +1,92 @@
+---
+description: "File naming conventions and directory structure standards"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Naming Conventions and File Structure
+
+## Directory Structure
+
+- Use lowercase with dashes (kebab-case)
+- Example: `components/auth-wizard`, `hooks/user-management`
+
+## File Extensions and Naming
+
+### Components
+
+- Format: `kebab-case.tsx`
+- Examples: `auth-wizard.view.tsx`, `user-profile.component.tsx`
+
+### Hooks and Utils
+
+- Format: `use-kebab-case.ts` for hooks, `kebab-case.ts` for utilities
+- Examples: `use-user-query.ts`, `create-user.ts`, `format-utils.ts`
+
+### Services
+
+- Format: `kebab-case.api.ts`
+- Examples: `user.api.ts`, `auth.api.ts`, `payment.api.ts`
+
+### Mappers
+
+- Format: `kebab-case-mapper.ts`
+- Examples: `user-mapper.ts`, `api-response-mapper.ts`
+
+### Types
+
+- Format: `kebab-case.types.ts`
+- Examples: `api.types.ts`, `user.types.ts`, `form.types.ts`
+
+### Stores
+
+- Format: `kebab-case.store.ts`
+- Examples: `user.store.ts`, `auth.store.ts`, `app.store.ts`
+
+### Documentation
+
+- Format: `UPPERCASE.md`
+- Examples: `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`
+
+## Example Project Structure
+
+```txt
+src/
+├── components/
+│   ├── auth-wizard/
+│   │   ├── auth-wizard.view.tsx
+│   │   └── auth-wizard.types.ts
+│   └── user-profile/
+│       ├── user-profile.component.tsx
+│       └── user-profile.styles.ts
+├── hooks/
+│   ├── use-user-query.ts
+│   └── use-auth-state.ts
+├── services/
+│   ├── user.api.ts
+│   └── auth.api.ts
+├── stores/
+│   ├── user.store.ts
+│   └── app.store.ts
+├── types/
+│   ├── api.types.ts
+│   └── user.types.ts
+└── utils/
+    ├── format-utils.ts
+    └── validation-utils.ts
+```
+
+## Variable and Function Naming
+
+- Use descriptive names with auxiliary verbs
+- Examples: `isLoading`, `hasError`, `canSubmit`, `shouldRender`
+- Boolean variables: `is*`, `has*`, `can*`, `should*`
+- Event handlers: `handle*`, `on*`
+- Async functions: use descriptive verbs like `fetch*`, `create*`, `update*`, `delete*`
+
+## Component and Interface Naming
+
+- Components: PascalCase (e.g., `UserProfile`, `AuthWizard`)
+- Interfaces: PascalCase with descriptive suffixes (e.g., `UserProfileProps`, `ApiResponse`)
+- Types: PascalCase (e.g., `User`, `AuthState`)
+- Enums: PascalCase (e.g., `UserRole`, `ApiStatus`)

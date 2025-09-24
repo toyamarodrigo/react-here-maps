@@ -2,30 +2,43 @@
 
 ## @TODO: Documentation & Testing Migration (Priority)
 
-### Phase 0: Tooling Migration
+### Phase 0: Tooling Migration ✅ COMPLETED
 
-- [ ] **Migrate Web App ESLint to Biome** (like lib package)
-  - [ ] Install `@biomejs/biome` in `app/www/`
-  - [ ] Create `biome.json` configuration based on lib package
-  - [ ] Update package.json scripts to use Biome instead of ESLint
-  - [ ] Remove ESLint dependencies and configuration files
-  - [ ] Test linting and formatting commands
+- [x] **Migrate Web App ESLint to Biome** (like lib package)
+  - [x] Install `@biomejs/biome` in `app/www/`
+  - [x] Create `biome.json` configuration based on lib package
+  - [x] Update package.json scripts to use Biome instead of ESLint
+  - [x] Remove ESLint dependencies and configuration files
+  - [x] Test linting and formatting commands
   - [ ] Update CI/CD workflows if needed
 
-### Phase 1: Setup Nextra Documentation Site
+### Phase 1: Setup Mintlify Documentation Site ✅ COMPLETED (Nextra Working)
 
-- [ ] Create new `apps/docs/` directory in monorepo
-- [ ] Install Nextra in `apps/docs/`
-- [ ] Configure Nextra with React HERE Maps theme
-- [ ] Add docs workspace to `pnpm-workspace.yaml`
-- [ ] Setup basic pages structure:
-  - [ ] Getting Started guide
-  - [ ] Component reference pages
-  - [ ] API documentation
-  - [ ] Examples gallery
-- [ ] Create interactive component playground
-- [ ] Configure to import from `@rodrito/react-here-maps`
-- [ ] Setup deployment to Vercel/Netlify
+**Note**: Nextra implementation completed successfully, but migrating to Mintlify for superior documentation experience.
+
+#### Completed with Nextra
+
+- [x] **Create new `apps/docs/` directory in monorepo**
+- [x] **Restructure from `app/*` to `apps/*` pattern**
+- [x] **Setup functional documentation site with Pages Router**
+- [x] **Add docs workspace to `pnpm-workspace.yaml`**
+- [x] **Configure build system and resolve all compatibility issues**
+
+#### Next: Migrate to Mintlify
+
+- [ ] **Install Mintlify CLI globally**: `npm i -g mint`
+- [ ] **Replace Nextra setup with Mintlify in `apps/docs/`**
+- [ ] **Create `docs.json` configuration with React HERE Maps branding**
+- [ ] **Convert existing MDX files to Mintlify format**
+- [ ] **Setup enhanced documentation structure**:
+  - [ ] Getting Started guide (enhanced)
+  - [ ] Component reference pages with API docs
+  - [ ] Interactive API documentation with OpenAPI
+  - [ ] Examples gallery with live playground
+- [ ] **Create OpenAPI specification for component APIs**
+- [ ] **Configure authentication for private sections (optional)**
+- [ ] **Setup Mintlify managed deployment** (automatic from Git)
+- [ ] **Remove Nextra dependencies after migration**
 
 ### Phase 2: Modern Testing Setup
 
@@ -68,13 +81,13 @@
 ### Tools & Dependencies to Install
 
 ```bash
-# Documentation (in apps/docs/)
-cd apps/docs
-pnpm add nextra nextra-theme-docs next react react-dom
-pnpm add @rodrito/react-here-maps
+# Documentation (Mintlify CLI only)
+npm i -g mint
+
+# No additional dependencies needed in apps/docs/
+# Mintlify works with just MDX files + docs.json configuration
 
 # Testing (in root)
-cd ../..
 pnpm add -D vitest @vitejs/plugin-react
 pnpm add -D @testing-library/react @testing-library/jest-dom
 pnpm add -D @playwright/test @playwright/experimental-ct-react
@@ -83,8 +96,7 @@ pnpm add -D jsdom happy-dom
 # Optional: Visual regression
 pnpm add -D @percy/playwright chromatic
 
-# Update workspace
-# Add "apps/docs" to pnpm-workspace.yaml
+# Note: apps/docs already added to pnpm-workspace.yaml ✅
 ```
 
 ### File Structure After Migration
@@ -95,26 +107,32 @@ pnpm add -D @percy/playwright chromatic
 │   └── lib/              # React HERE Maps library (keep Storybook for dev)
 ├── apps/
 │   ├── www/              # Demo application (existing)
-│   └── docs/             # Nextra documentation site (new)
-│       ├── pages/
-│       │   ├── components/
-│       │   ├── guides/
-│       │   └── examples/
-│       └── components/   # Interactive examples
+│   └── docs/             # Mintlify documentation site ✅
+│       ├── docs.json     # Mintlify configuration
+│       ├── openapi.json  # API specification (optional)
+│       └── pages/        # MDX documentation files
+│           ├── quickstart.mdx
+│           ├── components/
+│           ├── guides/
+│           └── examples/
 ├── tests/
 │   ├── unit/             # Vitest + RTL tests
 │   ├── integration/      # Playwright component tests
 │   └── e2e/             # End-to-end tests
-└── pnpm-workspace.yaml   # Update to include apps/docs
+└── pnpm-workspace.yaml   # Already includes apps/docs ✅
 ```
 
 ### Benefits of This Approach
 
 - ✅ Keep Storybook for development workflow
-- ✅ Modern, fast documentation site for users
+- ✅ **Mintlify**: Superior documentation platform with managed hosting
+- ✅ **Built-in API playground**: Interactive component testing
+- ✅ **Simpler setup**: No Next.js complexity, just MDX + docs.json
+- ✅ **Professional themes**: Out-of-the-box beautiful documentation
+- ✅ **OpenAPI integration**: Programmatic API documentation
+- ✅ **Authentication ready**: Private documentation sections
 - ✅ Comprehensive testing strategy
 - ✅ Better maintainability and performance
-- ✅ Professional documentation experience
 
 ---
 

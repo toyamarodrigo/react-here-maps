@@ -1,0 +1,101 @@
+---
+description: "React component development standards and best practices"
+globs: ["**/*.tsx", "src/components/**/*.ts"]
+alwaysApply: false
+---
+
+# React Component Development Standards
+
+## Component Structure Guidelines
+
+- File layout: exported component → subcomponents → hooks/helpers → static content
+- Use functional components with hooks; avoid classes
+- Memoize with React.memo, useCallback, useMemo where appropriate
+- Avoid inline functions in JSX—pull handlers out or wrap in useCallback
+- Favor composition (render props, children) over inheritance
+
+## Component File Structure
+
+```typescript
+import React, { useCallback, useMemo } from 'react';
+import { useUserQuery } from '../hooks/use-user-query';
+
+// Types
+interface UserProfileProps {
+  userId: string;
+  onUpdate: (user: User) => void;
+}
+
+// Main component
+export const UserProfile: React.FC<UserProfileProps> = ({ userId, onUpdate }) => {
+  // Hooks
+  const { data: user, isLoading, error } = useUserQuery(userId);
+  
+  // Handlers (memoized)
+  const handleUpdate = useCallback((updatedUser: User) => {
+    onUpdate(updatedUser);
+  }, [onUpdate]);
+
+  // Computed values
+  const displayName = useMemo(() => 
+    user ? `${user.firstName} ${user.lastName}` : '', [user]
+  );
+
+  // Guard clauses (early returns)
+  if (!userId) return <div>No user ID provided</div>;
+  if (error) return <ErrorBoundary error={error} />;
+  if (isLoading) return <LoadingSpinner />;
+  if (!user) return <div>User not found</div>;
+
+  // Happy path
+  return (
+    <div className="user-profile">
+      <h2>{displayName}</h2>
+      <UserDetails user={user} onUpdate={handleUpdate} />
+    </div>
+  );
+};
+
+// Subcomponents
+const LoadingSpinner: React.FC = React.memo(() => (
+  <div className="animate-spin">Loading...</div>
+));
+
+const ErrorBoundary: React.FC<{ error: Error }> = React.memo(({ error }) => (
+  <div className="error-message">Error: {error.message}</div>
+));
+
+// Helpers
+const formatUserName = (user: User): string => `${user.firstName} ${user.lastName}`;
+```
+
+## Performance Optimization
+
+- If React 19 is not used, keep in mind stuff below:
+  - Use React.memo for pure components
+  - Use useCallback for event handlers passed to child components
+  - Use useMemo for expensive computations
+- Use React.lazy + Suspense for code splitting
+- Use refs only for direct DOM access
+
+## Error Handling Pattern
+
+- Use guard clauses (early returns) for error handling
+- Place happy-path logic last
+- Provide clear, user-friendly error messages
+
+```typescript
+// Error handling pattern
+const DataComponent: React.FC<{ id?: string }> = ({ id }) => {
+  const { data, error, isLoading } = useQuery(id);
+
+  // Guard clauses
+  if (!id) return <div>No ID provided</div>;
+  if (error) return <ErrorDisplay error={error} />;
+  if (isLoading) return <LoadingState />;
+  if (!data) return <EmptyState />;
+
+  // Happy path
+  return <DataDisplay data={data} />;
+};
+```

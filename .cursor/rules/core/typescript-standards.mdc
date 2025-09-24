@@ -1,0 +1,66 @@
+---
+description: "Core TypeScript development standards and configuration requirements"
+globs: ["**/*.ts", "**/*.tsx", "tsconfig.json", "package.json"]
+alwaysApply: true
+---
+
+# Core TypeScript Development Standards
+
+## General Guidelines
+
+- When using a technology, get the docs with context7 mcp if any doubts
+- Before implementing always ask if there are any doubts
+- Write concise, technical TypeScript code
+- Use functional, declarative patterns; avoid classes
+- Favor loops and small helper modules over duplicate code
+- Use descriptive names with auxiliary verbs (e.g. isLoading, hasError)
+- Prefer composition over inheritance
+- Do not comment everything - only when necessary
+
+## TypeScript Configuration Requirements
+
+- Enable "strict": true in tsconfig.json
+- Explicitly type function returns and object literals
+- Enforce noImplicitAny, strictNullChecks, strictFunctionTypes
+- Minimize use of @ts-ignore/@ts-expect-error
+
+## Code Examples
+
+### Function Typing
+
+```typescript
+// Good - Explicit return types
+const getUserById = async (id: string): Promise<User | null> => {
+  return await userApi.fetchUser(id);
+};
+
+const processUserData = (users: User[]): ProcessedUser[] => {
+  return users.map(user => ({
+    id: user.id,
+    displayName: `${user.firstName} ${user.lastName}`,
+    isActive: user.status === 'active'
+  }));
+};
+
+// Bad - Missing types
+const getUserById = async (id) => {
+  return await userApi.fetchUser(id);
+};
+```
+
+### Object Literal Typing
+
+```typescript
+// Good - Explicit interface
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+const createResponse = <T>(data: T, status: number): ApiResponse<T> => ({
+  data,
+  status,
+  message: status === 200 ? 'Success' : 'Error'
+});
+```

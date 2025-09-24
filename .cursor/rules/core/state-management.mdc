@@ -1,0 +1,200 @@
+---
+description: "State management patterns using Zustand and TanStack Query"
+globs: ["**/*.store.ts", "**/hooks/use-*.ts", "**/*query*.ts"]
+alwaysApply: false
+---
+
+# State Management Guidelines
+
+## Technology Stack
+
+- **Zustand**: Client-side state management
+- **TanStack Query**: Server state management and data fetching
+- **React Context**: Only for intermediate, tree-wide sharing (avoid when possible)
+- Lift state up before introducing context
+
+## Zustand Store Pattern
+
+### Store Structure
+
+```typescript
+// user.store.ts
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+
+interface UserStore {
+  // State
+  currentUser: User | null;
+  isAuthenticated: boolean;
+  preferences: UserPreferences;
+  
+  // Actions
+  setCurrentUser: (user: User | null) => void;
+  updatePreferences: (preferences: Partial<UserPreferences>) => void;
+  logout: () => void;
+  
+  // Computed (derived state)
+  getDisplayName: () => string;
+}
+
+export const useUserStore = create<UserStore>()(
+  devtools((set, get) => ({
+    // Initial state
+    currentUser: null,
+    isAuthenticated: false,
+    preferences: defaultPreferences,
+    
+    // Actions
+    setCurrentUser: (user) => set({ 
+      currentUser: user, 
+      isAuthenticated: !!user 
+    }),
+    
+    updatePreferences: (newPreferences) => set((state) => ({
+      preferences: { ...state.preferences, ...newPreferences }
+    })),
+    
+    logout: () => set({ 
+      currentUser: null, 
+      isAuthenticated: false,
+      preferences: defaultPreferences
+    }),
+    
+    // Computed values
+    getDisplayName: () => {
+      const user = get().currentUser;
+      return user ? `${user.firstName} ${user.lastName}` : 'Guest';
+    }
+  }))
+);
+```
+
+## TanStack Query Patterns
+
+### Query Hooks
+
+```typescript
+// use-user-query.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { userApi } from '../services/user.api';
+
+export const useUserQuery = (userId: string) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => userApi.fetchUser(userId),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+export const useUsersQuery = (filters?: UserFilters) => {
+  return useQuery({
+    queryKey: ['users', filters],
+    queryFn: () => userApi.fetchUsers(filters),
+    keepPreviousData: true,
+  });
+};
+```
+
+### Mutation Hooks
+
+```typescript
+// use-user-mutations.ts
+export const useCreateUserMutation = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: userApi.createUser,
+    onSuccess: (newUser) => {
+      // Invalidate and refetch users list
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      
+      // Add new user to cache
+      queryClient.setQueryData(['user', newUser.id], newUser);
+    },
+    onError: (error) => {
+      console.error('Failed to create user:', error);
+    }
+  });
+};
+
+export const useUpdateUserMutation = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<User> }) => 
+      userApi.updateUser(id, data),
+    onSuccess: (updatedUser, { id }) => {
+      // Update specific user in cache
+      queryClient.setQueryData(['user', id], updatedUser);
+      
+      // Update user in users list if it exists
+      queryClient.setQueryData(['users'], (old: User[] | undefined) => 
+        old?.map(user => user.id === id ? updatedUser : user)
+      );
+    }
+  });
+};
+```
+
+## State Management Best Practices
+
+### When to Use Each Solution
+
+- **Zustand**: UI state, user preferences, app-wide settings, authentication state
+- **TanStack Query**: Server data, API responses, caching, background updates
+- **React State (useState)**: Local component state, form inputs, UI toggles
+- **React Context**: Theme, locale, or other tree-wide configuration (sparingly)
+
+### Avoiding Common Anti-patterns
+
+```typescript
+// Bad - Don't use setState in useEffect
+const BadComponent = () => {
+  const [data, setData] = useState(null);
+  
+  useEffect(() => {
+    setData(someValue); // Anti-pattern
+  }, []);
+  
+  return <div>{data}</div>;
+};
+
+// Good - Use proper data fetching
+const GoodComponent = () => {
+  const { data, isLoading } = useUserQuery(userId);
+  
+  if (isLoading) return <LoadingSpinner />;
+  return <div>{data}</div>;
+};
+```
+
+### State Organization
+
+- Keep stores focused and single-purpose
+- Use computed values for derived state
+- Implement proper loading and error states
+- Cache server data appropriately with TanStack Query
+
+```typescript
+// Good store organization
+interface AuthStore {
+  // Authentication state only
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => void;
+}
+
+interface UIStore {
+  // UI state only  
+  sidebarOpen: boolean;
+  theme: 'light' | 'dark';
+  notifications: Notification[];
+  toggleSidebar: () => void;
+  setTheme: (theme: 'light' | 'dark') => void;
+  addNotification: (notification: Notification) => void;
+}
+```

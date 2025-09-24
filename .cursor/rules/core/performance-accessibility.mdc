@@ -1,0 +1,535 @@
+---
+description: "Performance optimization and accessibility guidelines"
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+
+# Performance and Accessibility Guidelines
+
+## Performance Optimization
+
+### React Performance Patterns
+
+- Minimize client-only code (useEffect/useState) where unnecessary
+- Dynamically import non-critical components
+- Optimize images (WebP, width/height, lazy-loading)
+- Memoize expensive computations with useMemo
+- Wrap pure components in React.memo
+- Structure modules for effective tree-shaking
+
+### Code Splitting and Lazy Loading
+
+```typescript
+// Dynamic imports for code splitting
+const HeavyComponent = React.lazy(() => import('./heavy-component'));
+const AdminPanel = React.lazy(() => import('../admin/admin-panel'));
+
+const App: React.FC = () => (
+  <Router>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/heavy" element={<HeavyComponent />} />
+      </Routes>
+    </Suspense>
+  </Router>
+);
+```
+
+### Memoization Best Practices
+
+```typescript
+// Memoize expensive computations
+const DataVisualization: React.FC<{ data: DataPoint[] }> = ({ data }) => {
+  const processedData = useMemo(() => {
+    // Expensive data processing
+    return data
+      .filter(point => point.isValid)
+      .map(point => ({ ...point, computed: expensiveCalculation(point) }))
+      .sort((a, b) => b.value - a.value);
+  }, [data]);
+
+  const chartConfig = useMemo(() => ({
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' as const },
+      title: { display: true, text: 'Data Visualization' }
+    }
+  }), []);
+
+  return <Chart data={processedData} options={chartConfig} />;
+};
+
+// Memoize components that receive stable props
+const UserCard = React.memo<{ user: User; onEdit: (id: string) => void }>(
+  ({ user, onEdit }) => {
+    const handleEdit = useCallback(() => {
+      onEdit(user.id);
+    }, [user.id, onEdit]);
+
+    return (
+      <div className="user-card">
+        <h3>{user.name}</h3>
+        <p>{user.email}</p>
+        <button onClick={handleEdit}>Edit</button>
+      </div>
+    );
+  }
+);
+
+UserCard.displayName = 'UserCard';
+```
+
+### Image Optimization
+
+```typescript
+// Optimized image component
+interface OptimizedImageProps {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  priority?: boolean;
+  className?: string;
+}
+
+const OptimizedImage: React.FC<OptimizedImageProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  priority = false,
+  className
+}) => {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={priority ? 'eager' : 'lazy'}
+      className={className}
+      style={{ aspectRatio: `${width}/${height}` }}
+    />
+  );
+};
+```
+
+### Anti-patterns to Avoid
+
+```typescript
+// Bad - Unnecessary useEffect
+const BadComponent = () => {
+  const [count, setCount] = useState(0);
+  const [doubled, setDoubled] = useState(0);
+
+  useEffect(() => {
+    setDoubled(count * 2); // Anti-pattern
+  }, [count]);
+
+  return <div>{doubled}</div>;
+};
+
+// Good - Computed value
+const GoodComponent = () => {
+  const [count, setCount] = useState(0);
+  const doubled = useMemo(() => count * 2, [count]); // Or just count * 2
+
+  return <div>{doubled}</div>;
+};
+
+// Bad - Inline object/function creation
+const BadList = ({ items, onSelect }) => (
+  <div>
+    {items.map(item => (
+      <Item
+        key={item.id}
+        item={item}
+        onClick={() => onSelect(item.id)} // Creates new function on every render
+        style={{ marginBottom: '10px' }} // Creates new object on every render
+      />
+    ))}
+  </div>
+);
+
+// Good - Memoized handlers and styles
+const GoodList = ({ items, onSelect }) => {
+  const itemStyle = { marginBottom: '10px' }; // Static object
+  
+  const handleSelect = useCallback((id: string) => {
+    onSelect(id);
+  }, [onSelect]);
+
+  return (
+    <div>
+      {items.map(item => (
+        <MemoizedItem
+          key={item.id}
+          item={item}
+          onSelect={handleSelect}
+          style={itemStyle}
+        />
+      ))}
+    </div>
+  );
+};
+```
+
+## Accessibility Guidelines
+
+### Semantic HTML Usage
+
+- Use semantic HTML elements appropriately
+- Apply appropriate ARIA attributes when semantic HTML isn't sufficient
+- Ensure full keyboard navigation support
+- Provide meaningful alt text for images
+
+```typescript
+// Good semantic HTML structure
+const AccessibleForm: React.FC = () => (
+  <form onSubmit={handleSubmit} noValidate>
+    <fieldset>
+      <legend>User Information</legend>
+      
+      <div className="form-group">
+        <label htmlFor="firstName">
+          First Name
+          <span aria-label="required">*</span>
+        </label>
+        <input
+          id="firstName"
+          type="text"
+          required
+          aria-describedby="firstName-error"
+          aria-invalid={!!errors.firstName}
+        />
+        {errors.firstName && (
+          <div id="firstName-error" role="alert" className="error">
+            {errors.firstName.message}
+          </div>
+        )}
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          aria-describedby="email-help"
+          autoComplete="email"
+        />
+        <div id="email-help" className="help-text">
+          We'll never share your email with anyone else.
+        </div>
+      </div>
+    </fieldset>
+    
+    <button type="submit" disabled={isSubmitting}>
+      {isSubmitting ? 'Submitting...' : 'Submit'}
+    </button>
+  </form>
+);
+```
+
+### ARIA Attributes and Roles
+
+```typescript
+// Accessible modal component
+const Modal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}> = ({ isOpen, onClose, title, children }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      modalRef.current?.focus();
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      onKeyDown={handleKeyDown}
+      ref={modalRef}
+      tabIndex={-1}
+    >
+      <div className="modal-content">
+        <header className="modal-header">
+          <h2 id="modal-title">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="close-button"
+          >
+            ×
+          </button>
+        </header>
+        
+        <main className="modal-body">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};
+```
+
+### Keyboard Navigation
+
+```typescript
+// Accessible dropdown component
+const Dropdown: React.FC<{
+  options: Option[];
+  onSelect: (option: Option) => void;
+  placeholder?: string;
+}> = ({ options, onSelect, placeholder = "Select an option" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+          setFocusedIndex(0);
+        } else {
+          setFocusedIndex(prev => 
+            prev < options.length - 1 ? prev + 1 : prev
+          );
+        }
+        break;
+        
+      case 'ArrowUp':
+        event.preventDefault();
+        if (isOpen) {
+          setFocusedIndex(prev => prev > 0 ? prev - 1 : prev);
+        }
+        break;
+        
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+          setFocusedIndex(0);
+        } else if (focusedIndex >= 0) {
+          onSelect(options[focusedIndex]);
+          setIsOpen(false);
+          buttonRef.current?.focus();
+        }
+        break;
+        
+      case 'Escape':
+        setIsOpen(false);
+        setFocusedIndex(-1);
+        buttonRef.current?.focus();
+        break;
+    }
+  };
+
+  return (
+    <div className="dropdown">
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        className="dropdown-trigger"
+      >
+        {placeholder}
+      </button>
+      
+      {isOpen && (
+        <ul
+          ref={listRef}
+          role="listbox"
+          className="dropdown-menu"
+          onKeyDown={handleKeyDown}
+        >
+          {options.map((option, index) => (
+            <li
+              key={option.value}
+              role="option"
+              aria-selected={index === focusedIndex}
+              className={index === focusedIndex ? 'focused' : ''}
+              onClick={() => {
+                onSelect(option);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+
+### Focus Management
+
+```typescript
+// Custom hook for focus management
+const useFocusManagement = () => {
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
+
+  const captureFocus = () => {
+    previousActiveElementRef.current = document.activeElement as HTMLElement;
+  };
+
+  const restoreFocus = () => {
+    if (previousActiveElementRef.current) {
+      previousActiveElementRef.current.focus();
+    }
+  };
+
+  const trapFocus = (containerElement: HTMLElement) => {
+    const focusableElements = containerElement.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    const handleTabKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+
+      if (event.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          event.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          event.preventDefault();
+        }
+      }
+    };
+
+    containerElement.addEventListener('keydown', handleTabKey);
+    firstElement?.focus();
+
+    return () => {
+      containerElement.removeEventListener('keydown', handleTabKey);
+    };
+  };
+
+  return { captureFocus, restoreFocus, trapFocus };
+};
+```
+
+### Screen Reader Support
+
+```typescript
+// Accessible data table
+const AccessibleTable: React.FC<{
+  data: TableData[];
+  columns: Column[];
+  caption: string;
+}> = ({ data, columns, caption }) => (
+  <table role="table">
+    <caption>{caption}</caption>
+    
+    <thead>
+      <tr role="row">
+        {columns.map(column => (
+          <th
+            key={column.key}
+            role="columnheader"
+            scope="col"
+            aria-sort={column.sortDirection || 'none'}
+          >
+            {column.label}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    
+    <tbody>
+      {data.map((row, rowIndex) => (
+        <tr key={row.id} role="row">
+          {columns.map((column, colIndex) => (
+            <td
+              key={`${row.id}-${column.key}`}
+              role={colIndex === 0 ? 'rowheader' : 'cell'}
+              scope={colIndex === 0 ? 'row' : undefined}
+            >
+              {row[column.key]}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
+
+// Live region for dynamic content updates
+const LiveRegion: React.FC<{
+  message: string;
+  politeness?: 'polite' | 'assertive';
+}> = ({ message, politeness = 'polite' }) => (
+  <div
+    aria-live={politeness}
+    aria-atomic="true"
+    className="sr-only"
+    role="status"
+  >
+    {message}
+  </div>
+);
+```
+
+## Testing Accessibility
+
+```typescript
+// Custom hook for accessibility testing in development
+const useA11yTesting = () => {
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      import('@axe-core/react').then(axe => {
+        axe.default(React, ReactDOM, 1000);
+      });
+    }
+  }, []);
+};
+
+// Usage in main App component
+const App: React.FC = () => {
+  useA11yTesting();
+  
+  return (
+    <div className="app">
+      {/* App content */}
+    </div>
+  );
+};
+```

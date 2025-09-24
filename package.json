@@ -2,17 +2,21 @@
   "name": "react-here-maps",
   "description": "React hooks, components and examples for HERE Maps API JS",
   "workspaces": [
-    "app/**",
+    "apps/**",
     "packages/*"
   ],
   "scripts": {
     "prepare": "pnpm build:lib && pnpm build:web",
     "run:web": "pnpm --filter @rodrito/www dev",
+    "run:docs": "pnpm --filter @rodrito/docs dev",
     "run:storybook": "pnpm --filter @rodrito/react-here-maps storybook",
     "build:web": "pnpm --filter @rodrito/www build",
+    "build:docs": "pnpm --filter @rodrito/docs build",
     "build:storybook-web": "pnpm --filter @rodrito/react-here-maps build-storybook",
     "build:lib": "pnpm --filter @rodrito/react-here-maps build",
+    "build:all": "pnpm build:lib && pnpm build:web && pnpm build:docs",
     "lint:web": "pnpm --filter @rodrito/www lint",
+    "lint:docs": "pnpm --filter @rodrito/docs lint",
     "check:lib": "pnpm --filter @rodrito/react-here-maps publish --access public --dry-run",
     "publish:lib": "pnpm --filter @rodrito/react-here-maps publish --access public"
   },

@@ -1,0 +1,356 @@
+---
+description: "Form handling patterns with React Hook Form and validation"
+globs: ["**/forms/**/*.tsx", "**/*form*.tsx", "**/*schema*.ts"]
+alwaysApply: false
+---
+
+# Forms and Validation Guidelines
+
+## Technology Stack
+
+- **React Hook Form**: For form state management and validation
+- **Zod**: Schema validation library (optional but recommended)
+- **Controlled inputs**: Always use controlled components
+- Separate client-side and server-side validation
+
+## React Hook Form Patterns
+
+### Basic Form Structure
+
+```typescript
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+// Schema definition
+const userSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z.string().email('Invalid email address'),
+  age: z.number().min(18, 'Must be at least 18 years old'),
+});
+
+type UserFormData = z.infer<typeof userSchema>;
+
+const UserForm: React.FC<{ onSubmit: (data: UserFormData) => Promise<void> }> = ({ 
+  onSubmit 
+}) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+    reset,
+    watch
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      age: 18
+    }
+  });
+
+  const onFormSubmit = async (data: UserFormData) => {
+    try {
+      await onSubmit(data);
+      reset();
+    } catch (error) {
+      console.error('Form submission failed:', error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
+      <Controller
+        name="firstName"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <label htmlFor="firstName">First Name</label>
+            <input
+              {...field}
+              id="firstName"
+              type="text"
+              className={errors.firstName ? 'error' : ''}
+              aria-invalid={!!errors.firstName}
+              aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+            />
+            {errors.firstName && (
+              <span id="firstName-error" className="error-message">
+                {errors.firstName.message}
+              </span>
+            )}
+          </div>
+        )}
+      />
+      
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              {...field}
+              id="email"
+              type="email"
+              className={errors.email ? 'error' : ''}
+              aria-invalid={!!errors.email}
+            />
+            {errors.email && (
+              <span className="error-message">{errors.email.message}</span>
+            )}
+          </div>
+        )}
+      />
+
+      <button 
+        type="submit" 
+        disabled={isSubmitting || !isValid}
+        className="submit-button"
+      >
+        {isSubmitting ? 'Saving...' : 'Save User'}
+      </button>
+    </form>
+  );
+};
+```
+
+### Custom Form Hook Pattern
+
+```typescript
+// use-user-form.ts
+export const useUserForm = (initialData?: Partial<UserFormData>) => {
+  const form = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      age: 18,
+      ...initialData
+    }
+  });
+
+  const createUserMutation = useCreateUserMutation();
+  const updateUserMutation = useUpdateUserMutation();
+
+  const onSubmit = async (data: UserFormData) => {
+    if (initialData?.id) {
+      await updateUserMutation.mutateAsync({ id: initialData.id, data });
+    } else {
+      await createUserMutation.mutateAsync(data);
+    }
+    form.reset();
+  };
+
+  return {
+    ...form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: createUserMutation.isLoading || updateUserMutation.isLoading
+  };
+};
+
+// Usage in component
+const UserFormComponent: React.FC = () => {
+  const { control, onSubmit, formState: { errors }, isLoading } = useUserForm();
+  
+  return (
+    <form onSubmit={onSubmit}>
+      {/* Form fields */}
+    </form>
+  );
+};
+```
+
+## Advanced Validation Patterns
+
+### Conditional Validation
+
+```typescript
+const conditionalSchema = z.object({
+  userType: z.enum(['individual', 'business']),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  businessName: z.string().optional(),
+  taxId: z.string().optional(),
+}).refine((data) => {
+  if (data.userType === 'business') {
+    return data.businessName && data.taxId;
+  }
+  return true;
+}, {
+  message: "Business name and tax ID are required for business accounts",
+  path: ['businessName']
+});
+```
+
+### Dynamic Field Validation
+
+```typescript
+const useDynamicValidation = () => {
+  const watchUserType = watch('userType');
+  
+  const validationSchema = useMemo(() => {
+    const baseSchema = z.object({
+      userType: z.enum(['individual', 'business']),
+      firstName: z.string().min(1),
+      lastName: z.string().min(1),
+    });
+
+    if (watchUserType === 'business') {
+      return baseSchema.extend({
+        businessName: z.string().min(1, 'Business name required'),
+        taxId: z.string().min(1, 'Tax ID required'),
+      });
+    }
+
+    return baseSchema;
+  }, [watchUserType]);
+
+  return validationSchema;
+};
+```
+
+## Form State Management
+
+### Loading and Error States
+
+```typescript
+const FormWithStates: React.FC = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting, isDirty, isValid },
+    setError,
+    clearErrors
+  } = useForm<FormData>();
+
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      setServerError(null);
+      clearErrors();
+      
+      await submitForm(data);
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        // Set field-specific errors
+        error.fieldErrors.forEach(({ field, message }) => {
+          setError(field as keyof FormData, { message });
+        });
+      } else {
+        // Set general server error
+        setServerError('Something went wrong. Please try again.');
+      }
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {serverError && (
+        <div className="server-error" role="alert">
+          {serverError}
+        </div>
+      )}
+      
+      {/* Form fields */}
+      
+      <button 
+        type="submit" 
+        disabled={isSubmitting || !isDirty || !isValid}
+      >
+        {isSubmitting ? 'Submitting...' : 'Submit'}
+      </button>
+    </form>
+  );
+};
+```
+
+### Form Reset and Default Values
+
+```typescript
+const EditUserForm: React.FC<{ userId: string }> = ({ userId }) => {
+  const { data: user, isLoading } = useUserQuery(userId);
+  
+  const form = useForm<UserFormData>({
+    resolver: zodResolver(userSchema)
+  });
+
+  // Reset form when user data loads
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        age: user.age
+      });
+    }
+  }, [user, form]);
+
+  if (isLoading) return <LoadingSpinner />;
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      {/* Form implementation */}
+    </form>
+  );
+};
+```
+
+## Accessibility Best Practices
+
+- Use proper labels and ARIA attributes
+- Implement proper error messaging with aria-describedby
+- Ensure keyboard navigation works correctly
+- Use semantic HTML form elements
+
+```typescript
+// Accessible form field component
+const FormField: React.FC<{
+  name: string;
+  label: string;
+  control: Control<any>;
+  type?: string;
+  required?: boolean;
+}> = ({ name, label, control, type = 'text', required = false }) => (
+  <Controller
+    name={name}
+    control={control}
+    render={({ field, fieldState: { error } }) => (
+      <div className="form-field">
+        <label 
+          htmlFor={field.name}
+          className={required ? 'required' : ''}
+        >
+          {label}
+          {required && <span aria-label="required">*</span>}
+        </label>
+        
+        <input
+          {...field}
+          id={field.name}
+          type={type}
+          className={error ? 'error' : ''}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${field.name}-error` : undefined}
+          aria-required={required}
+        />
+        
+        {error && (
+          <span 
+            id={`${field.name}-error`}
+            className="error-message"
+            role="alert"
+          >
+            {error.message}
+          </span>
+        )}
+      </div>
+    )}
+  />
+);
+```

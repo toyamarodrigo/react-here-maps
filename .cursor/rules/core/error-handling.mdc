@@ -1,0 +1,463 @@
+---
+description: "Error handling patterns and debugging best practices"
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+# Error Handling and Debugging Guidelines
+
+## Error Handling Patterns
+
+### Guard Clauses and Early Returns
+
+- Validate inputs and preconditions early (guard clauses)
+- Place happy-path logic last
+- Provide clear, user-friendly error messages
+- Log or report unexpected errors
+
+```typescript
+// Good error handling with guard clauses
+const processUserData = (userId?: string, userData?: UserData): ProcessedUser => {
+  // Guard clauses
+  if (!userId) {
+    throw new ValidationError('User ID is required');
+  }
+  
+  if (!userData) {
+    throw new ValidationError('User data is required');
+  }
+  
+  if (!userData.email || !isValidEmail(userData.email)) {
+    throw new ValidationError('Valid email address is required');
+  }
+  
+  if (userData.age < 18) {
+    throw new ValidationError('User must be at least 18 years old');
+  }
+  
+  // Happy path - main logic
+  return {
+    id: userId,
+    displayName: `${userData.firstName} ${userData.lastName}`,
+    email: userData.email.toLowerCase(),
+    isAdult: userData.age >= 18,
+    createdAt: new Date().toISOString()
+  };
+};
+```
+
+### Component Error Boundaries
+
+```typescript
+// Error boundary component
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+}
+
+class ErrorBoundary extends React.Component<
+  React.PropsWithChildren<{ fallback?: React.ComponentType<{ error: Error }> }>,
+  ErrorBoundaryState
+> {
+  constructor(props: React.PropsWithChildren<{}>) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    this.setState({ errorInfo });
+    
+    // Log error to monitoring service
+    console.error('Error caught by boundary:', error, errorInfo);
+    
+    // Report to error tracking service (e.g., Sentry)
+    if (process.env.NODE_ENV === 'production') {
+      // reportError(error, errorInfo);
+    }
+  }
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      const FallbackComponent = this.props.fallback || DefaultErrorFallback;
+      return <FallbackComponent error={this.state.error} />;
+    }
+
+    return this.props.children;
+  }
+}
+
+// Default error fallback component
+const DefaultErrorFallback: React.FC<{ error: Error }> = ({ error }) => (
+  <div className="error-boundary" role="alert">
+    <h2>Something went wrong</h2>
+    <p>We're sorry, but something unexpected happened.</p>
+    {process.env.NODE_ENV === 'development' && (
+      <details>
+        <summary>Error details (development only)</summary>
+        <pre>{error.message}</pre>
+        <pre>{error.stack}</pre>
+      </details>
+    )}
+    <button onClick={() => window.location.reload()}>
+      Reload page
+    </button>
+  </div>
+);
+
+// Usage
+const App: React.FC = () => (
+  <ErrorBoundary fallback={CustomErrorFallback}>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/users" element={<UsersPage />} />
+      </Routes>
+    </Router>
+  </ErrorBoundary>
+);
+```
+
+### Custom Error Classes
+
+```typescript
+// Custom error types
+class AppError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public statusCode: number = 500
+  ) {
+    super(message);
+    this.name = 'AppError';
+  }
+}
+
+class ValidationError extends AppError {
+  constructor(message: string, public field?: string) {
+    super(message, 'VALIDATION_ERROR', 400);
+    this.name = 'ValidationError';
+  }
+}
+
+class NetworkError extends AppError {
+  constructor(message: string, public url?: string) {
+    super(message, 'NETWORK_ERROR', 500);
+    this.name = 'NetworkError';
+  }
+}
+
+class AuthenticationError extends AppError {
+  constructor(message: string = 'Authentication required') {
+    super(message, 'AUTH_ERROR', 401);
+    this.name = 'AuthenticationError';
+  }
+}
+
+// Error handling utilities
+const handleApiError = (error: unknown): AppError => {
+  if (error instanceof AppError) {
+    return error;
+  }
+  
+  if (error instanceof TypeError && error.message.includes('fetch')) {
+    return new NetworkError('Network request failed');
+  }
+  
+  if (error instanceof Error) {
+    return new AppError(error.message, 'UNKNOWN_ERROR');
+  }
+  
+  return new AppError('An unexpected error occurred', 'UNKNOWN_ERROR');
+};
+```
+
+### Async Error Handling
+
+```typescript
+// Safe async wrapper
+const safeAsync = <T>(
+  asyncFn: () => Promise<T>
+): Promise<[T | null, AppError | null]> => {
+  return asyncFn()
+    .then((data): [T, null] => [data, null])
+    .catch((error): [null, AppError] => [null, handleApiError(error)]);
+};
+
+// Usage example
+const UserProfile: React.FC<{ userId: string }> = ({ userId }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      const [userData, fetchError] = await safeAsync(() => 
+        userApi.fetchUser(userId)
+      );
+      
+      if (fetchError) {
+        setError(fetchError.message);
+      } else {
+        setUser(userData);
+      }
+      
+      setIsLoading(false);
+    };
+
+    fetchUser();
+  }, [userId]);
+
+  // Guard clauses
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <ErrorMessage message={error} />;
+  if (!user) return <div>User not found</div>;
+
+  // Happy path
+  return <UserDetails user={user} />;
+};
+```
+
+### Form Error Handling
+
+```typescript
+// Form error handling with detailed validation
+const useFormWithErrorHandling = <T extends Record<string, any>>(
+  schema: z.ZodSchema<T>
+) => {
+  const form = useForm<T>({
+    resolver: zodResolver(schema)
+  });
+
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const handleSubmit = async (
+    onSubmit: (data: T) => Promise<void>
+  ) => {
+    return form.handleSubmit(async (data) => {
+      try {
+        setServerError(null);
+        await onSubmit(data);
+      } catch (error) {
+        const appError = handleApiError(error);
+        
+        if (appError instanceof ValidationError && appError.field) {
+          form.setError(appError.field as keyof T, {
+            message: appError.message
+          });
+        } else {
+          setServerError(appError.message);
+        }
+      }
+    });
+  };
+
+  return {
+    ...form,
+    handleSubmit,
+    serverError,
+    clearServerError: () => setServerError(null)
+  };
+};
+```
+
+## Debugging Best Practices
+
+### Development Logging
+
+```typescript
+// Structured logging utility
+const logger = {
+  debug: (message: string, data?: any) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🐛 [DEBUG] ${message}`, data || '');
+    }
+  },
+  
+  info: (message: string, data?: any) => {
+    console.log(`ℹ️ [INFO] ${message}`, data || '');
+  },
+  
+  warn: (message: string, data?: any) => {
+    console.warn(`⚠️ [WARN] ${message}`, data || '');
+  },
+  
+  error: (message: string, error?: Error | unknown) => {
+    console.error(`❌ [ERROR] ${message}`, error || '');
+    
+    // In production, send to error tracking service
+    if (process.env.NODE_ENV === 'production' && error) {
+      // reportError(error);
+    }
+  }
+};
+
+// Usage in components
+const DataFetcher: React.FC<{ userId: string }> = ({ userId }) => {
+  useEffect(() => {
+    logger.debug('Starting user data fetch', { userId });
+    
+    fetchUserData(userId)
+      .then(user => {
+        logger.info('User data fetched successfully', { userId, userName: user.name });
+        setUser(user);
+      })
+      .catch(error => {
+        logger.error('Failed to fetch user data', error);
+        setError(error.message);
+      });
+  }, [userId]);
+
+  // Component implementation...
+};
+```
+
+### Development Tools Integration
+
+```typescript
+// Custom hook for debugging component renders
+const useRenderLogger = (componentName: string, props: Record<string, any>) => {
+  const prevProps = useRef<Record<string, any>>();
+  
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      if (prevProps.current) {
+        const changedProps = Object.keys(props).filter(
+          key => prevProps.current![key] !== props[key]
+        );
+        
+        if (changedProps.length > 0) {
+          logger.debug(`${componentName} re-rendered`, {
+            changedProps,
+            prevProps: prevProps.current,
+            currentProps: props
+          });
+        }
+      } else {
+        logger.debug(`${componentName} mounted`, props);
+      }
+      
+      prevProps.current = props;
+    }
+  });
+};
+
+// Usage
+const ExpensiveComponent: React.FC<{ data: any[]; filter: string }> = ({ 
+  data, 
+  filter 
+}) => {
+  useRenderLogger('ExpensiveComponent', { dataLength: data.length, filter });
+  
+  // Component implementation...
+};
+```
+
+### Performance Debugging
+
+```typescript
+// Custom hook for performance monitoring
+const usePerformanceMonitor = (operationName: string) => {
+  const startTime = useRef<number>();
+  
+  const startMeasure = useCallback(() => {
+    startTime.current = performance.now();
+    logger.debug(`Started ${operationName}`);
+  }, [operationName]);
+  
+  const endMeasure = useCallback(() => {
+    if (startTime.current) {
+      const duration = performance.now() - startTime.current;
+      logger.debug(`${operationName} completed in ${duration.toFixed(2)}ms`);
+      
+      // Log slow operations
+      if (duration > 100) {
+        logger.warn(`Slow operation detected: ${operationName}`, { duration });
+      }
+    }
+  }, [operationName]);
+  
+  return { startMeasure, endMeasure };
+};
+
+// Usage
+const DataProcessor: React.FC<{ data: any[] }> = ({ data }) => {
+  const { startMeasure, endMeasure } = usePerformanceMonitor('Data Processing');
+  
+  const processedData = useMemo(() => {
+    startMeasure();
+    const result = expensiveDataProcessing(data);
+    endMeasure();
+    return result;
+  }, [data, startMeasure, endMeasure]);
+  
+  return <div>{/* Render processed data */}</div>;
+};
+```
+
+### Error Recovery Strategies
+
+```typescript
+// Retry mechanism for failed operations
+const useRetry = <T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  delay: number = 1000
+) => {
+  const [state, setState] = useState<{
+    data: T | null;
+    error: Error | null;
+    isLoading: boolean;
+    retryCount: number;
+  }>({
+    data: null,
+    error: null,
+    isLoading: false,
+    retryCount: 0
+  });
+
+  const execute = useCallback(async () => {
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
+
+    const attemptOperation = async (attempt: number): Promise<void> => {
+      try {
+        const result = await operation();
+        setState({
+          data: result,
+          error: null,
+          isLoading: false,
+          retryCount: attempt
+        });
+      } catch (error) {
+        if (attempt < maxRetries) {
+          logger.warn(`Operation failed, retrying (${attempt + 1}/${maxRetries})`, error);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          await attemptOperation(attempt + 1);
+        } else {
+          setState({
+            data: null,
+            error: error as Error,
+            isLoading: false,
+            retryCount: attempt
+          });
+        }
+      }
+    };
+
+    await attemptOperation(0);
+  }, [operation, maxRetries, delay]);
+
+  return {
+    ...state,
+    execute,
+    retry: execute
+  };
+};
+```
