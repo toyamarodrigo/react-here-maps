@@ -1,0 +1,154 @@
+---
+title: 'ZoomControl'
+description: 'Add zoom in/out controls to the map'
+---
+
+# ZoomControl
+
+The `ZoomControl` component adds interactive zoom controls (+/-) to the map.
+
+## Props
+
+<ParamField path="alignment" type="string">
+  Position of the zoom control on the map
+
+  Options:
+  - `'left-top'`
+  - `'left-middle'`
+  - `'left-bottom'`
+  - `'right-top'` (default)
+  - `'right-middle'`
+  - `'right-bottom'`
+  - `'top-left'`
+  - `'top-center'`
+  - `'top-right'`
+  - `'bottom-left'`
+  - `'bottom-center'`
+  - `'bottom-right'`
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default={false}>
+  Disable the zoom control
+</ParamField>
+
+<ParamField path="visibility" type="boolean" default={true}>
+  Control visibility of the zoom control
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap, ZoomControl } from '@rodrito/react-here-maps';
+
+function MapWithZoom() {
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    >
+      <ZoomControl />
+    </HereMap>
+  );
+}
+```
+
+## Custom Position
+
+```tsx
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <ZoomControl alignment="left-top" />
+</HereMap>
+```
+
+## Multiple Controls
+
+Position controls at different locations:
+
+```tsx
+import { HereMap, ZoomControl, ScaleBar, MapSettings } from '@rodrito/react-here-maps';
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <ZoomControl alignment="right-top" />
+  <ScaleBar alignment="bottom-right" />
+  <MapSettings alignment="right-bottom" />
+</HereMap>
+```
+
+## Conditional Visibility
+
+```tsx
+import { useState } from 'react';
+
+function ConditionalControls() {
+  const [showControls, setShowControls] = useState(true);
+
+  return (
+    <>
+      <button onClick={() => setShowControls(!showControls)}>
+        Toggle Controls
+      </button>
+
+      <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+        <ZoomControl visibility={showControls} />
+      </HereMap>
+    </>
+  );
+}
+```
+
+## Disabled State
+
+```tsx
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <ZoomControl disabled />
+</HereMap>
+```
+
+## Alignment Options
+
+<CardGroup cols={3}>
+  <Card title="Top Alignments">
+    - `left-top`
+    - `top-center`
+    - `right-top`
+  </Card>
+  <Card title="Middle Alignments">
+    - `left-middle`
+    - `right-middle`
+  </Card>
+  <Card title="Bottom Alignments">
+    - `left-bottom`
+    - `bottom-center`
+    - `right-bottom`
+  </Card>
+</CardGroup>
+
+## Keyboard Shortcuts
+
+Users can also zoom using:
+- **+** / **-** keys
+- **Mouse wheel**
+- **Double-click** to zoom in
+- **Shift + Double-click** to zoom out
+- **Pinch gesture** on touch devices
+
+## Accessibility
+
+The zoom control is keyboard accessible and screen reader friendly:
+- Tab to focus
+- Enter/Space to activate
+- Proper ARIA labels
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="ScaleBar" icon="ruler" href="/components/scale-bar">
+    Distance scale indicator
+  </Card>
+  <Card title="MapSettings" icon="sliders" href="/components/map-settings">
+    Map configuration controls
+  </Card>
+  <Card title="HereMap" icon="map" href="/components/here-map">
+    Main map component
+  </Card>
+</CardGroup>

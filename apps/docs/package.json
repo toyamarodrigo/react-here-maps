@@ -1,0 +1,20 @@
+{
+  "name": "@rodrito/docs",
+  "version": "1.0.0",
+  "description": "React HERE Maps documentation",
+  "private": true,
+  "scripts": {
+    "dev": "mint dev",
+    "build": "mint build",
+    "install-cli": "npm install -g mint"
+  },
+  "keywords": [
+    "react",
+    "here",
+    "maps",
+    "documentation",
+    "mintlify"
+  ],
+  "author": "rodrigo.toyama",
+  "license": "MIT"
+}

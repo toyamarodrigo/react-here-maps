@@ -1,0 +1,295 @@
+---
+title: 'Polygon'
+description: 'Draw filled polygons on the map with optional holes'
+---
+
+# Polygon
+
+The `Polygon` component draws filled polygons on the map. Supports custom styling and holes for complex shapes.
+
+## Props
+
+<ParamField path="points" type="Array<{ lat: number; lng: number }>" required>
+  Array of coordinates defining the polygon boundary. The polygon automatically closes between the last and first point.
+</ParamField>
+
+<ParamField path="holes" type="Array<Array<{ lat: number; lng: number }>>">
+  Optional array of hole polygons (areas to cut out from the main polygon)
+</ParamField>
+
+<ParamField path="options" type="object">
+  Polygon styling options
+
+  <Expandable title="options properties">
+    <ParamField path="style" type="object">
+      Visual styling for the polygon
+
+      <Expandable title="style properties">
+        <ParamField path="fillColor" type="string" default="'rgba(30, 167, 253, 0.4)'">
+          Fill color (supports rgba for transparency)
+        </ParamField>
+
+        <ParamField path="strokeColor" type="string" default="'#1EA7FD'">
+          Border color
+        </ParamField>
+
+        <ParamField path="lineWidth" type="number" default={2}>
+          Border width in pixels
+        </ParamField>
+
+        <ParamField path="lineDash" type="number[]">
+          Dash pattern for border. Example: `[5, 5]`
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap, Polygon } from '@rodrito/react-here-maps';
+
+function MapWithPolygon() {
+  const area = [
+    { lat: 40.7128, lng: -74.0060 },
+    { lat: 40.7228, lng: -74.0060 },
+    { lat: 40.7228, lng: -73.9960 },
+    { lat: 40.7128, lng: -73.9960 },
+  ];
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: area[0], zoom: 13 }}
+    >
+      <Polygon points={area} />
+    </HereMap>
+  );
+}
+```
+
+## Styled Polygon
+
+```tsx
+<Polygon
+  points={[
+    { lat: 52.51, lng: 13.395 },
+    { lat: 52.52, lng: 13.395 },
+    { lat: 52.52, lng: 13.405 },
+    { lat: 52.51, lng: 13.405 },
+  ]}
+  options={{
+    style: {
+      fillColor: 'rgba(0, 255, 0, 0.6)',
+      strokeColor: '#00FF00',
+      lineWidth: 3,
+    }
+  }}
+/>
+```
+
+## Polygon with Hole
+
+Create a donut-shaped polygon by defining holes:
+
+```tsx
+<Polygon
+  points={[
+    // Outer boundary
+    { lat: 52.5, lng: 13.39 },
+    { lat: 52.54, lng: 13.39 },
+    { lat: 52.54, lng: 13.42 },
+    { lat: 52.5, lng: 13.42 },
+  ]}
+  holes={[
+    [
+      // Inner hole
+      { lat: 52.515, lng: 13.4 },
+      { lat: 52.525, lng: 13.4 },
+      { lat: 52.525, lng: 13.41 },
+      { lat: 52.515, lng: 13.41 },
+    ],
+  ]}
+  options={{
+    style: {
+      fillColor: 'rgba(255, 0, 0, 0.4)',
+      strokeColor: '#FF0000',
+      lineWidth: 2,
+    }
+  }}
+/>
+```
+
+## Multiple Polygons
+
+```tsx
+const zones = [
+  {
+    id: 'zone-1',
+    points: [
+      { lat: 40.7128, lng: -74.0060 },
+      { lat: 40.7228, lng: -74.0060 },
+      { lat: 40.7228, lng: -73.9960 },
+      { lat: 40.7128, lng: -73.9960 },
+    ],
+    color: 'rgba(255, 0, 0, 0.3)',
+  },
+  {
+    id: 'zone-2',
+    points: [
+      { lat: 40.7248, lng: -74.0060 },
+      { lat: 40.7348, lng: -74.0060 },
+      { lat: 40.7348, lng: -73.9960 },
+      { lat: 40.7248, lng: -73.9960 },
+    ],
+    color: 'rgba(0, 255, 0, 0.3)',
+  },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7288, lng: -74.0010 }, zoom: 13 }}>
+  {zones.map((zone) => (
+    <Polygon
+      key={zone.id}
+      points={zone.points}
+      options={{
+        style: {
+          fillColor: zone.color,
+          strokeColor: zone.color.replace('0.3', '1'),
+          lineWidth: 2,
+        }
+      }}
+    />
+  ))}
+</HereMap>
+```
+
+## Interactive Polygons
+
+```tsx
+import { useState } from 'react';
+
+function InteractivePolygons() {
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const areas = [
+    { id: 'area-1', points: [...], name: 'Area 1' },
+    { id: 'area-2', points: [...], name: 'Area 2' },
+  ];
+
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+      {areas.map((area) => (
+        <Polygon
+          key={area.id}
+          points={area.points}
+          options={{
+            style: {
+              fillColor: selected === area.id
+                ? 'rgba(30, 167, 253, 0.6)'
+                : 'rgba(30, 167, 253, 0.3)',
+              strokeColor: '#1EA7FD',
+              lineWidth: selected === area.id ? 3 : 2,
+            }
+          }}
+          onClick={() => setSelected(area.id)}
+        />
+      ))}
+    </HereMap>
+  );
+}
+```
+
+## Dashed Border
+
+```tsx
+<Polygon
+  points={boundaryPoints}
+  options={{
+    style: {
+      fillColor: 'rgba(255, 165, 0, 0.2)',
+      strokeColor: '#FFA500',
+      lineWidth: 2,
+      lineDash: [10, 5], // 10px dash, 5px gap
+    }
+  }}
+/>
+```
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Zones" icon="draw-polygon">
+    Define delivery zones, service areas
+  </Card>
+  <Card title="Properties" icon="house">
+    Show property boundaries and parcels
+  </Card>
+  <Card title="Regions" icon="globe">
+    Highlight geographic regions or districts
+  </Card>
+  <Card title="Coverage" icon="signal">
+    Display coverage or accessibility areas
+  </Card>
+</CardGroup>
+
+## Drawing Complex Shapes
+
+### Circle (Approximate)
+
+```tsx
+const createCircle = (center: { lat: number; lng: number }, radiusKm: number) => {
+  const points = [];
+  const earthRadius = 6371; // km
+
+  for (let i = 0; i <= 360; i += 10) {
+    const angle = i * Math.PI / 180;
+    const lat = center.lat + (radiusKm / earthRadius) * (180 / Math.PI) * Math.cos(angle);
+    const lng = center.lng + (radiusKm / earthRadius) * (180 / Math.PI) * Math.sin(angle) / Math.cos(center.lat * Math.PI / 180);
+    points.push({ lat, lng });
+  }
+
+  return points;
+};
+
+<Polygon
+  points={createCircle({ lat: 40.7128, lng: -74.0060 }, 5)}
+  options={{
+    style: {
+      fillColor: 'rgba(30, 167, 253, 0.3)',
+      strokeColor: '#1EA7FD',
+      lineWidth: 2,
+    }
+  }}
+/>
+```
+
+## Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Simplify complex polygons">
+    Use polygon simplification algorithms for shapes with many vertices. Reduce detail for lower zoom levels.
+  </Accordion>
+
+  <Accordion title="Limit holes">
+    Multiple holes can impact performance. Consider breaking complex shapes into multiple simpler polygons.
+  </Accordion>
+
+  <Accordion title="Visibility culling">
+    Don't render polygons that are completely outside the visible map bounds.
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Polyline" icon="route" href="/components/polyline">
+    Draw lines without fill
+  </Card>
+  <Card title="Marker" icon="map-pin" href="/components/marker">
+    Add markers to polygon vertices
+  </Card>
+  <Card title="Examples" icon="code" href="/examples/polylines-polygons">
+    Interactive examples
+  </Card>
+</CardGroup>

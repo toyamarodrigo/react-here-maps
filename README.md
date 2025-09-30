@@ -1,10 +1,10 @@
 # React HERE Maps
 
-This package provides React hooks, components and examples for HERE Maps API for JavaScript.
+Modern React components and hooks for HERE Maps Platform integration.
 
 ![image](https://user-images.githubusercontent.com/41844101/221454450-4d1128e0-fb35-4385-969d-c7fae5493beb.png)
 
-Demo: <https://react-here-maps.vercel.app/>
+**[Documentation](https://github.com/toyamarodrigo/react-here-maps/tree/main/apps/docs)** | **[Demo](https://react-here-maps.vercel.app/)** | **[npm](https://www.npmjs.com/package/@rodrito/react-here-maps)**
 
 ## Installation
 
@@ -67,17 +67,35 @@ const App = () => {
 };
 ```
 
-## TODO
+## Documentation
 
-- Components
-  - [x] Map
-  - [x] Marker
-  - [x] Zoom Control (Basic)
-  - [x] Scale Bar (Basic)
-  - [x] Map Settings (Basic)
-  - [x] Polyline
-  - [ ] Polygons
+For detailed documentation, visit the [docs directory](./apps/docs) or run the documentation locally:
 
-## HERE Maps API Docs
+```bash
+pnpm run:docs
+```
 
-<https://www.here.com/docs/bundle/maps-api-for-javascript-developer-guide/page/README.html>
+The documentation is built with [Mintlify](https://mintlify.com/) and includes:
+- Component API reference
+- Usage guides and examples
+- TypeScript support guide
+- Interactive examples
+
+## Components
+
+- ✅ **HereMap** - Main map container
+- ✅ **Marker** - Map markers with drag support
+- ✅ **Polyline** - Draw lines on the map
+- ✅ **Polygon** - Draw polygons with holes
+- ✅ **ZoomControl** - Zoom controls
+- ✅ **ScaleBar** - Distance scale
+- ✅ **MapSettings** - Map configuration controls
+
+## Contributing
+
+See [TODO.md](./TODO.md) for planned features and improvements.
+
+## Resources
+
+- [HERE Maps API Documentation](https://www.here.com/docs/bundle/maps-api-for-javascript-developer-guide/page/README.html)
+- [Get HERE API Key](https://developer.here.com/)

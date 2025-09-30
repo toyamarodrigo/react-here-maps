@@ -12,33 +12,29 @@
   - [x] Test linting and formatting commands
   - [ ] Update CI/CD workflows if needed
 
-### Phase 1: Setup Mintlify Documentation Site ✅ COMPLETED (Nextra Working)
+### Phase 1: Setup Mintlify Documentation Site ✅ COMPLETED
 
-**Note**: Nextra implementation completed successfully, but migrating to Mintlify for superior documentation experience.
+**Status**: Mintlify documentation successfully implemented!
 
-#### Completed with Nextra
+#### Completed Tasks
 
-- [x] **Create new `apps/docs/` directory in monorepo**
-- [x] **Restructure from `app/*` to `apps/*` pattern**
-- [x] **Setup functional documentation site with Pages Router**
-- [x] **Add docs workspace to `pnpm-workspace.yaml`**
-- [x] **Configure build system and resolve all compatibility issues**
+- [x] **Install Mintlify CLI globally**: `npm i -g mint`
+- [x] **Created `apps/docs/` directory structure**
+- [x] **Created `docs.json` configuration with React HERE Maps branding**
+- [x] **Created comprehensive MDX documentation**:
+  - [x] Getting Started (introduction.mdx, quickstart.mdx, installation.mdx)
+  - [x] 7 Component reference pages (HereMap, Marker, Polyline, Polygon, MapSettings, ZoomControl, ScaleBar)
+  - [x] 3 Guide pages (Map Context, Hooks System, TypeScript Support)
+  - [x] 4 Example pages (Basic Map, Markers, Polylines & Polygons, Interactive Map)
+- [x] **Updated package.json scripts for Mintlify**
+- [x] **Updated README.md with documentation links**
+- [x] **Removed build:storybook-web script** (Storybook kept for internal development only)
 
-#### Next: Migrate to Mintlify
+#### Notes
 
-- [ ] **Install Mintlify CLI globally**: `npm i -g mint`
-- [ ] **Replace Nextra setup with Mintlify in `apps/docs/`**
-- [ ] **Create `docs.json` configuration with React HERE Maps branding**
-- [ ] **Convert existing MDX files to Mintlify format**
-- [ ] **Setup enhanced documentation structure**:
-  - [ ] Getting Started guide (enhanced)
-  - [ ] Component reference pages with API docs
-  - [ ] Interactive API documentation with OpenAPI
-  - [ ] Examples gallery with live playground
-- [ ] **Create OpenAPI specification for component APIs**
-- [ ] **Configure authentication for private sections (optional)**
-- [ ] **Setup Mintlify managed deployment** (automatic from Git)
-- [ ] **Remove Nextra dependencies after migration**
+- OpenAPI specification not needed (React components, not REST API)
+- Authentication/private docs not required for open-source library
+- Mintlify deployment to be configured when needed (supports GitHub integration)
 
 ### Phase 2: Modern Testing Setup
 
@@ -50,16 +46,17 @@
 - [ ] Create test examples for each component
 - [ ] Setup CI/CD for automated testing
 
-### Phase 3: Migration from Storybook
+### Phase 3: Migration from Storybook ✅ COMPLETED
 
-- [ ] **Keep Storybook for development** (useful for isolated component work)
-- [ ] **Remove Storybook from public docs** (use Nextra instead)
-- [ ] Migrate component examples from Storybook to `apps/docs/`
-- [ ] Convert Storybook stories to:
-  - [ ] Nextra MDX documentation pages in `apps/docs/`
-  - [ ] Vitest component tests in `tests/unit/`
-  - [ ] Playwright visual regression tests in `tests/integration/`
-- [ ] Update README to point to new Nextra docs site
+- [x] **Keep Storybook for development** (useful for isolated component work)
+- [x] **Migrated component examples to Mintlify** (`apps/docs/`)
+- [x] **Converted Storybook stories to**:
+  - [x] Mintlify MDX documentation pages in `apps/docs/`
+  - [ ] Vitest component tests in `tests/unit/` (Phase 4)
+  - [ ] Playwright visual regression tests in `tests/integration/` (Phase 4)
+- [x] **Updated README to point to Mintlify docs**
+
+**Note**: Storybook build-storybook-web command removed. Storybook remains available for internal development via `pnpm run:storybook`.
 
 ### Phase 4: Testing Strategy Implementation
 

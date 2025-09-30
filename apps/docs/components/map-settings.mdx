@@ -1,0 +1,253 @@
+---
+title: 'MapSettings'
+description: 'Map configuration controls for layer switching'
+---
+
+# MapSettings
+
+The `MapSettings` component provides interactive controls for changing map layers and settings.
+
+## Props
+
+<ParamField path="alignment" type="string">
+  Position of the settings control on the map
+
+  Options:
+  - `'left-top'`
+  - `'left-middle'`
+  - `'left-bottom'`
+  - `'right-top'`
+  - `'right-middle'`
+  - `'right-bottom'` (default)
+  - `'top-left'`
+  - `'top-center'`
+  - `'top-right'`
+  - `'bottom-left'`
+  - `'bottom-center'`
+  - `'bottom-right'`
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default={false}>
+  Disable the settings control
+</ParamField>
+
+<ParamField path="visibility" type="boolean" default={true}>
+  Control visibility of the settings control
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap, MapSettings } from '@rodrito/react-here-maps';
+
+function MapWithSettings() {
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    >
+      <MapSettings />
+    </HereMap>
+  );
+}
+```
+
+## Custom Position
+
+```tsx
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <MapSettings alignment="left-bottom" />
+</HereMap>
+```
+
+## With Other Controls
+
+Create a complete control layout:
+
+```tsx
+import { HereMap, MapSettings, ZoomControl, ScaleBar } from '@rodrito/react-here-maps';
+
+<HereMap
+  apikey="YOUR_API_KEY"
+  options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+>
+  <ZoomControl alignment="right-top" />
+  <MapSettings alignment="right-bottom" />
+  <ScaleBar alignment="bottom-right" />
+</HereMap>
+```
+
+## Available Settings
+
+The settings control typically allows users to:
+- Switch between map layers (normal, satellite, terrain)
+- Toggle traffic layer
+- Enable/disable POIs (Points of Interest)
+- Switch between day/night mode
+- Configure map behavior
+
+## Controlled Settings
+
+```tsx
+import { useState } from 'react';
+
+function ControlledSettings() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    >
+      <MapSettings
+        alignment="right-bottom"
+        visibility={settingsOpen}
+      />
+
+      <button
+        onClick={() => setSettingsOpen(!settingsOpen)}
+        style={{ position: 'absolute', top: 10, right: 10, zIndex: 1 }}
+      >
+        {settingsOpen ? 'Hide' : 'Show'} Settings
+      </button>
+    </HereMap>
+  );
+}
+```
+
+## Responsive Layout
+
+Adjust control positions based on screen size:
+
+```tsx
+import { HereMap, MapSettings, ZoomControl } from '@rodrito/react-here-maps';
+import { useState, useEffect } from 'react';
+
+function ResponsiveControls() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    >
+      <ZoomControl alignment={isMobile ? 'left-top' : 'right-top'} />
+      <MapSettings alignment={isMobile ? 'left-bottom' : 'right-bottom'} />
+    </HereMap>
+  );
+}
+```
+
+## Programmatic Layer Switching
+
+While MapSettings provides UI controls, you can also switch layers programmatically:
+
+```tsx
+import { HereMap, MapSettings } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+function LayerSwitcher() {
+  const [mapStyle, setMapStyle] = useState('vector.normal.map');
+
+  return (
+    <>
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={() => setMapStyle('vector.normal.map')}>
+          Normal
+        </button>
+        <button onClick={() => setMapStyle('raster.satellite.map')}>
+          Satellite
+        </button>
+        <button onClick={() => setMapStyle('raster.terrain.map')}>
+          Terrain
+        </button>
+      </div>
+
+      <HereMap
+        apikey="YOUR_API_KEY"
+        mapStyle={mapStyle}
+        options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+      >
+        <MapSettings />
+      </HereMap>
+    </>
+  );
+}
+```
+
+## Disabled State
+
+```tsx
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <MapSettings disabled />
+</HereMap>
+```
+
+## Control Positioning Guide
+
+<CardGroup cols={2}>
+  <Card title="Right Side (Default)">
+    - `right-top`: ZoomControl
+    - `right-bottom`: MapSettings
+    - Keeps left side clear for mobile gestures
+  </Card>
+  <Card title="Left Side">
+    - `left-top`: Alternative placement
+    - `left-bottom`: Good for RTL layouts
+    - More accessible on some devices
+  </Card>
+</CardGroup>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Layer Selection" icon="layer-group">
+    Let users choose map visualization style
+  </Card>
+  <Card title="Feature Toggles" icon="toggle-on">
+    Enable/disable map features like traffic
+  </Card>
+  <Card title="User Preferences" icon="user-gear">
+    Save and restore user map preferences
+  </Card>
+  <Card title="Context Switching" icon="arrows-turn-to-dots">
+    Switch between different map contexts
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Consistent positioning">
+    Keep controls in predictable locations across your app. Users expect zoom controls on the right.
+  </Accordion>
+
+  <Accordion title="Mobile considerations">
+    On mobile, avoid placing controls where they might interfere with touch gestures or cover important content.
+  </Accordion>
+
+  <Accordion title="Accessibility">
+    Ensure controls are keyboard accessible and have proper focus states.
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="ZoomControl" icon="magnifying-glass" href="/components/zoom-control">
+    Zoom controls
+  </Card>
+  <Card title="ScaleBar" icon="ruler" href="/components/scale-bar">
+    Distance scale
+  </Card>
+  <Card title="HereMap" icon="map" href="/components/here-map">
+    Main map component
+  </Card>
+</CardGroup>

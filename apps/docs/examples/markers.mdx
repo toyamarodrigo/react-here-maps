@@ -1,0 +1,233 @@
+---
+title: 'Markers'
+description: 'Working with markers examples'
+---
+
+# Marker Examples
+
+Learn how to work with markers on your maps.
+
+## Single Marker
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+
+export function SingleMarkerMap() {
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 13 }}
+    >
+      <Marker
+        position={{ lat: 40.7128, lng: -74.0060 }}
+        label="Times Square"
+      />
+    </HereMap>
+  );
+}
+```
+
+## Multiple Markers
+
+```tsx
+const landmarks = [
+  { id: 1, name: 'Statue of Liberty', lat: 40.6892, lng: -74.0445 },
+  { id: 2, name: 'Central Park', lat: 40.785091, lng: -73.968285 },
+  { id: 3, name: 'Brooklyn Bridge', lat: 40.7061, lng: -73.9969 },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 11 }}>
+  {landmarks.map((landmark) => (
+    <Marker
+      key={landmark.id}
+      position={{ lat: landmark.lat, lng: landmark.lng }}
+      label={landmark.name}
+    />
+  ))}
+</HereMap>
+```
+
+## Draggable Marker
+
+```tsx
+import { useState } from 'react';
+
+export function DraggableMarkerExample() {
+  const [position, setPosition] = useState({ lat: 40.7128, lng: -74.0060 });
+
+  return (
+    <>
+      <HereMap apikey="YOUR_API_KEY" options={{ center: position, zoom: 13 }}>
+        <Marker
+          position={position}
+          draggable
+          onDragEnd={(event) => {
+            const coord = event.target.getGeometry();
+            setPosition({ lat: coord.lat, lng: coord.lng });
+          }}
+        />
+      </HereMap>
+
+      <div>
+        <p>Latitude: {position.lat.toFixed(6)}</p>
+        <p>Longitude: {position.lng.toFixed(6)}</p>
+      </div>
+    </>
+  );
+}
+```
+
+## Custom Icon Markers
+
+```tsx
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 13 }}>
+  <Marker
+    position={{ lat: 40.7128, lng: -74.0060 }}
+    icon="/custom-marker-red.png"
+    iconSize={{ w: 32, h: 32 }}
+    iconAnchor={{ x: 16, y: 32 }}
+  />
+</HereMap>
+```
+
+## Clickable Markers with State
+
+```tsx
+import { useState } from 'react';
+
+interface Location {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+  description: string;
+}
+
+export function ClickableMarkers() {
+  const [selected, setSelected] = useState<number | null>(null);
+
+  const locations: Location[] = [
+    {
+      id: 1,
+      name: 'Location A',
+      lat: 40.7128,
+      lng: -74.0060,
+      description: 'Description for location A',
+    },
+    {
+      id: 2,
+      name: 'Location B',
+      lat: 40.7589,
+      lng: -73.9851,
+      description: 'Description for location B',
+    },
+  ];
+
+  return (
+    <>
+      <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7358, lng: -73.9955 }, zoom: 12 }}>
+        {locations.map((loc) => (
+          <Marker
+            key={loc.id}
+            position={{ lat: loc.lat, lng: loc.lng }}
+            label={loc.name}
+            onClick={() => setSelected(loc.id)}
+            icon={
+              selected === loc.id
+                ? '/marker-selected.png'
+                : '/marker-default.png'
+            }
+          />
+        ))}
+      </HereMap>
+
+      {selected && (
+        <div style={{ marginTop: '1rem', padding: '1rem', background: '#f0f0f0' }}>
+          <h3>{locations.find((l) => l.id === selected)?.name}</h3>
+          <p>{locations.find((l) => l.id === selected)?.description}</p>
+        </div>
+      )}
+    </>
+  );
+}
+```
+
+## Dynamic Marker Updates
+
+```tsx
+import { useState, useEffect } from 'react';
+
+export function LiveTrackingMarker() {
+  const [position, setPosition] = useState({ lat: 40.7128, lng: -74.0060 });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simulate GPS updates
+      setPosition((prev) => ({
+        lat: prev.lat + (Math.random() - 0.5) * 0.001,
+        lng: prev.lng + (Math.random() - 0.5) * 0.001,
+      }));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: position, zoom: 15 }}>
+      <Marker position={position} label="Live" icon="/tracking-marker.png" />
+    </HereMap>
+  );
+}
+```
+
+## Marker Clustering (Simple)
+
+```tsx
+import { useState, useEffect } from 'react';
+import { useMapContext } from '@rodrito/react-here-maps';
+
+export function ClusteredMarkers() {
+  const [zoom, setZoom] = useState(10);
+  const [visibleMarkers, setVisibleMarkers] = useState([]);
+
+  const allMarkers = Array.from({ length: 100 }, (_, i) => ({
+    id: i,
+    lat: 40.7128 + (Math.random() - 0.5) * 0.5,
+    lng: -74.0060 + (Math.random() - 0.5) * 0.5,
+  }));
+
+  useEffect(() => {
+    // Simple clustering: show fewer markers at lower zoom
+    const count = Math.floor(zoom * 5);
+    setVisibleMarkers(allMarkers.slice(0, count));
+  }, [zoom]);
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom }}
+    >
+      {visibleMarkers.map((marker) => (
+        <Marker key={marker.id} position={{ lat: marker.lat, lng: marker.lng }} />
+      ))}
+    </HereMap>
+  );
+}
+```
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Marker API" icon="map-pin" href="/components/marker">
+    Full marker component reference
+  </Card>
+  <Card title="Polylines" icon="route" href="/examples/polylines-polygons">
+    Connect markers with lines
+  </Card>
+  <Card title="Interactive" icon="hand-pointer" href="/examples/interactive-map">
+    Advanced interactions
+  </Card>
+  <Card title="Basic Maps" icon="map" href="/examples/basic-map">
+    Getting started examples
+  </Card>
+</CardGroup>

@@ -1,0 +1,351 @@
+---
+title: 'Interactive Map'
+description: 'Advanced user interactions and dynamic maps'
+---
+
+# Interactive Map Examples
+
+Advanced examples showing user interactions and dynamic map updates.
+
+## Click to Add Markers
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useState, useEffect } from 'react';
+
+function ClickToAddMarkers() {
+  const { map } = useMapContext();
+  const [markers, setMarkers] = useState<Array<{ lat: number; lng: number; id: number }>>([]);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleClick = (evt: H.mapevents.Event) => {
+      const coord = map.current!.screenToGeo(
+        evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY
+      );
+
+      setMarkers((prev) => [
+        ...prev,
+        { lat: coord.lat, lng: coord.lng, id: Date.now() },
+      ]);
+    };
+
+    map.current.addEventListener('tap', handleClick);
+    return () => map.current?.removeEventListener('tap', handleClick);
+  }, [map]);
+
+  return (
+    <>
+      {markers.map((marker) => (
+        <Marker key={marker.id} position={{ lat: marker.lat, lng: marker.lng }} />
+      ))}
+    </>
+  );
+}
+
+export function ClickToAddMap() {
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+      <ClickToAddMarkers />
+    </HereMap>
+  );
+}
+```
+
+## Geolocation Tracking
+
+```tsx
+import { useState, useEffect } from 'react';
+
+export function GeolocationMap() {
+  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError('Geolocation not supported');
+      return;
+    }
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        setPosition({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      (err) => setError(err.message),
+      { enableHighAccuracy: true }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
+
+  if (error) return <div>Error: {error}</div>;
+  if (!position) return <div>Getting location...</div>;
+
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: position, zoom: 15 }}>
+      <Marker
+        position={position}
+        label="You are here"
+        icon="/user-location.png"
+      />
+    </HereMap>
+  );
+}
+```
+
+## Distance Measurement
+
+```tsx
+import { useState, useEffect } from 'react';
+import { useMapContext } from '@rodrito/react-here-maps';
+
+function DistanceMeasurement() {
+  const { map } = useMapContext();
+  const [points, setPoints] = useState<Array<{ lat: number; lng: number }>>([]);
+  const [distance, setDistance] = useState(0);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleClick = (evt: H.mapevents.Event) => {
+      const coord = map.current!.screenToGeo(
+        evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY
+      );
+      setPoints((prev) => [...prev, { lat: coord.lat, lng: coord.lng }]);
+    };
+
+    map.current.addEventListener('tap', handleClick);
+    return () => map.current?.removeEventListener('tap', handleClick);
+  }, [map]);
+
+  useEffect(() => {
+    if (points.length < 2) {
+      setDistance(0);
+      return;
+    }
+
+    let totalDistance = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = new H.geo.Point(points[i].lat, points[i].lng);
+      const p2 = new H.geo.Point(points[i + 1].lat, points[i + 1].lng);
+      totalDistance += p1.distance(p2);
+    }
+    setDistance(totalDistance);
+  }, [points]);
+
+  return (
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <p>Distance: {(distance / 1000).toFixed(2)} km</p>
+        <button onClick={() => setPoints([])}>Clear</button>
+      </div>
+
+      {points.length > 1 && (
+        <Polyline
+          points={points}
+          options={{
+            style: {
+              strokeColor: '#FF5733',
+              lineWidth: 3,
+            }
+          }}
+        />
+      )}
+
+      {points.map((point, i) => (
+        <Marker key={i} position={point} label={`${i + 1}`} />
+      ))}
+    </div>
+  );
+}
+
+export function DistanceMeasurementMap() {
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 13 }}>
+      <DistanceMeasurement />
+    </HereMap>
+  );
+}
+```
+
+## Search and Navigate
+
+```tsx
+import { useState } from 'react';
+import { useMapContext } from '@rodrito/react-here-maps';
+
+function SearchBox() {
+  const { platform, map } = useMapContext();
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState<{ lat: number; lng: number } | null>(null);
+
+  const handleSearch = async () => {
+    if (!platform.current || !query) return;
+
+    const service = platform.current.getSearchService();
+    service.geocode(
+      { q: query },
+      (res) => {
+        if (res.items.length > 0) {
+          const location = res.items[0].position;
+          setResult(location);
+          map.current?.setCenter(location);
+          map.current?.setZoom(14);
+        }
+      },
+      (error) => console.error('Search error:', error)
+    );
+  };
+
+  return (
+    <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1 }}>
+      <input
+        type="text"
+        placeholder="Search location..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+        style={{
+          padding: '8px',
+          width: '250px',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+        }}
+      />
+      <button onClick={handleSearch} style={{ marginLeft: '4px' }}>
+        Search
+      </button>
+
+      {result && <Marker position={result} label="Search Result" />}
+    </div>
+  );
+}
+
+export function SearchMap() {
+  return (
+    <div style={{ position: 'relative', height: '500px' }}>
+      <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+        <SearchBox />
+      </HereMap>
+    </div>
+  );
+}
+```
+
+## Draggable Route
+
+```tsx
+import { useState } from 'react';
+
+export function DraggableRoute() {
+  const [waypoints, setWaypoints] = useState([
+    { id: 1, lat: 40.7128, lng: -74.0060 },
+    { id: 2, lat: 40.7589, lng: -73.9851 },
+  ]);
+
+  const updateWaypoint = (id: number, lat: number, lng: number) => {
+    setWaypoints((prev) =>
+      prev.map((wp) => (wp.id === id ? { ...wp, lat, lng } : wp))
+    );
+  };
+
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: waypoints[0], zoom: 12 }}>
+      <Polyline
+        points={waypoints}
+        options={{
+          style: {
+            strokeColor: '#1EA7FD',
+            lineWidth: 4,
+          }
+        }}
+      />
+
+      {waypoints.map((wp, index) => (
+        <Marker
+          key={wp.id}
+          position={{ lat: wp.lat, lng: wp.lng }}
+          label={`${index + 1}`}
+          draggable
+          onDragEnd={(event) => {
+            const coord = event.target.getGeometry();
+            updateWaypoint(wp.id, coord.lat, coord.lng);
+          }}
+        />
+      ))}
+    </HereMap>
+  );
+}
+```
+
+## Info Bubbles on Click
+
+```tsx
+import { useEffect } from 'react';
+import { useMapContext } from '@rodrito/react-here-maps';
+
+function InfoBubbles() {
+  const { map, ui } = useMapContext();
+
+  const locations = [
+    { lat: 40.7128, lng: -74.0060, name: 'NYC', info: 'New York City' },
+    { lat: 40.7589, lng: -73.9851, name: 'Times Sq', info: 'Times Square' },
+  ];
+
+  const showBubble = (lat: number, lng: number, content: string) => {
+    if (!ui.current) return;
+
+    const bubble = new H.ui.InfoBubble(
+      { lat, lng },
+      { content: `<div style="padding: 10px;">${content}</div>` }
+    );
+
+    ui.current.addBubble(bubble);
+  };
+
+  return (
+    <>
+      {locations.map((loc, i) => (
+        <Marker
+          key={i}
+          position={{ lat: loc.lat, lng: loc.lng }}
+          label={loc.name}
+          onClick={() => showBubble(loc.lat, loc.lng, loc.info)}
+        />
+      ))}
+    </>
+  );
+}
+
+export function InfoBubbleMap() {
+  return (
+    <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7358, lng: -73.9955 }, zoom: 12 }}>
+      <InfoBubbles />
+    </HereMap>
+  );
+}
+```
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Map Context" icon="layer-group" href="/guides/map-context">
+    Access map functionality
+  </Card>
+  <Card title="Hooks" icon="code" href="/guides/hooks-system">
+    Custom hooks
+  </Card>
+  <Card title="Markers" icon="map-pin" href="/examples/markers">
+    Marker examples
+  </Card>
+  <Card title="Basic Maps" icon="map" href="/examples/basic-map">
+    Simple map examples
+  </Card>
+</CardGroup>

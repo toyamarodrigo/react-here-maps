@@ -1,0 +1,84 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "React HERE Maps",
+  "logo": {
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#48AFDE",
+    "light": "#5CC3F2",
+    "dark": "#2C8FB8"
+  },
+  "theme": "mint",
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/toyamarodrigo/react-here-maps"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "npm",
+    "url": "https://www.npmjs.com/package/@rodrito/react-here-maps"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "introduction",
+          "quickstart",
+          "installation"
+        ]
+      },
+      {
+        "group": "Core Concepts",
+        "pages": [
+          "guides/map-context",
+          "guides/hooks-system",
+          "guides/typescript-support"
+        ]
+      },
+      {
+        "group": "Components",
+        "pages": [
+          "components/here-map",
+          "components/marker",
+          "components/polyline",
+          "components/polygon",
+          "components/map-settings",
+          "components/zoom-control",
+          "components/scale-bar"
+        ]
+      },
+      {
+        "group": "Examples",
+        "pages": [
+          "examples/basic-map",
+          "examples/markers",
+          "examples/polylines-polygons",
+          "examples/interactive-map"
+        ]
+      }
+    ]
+  },
+  "tabs": [
+    {
+      "name": "Components",
+      "url": "components"
+    },
+    {
+      "name": "Guides",
+      "url": "guides"
+    },
+    {
+      "name": "Examples",
+      "url": "examples"
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/toyamarodrigo/react-here-maps",
+    "linkedin": "https://linkedin.com/in/toyamarodrigo"
+  }
+}

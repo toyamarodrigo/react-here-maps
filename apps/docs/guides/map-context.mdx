@@ -1,0 +1,335 @@
+---
+title: 'Map Context'
+description: 'Understanding the HERE Maps context system'
+---
+
+# Map Context
+
+The React HERE Maps library uses React Context to share the map instance and HERE Maps objects across components.
+
+## Overview
+
+The `HereMap` component creates a context that provides access to:
+- **map** - The HERE Maps instance (`H.Map`)
+- **platform** - HERE Platform service (`H.service.Platform`)
+- **ui** - HERE Maps UI object (`H.ui.UI`)
+- **behavior** - Map behavior object (`H.mapevents.Behavior`)
+
+## Using the Context
+
+### Built-in Components
+
+All library components automatically consume the context:
+
+```tsx
+import { HereMap, Marker, Polyline, ZoomControl } from '@rodrito/react-here-maps';
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  {/* These components automatically access the map context */}
+  <Marker position={{ lat: 40.7128, lng: -74.0060 }} />
+  <Polyline points={[...]} />
+  <ZoomControl />
+</HereMap>
+```
+
+### Custom Components
+
+Access the context in your custom components using `useMapContext`:
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+
+function CustomMapComponent() {
+  const { map, platform, ui, behavior } = useMapContext();
+
+  // Access the map instance
+  useEffect(() => {
+    if (map.current) {
+      console.log('Map center:', map.current.getCenter());
+      console.log('Zoom level:', map.current.getZoom());
+    }
+  }, [map]);
+
+  return null;
+}
+```
+
+## Context Values
+
+### map (RefObject)
+
+A React ref containing the HERE Maps instance:
+
+```tsx
+const { map } = useMapContext();
+
+// Always check if map is loaded
+if (map.current) {
+  const center = map.current.getCenter();
+  const zoom = map.current.getZoom();
+  const bounds = map.current.getViewBounds();
+}
+```
+
+### platform (RefObject)
+
+Reference to the HERE Platform service for geocoding, routing, etc.:
+
+```tsx
+const { platform } = useMapContext();
+
+if (platform.current) {
+  const geocoder = platform.current.getSearchService();
+  // Use geocoding services
+}
+```
+
+### ui (RefObject)
+
+Reference to the HERE Maps UI for controls and popups:
+
+```tsx
+const { ui } = useMapContext();
+
+if (ui.current) {
+  // Add custom UI elements
+  const bubble = new H.ui.InfoBubble(
+    { lat: 40.7128, lng: -74.0060 },
+    { content: '<div>Hello World</div>' }
+  );
+  ui.current.addBubble(bubble);
+}
+```
+
+### behavior (RefObject)
+
+Reference to map behavior for interaction handling:
+
+```tsx
+const { behavior } = useMapContext();
+
+if (behavior.current) {
+  // Disable default behaviors
+  behavior.current.disable(H.mapevents.Behavior.Feature.PANNING);
+}
+```
+
+## Advanced Examples
+
+### Map Event Listeners
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useEffect } from 'react';
+
+function MapEventListener() {
+  const { map } = useMapContext();
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleMapClick = (evt: H.mapevents.Event) => {
+      const coord = map.current!.screenToGeo(
+        evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY
+      );
+      console.log('Clicked at:', coord);
+    };
+
+    map.current.addEventListener('tap', handleMapClick);
+
+    return () => {
+      map.current?.removeEventListener('tap', handleMapClick);
+    };
+  }, [map]);
+
+  return null;
+}
+```
+
+### Geocoding Service
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+function Geocoder() {
+  const { platform, map } = useMapContext();
+  const [result, setResult] = useState<string>('');
+
+  const geocodeAddress = async (address: string) => {
+    if (!platform.current) return;
+
+    const service = platform.current.getSearchService();
+    service.geocode(
+      { q: address },
+      (result) => {
+        if (result.items.length > 0) {
+          const location = result.items[0].position;
+          map.current?.setCenter(location);
+          setResult(`Found: ${result.items[0].title}`);
+        }
+      },
+      (error) => {
+        console.error('Geocoding error:', error);
+      }
+    );
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Enter address"
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            geocodeAddress(e.currentTarget.value);
+          }
+        }}
+      />
+      {result && <p>{result}</p>}
+    </div>
+  );
+}
+```
+
+### Info Bubbles
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useEffect } from 'react';
+
+function InfoBubbleExample() {
+  const { map, ui } = useMapContext();
+
+  const showInfoBubble = (lat: number, lng: number, content: string) => {
+    if (!ui.current) return;
+
+    const bubble = new H.ui.InfoBubble(
+      { lat, lng },
+      {
+        content: `<div style="padding: 10px;">${content}</div>`,
+      }
+    );
+
+    ui.current.addBubble(bubble);
+  };
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleClick = (evt: H.mapevents.Event) => {
+      const coord = map.current!.screenToGeo(
+        evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY
+      );
+
+      showInfoBubble(
+        coord.lat,
+        coord.lng,
+        `<strong>Clicked Location</strong><br/>
+         Lat: ${coord.lat.toFixed(4)}<br/>
+         Lng: ${coord.lng.toFixed(4)}`
+      );
+    };
+
+    map.current.addEventListener('tap', handleClick);
+
+    return () => {
+      map.current?.removeEventListener('tap', handleClick);
+    };
+  }, [map, ui]);
+
+  return null;
+}
+```
+
+### Custom Controls
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useEffect } from 'react';
+
+function CustomControl() {
+  const { map } = useMapContext();
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Create custom control element
+    const controlDiv = document.createElement('div');
+    controlDiv.style.position = 'absolute';
+    controlDiv.style.top = '10px';
+    controlDiv.style.right = '10px';
+    controlDiv.style.backgroundColor = 'white';
+    controlDiv.style.padding = '10px';
+    controlDiv.style.borderRadius = '4px';
+    controlDiv.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+    controlDiv.style.cursor = 'pointer';
+    controlDiv.textContent = 'Reset View';
+
+    controlDiv.onclick = () => {
+      map.current?.setCenter({ lat: 40.7128, lng: -74.0060 });
+      map.current?.setZoom(12);
+    };
+
+    const mapElement = map.current.getElement();
+    mapElement.appendChild(controlDiv);
+
+    return () => {
+      controlDiv.remove();
+    };
+  }, [map]);
+
+  return null;
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always check for null">
+    Since context values are refs, always check if they're loaded before using:
+    ```tsx
+    if (map.current) {
+      // Safe to use map
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Clean up event listeners">
+    Always remove event listeners in useEffect cleanup:
+    ```tsx
+    useEffect(() => {
+      const handler = () => { /* ... */ };
+      map.current?.addEventListener('tap', handler);
+      return () => {
+        map.current?.removeEventListener('tap', handler);
+      };
+    }, [map]);
+    ```
+  </Accordion>
+
+  <Accordion title="TypeScript types">
+    Use HERE Maps TypeScript definitions for type safety:
+    ```tsx
+    const handleEvent = (evt: H.mapevents.Event) => {
+      // evt is properly typed
+    };
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Hooks System" icon="code" href="/guides/hooks-system">
+    Custom hooks for map functionality
+  </Card>
+  <Card title="TypeScript" icon="code" href="/guides/typescript-support">
+    Type-safe development
+  </Card>
+  <Card title="Components" icon="cube" href="/components/here-map">
+    Available components
+  </Card>
+</CardGroup>

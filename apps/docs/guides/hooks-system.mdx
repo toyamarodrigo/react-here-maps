@@ -1,0 +1,391 @@
+---
+title: 'Hooks System'
+description: 'Understanding the custom hooks architecture'
+---
+
+# Hooks System
+
+React HERE Maps is built using a modern hook-based architecture that provides clean, composable functionality.
+
+## Core Hooks
+
+### useMapContext
+
+Access the map context from any child component:
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+
+function MyComponent() {
+  const { map, platform, ui, behavior } = useMapContext();
+
+  // Use map objects...
+
+  return null;
+}
+```
+
+See [Map Context](/guides/map-context) for detailed usage.
+
+### useCreateMap
+
+Internal hook used by `HereMap` to initialize the map instance. Not typically used directly, but understanding it helps with advanced customization.
+
+```tsx
+const { map, mapRef, platform, ui, behavior } = useCreateMap({
+  apikey: 'YOUR_API_KEY',
+  options: {
+    center: { lat: 0, lng: 0 },
+    zoom: 10,
+  },
+  mapStyle: 'vector.normal.map',
+});
+```
+
+### useMapResize
+
+Automatically handles map resize events. Used internally by `HereMap`:
+
+```tsx
+import { useMapResize } from '@rodrito/react-here-maps';
+
+const mapRef = useRef<H.Map | null>(null);
+useMapResize(mapRef);
+```
+
+## Component-Specific Hooks
+
+### useMarker
+
+Powers the `Marker` component. Creates and manages markers:
+
+```tsx
+import { useMarker } from '@rodrito/react-here-maps';
+
+function CustomMarker({ position, label }: { position: { lat: number; lng: number }; label: string }) {
+  useMarker({ position, label });
+  return null;
+}
+```
+
+### useMarkerDragBehavior
+
+Handles marker drag functionality:
+
+```tsx
+const dragHandlers = useMarkerDragBehavior(map.current, behavior.current);
+
+// Apply to marker
+markerRef.current?.draggable = true;
+```
+
+### usePolyline
+
+Creates and manages polylines:
+
+```tsx
+import { usePolyline } from '@rodrito/react-here-maps';
+
+function CustomPolyline({ points }: { points: Array<{ lat: number; lng: number }> }) {
+  usePolyline({ points });
+  return null;
+}
+```
+
+### usePolygon
+
+Creates and manages polygons:
+
+```tsx
+import { usePolygon } from '@rodrito/react-here-maps';
+
+function CustomPolygon({ points }: { points: Array<{ lat: number; lng: number }> }) {
+  usePolygon({ points });
+  return null;
+}
+```
+
+## Custom Hook Patterns
+
+### Creating a Map Bounds Hook
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useState, useEffect } from 'react';
+
+function useMapBounds() {
+  const { map } = useMapContext();
+  const [bounds, setBounds] = useState<H.geo.Rect | null>(null);
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    const updateBounds = () => {
+      setBounds(map.current!.getViewBounds());
+    };
+
+    // Update on map move
+    map.current.addEventListener('mapviewchangeend', updateBounds);
+    updateBounds(); // Initial bounds
+
+    return () => {
+      map.current?.removeEventListener('mapviewchangeend', updateBounds);
+    };
+  }, [map]);
+
+  return bounds;
+}
+
+// Usage
+function BoundsDisplay() {
+  const bounds = useMapBounds();
+
+  return (
+    <div>
+      {bounds && (
+        <>
+          <p>Top: {bounds.getTop().toFixed(4)}</p>
+          <p>Bottom: {bounds.getBottom().toFixed(4)}</p>
+          <p>Left: {bounds.getLeft().toFixed(4)}</p>
+          <p>Right: {bounds.getRight().toFixed(4)}</p>
+        </>
+      )}
+    </div>
+  );
+}
+```
+
+### Geolocation Hook
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useState, useEffect } from 'react';
+
+function useGeolocation() {
+  const { map } = useMapContext();
+  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError('Geolocation not supported');
+      return;
+    }
+
+    const success = (pos: GeolocationPosition) => {
+      const coords = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      };
+      setPosition(coords);
+
+      // Center map on user location
+      if (map.current) {
+        map.current.setCenter(coords);
+        map.current.setZoom(14);
+      }
+    };
+
+    const failed = (err: GeolocationPositionError) => {
+      setError(err.message);
+    };
+
+    navigator.geolocation.getCurrentPosition(success, failed);
+  }, [map]);
+
+  return { position, error };
+}
+
+// Usage
+function UserLocation() {
+  const { position, error } = useGeolocation();
+
+  if (error) return <div>Error: {error}</div>;
+  if (!position) return <div>Getting location...</div>;
+
+  return (
+    <Marker
+      position={position}
+      label="You are here"
+      icon="/user-location.png"
+    />
+  );
+}
+```
+
+### Map Events Hook
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useEffect } from 'react';
+
+function useMapEvents(
+  events: Record<string, (evt: H.mapevents.Event) => void>
+) {
+  const { map } = useMapContext();
+
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Add all event listeners
+    Object.entries(events).forEach(([event, handler]) => {
+      map.current!.addEventListener(event, handler);
+    });
+
+    // Cleanup
+    return () => {
+      Object.entries(events).forEach(([event, handler]) => {
+        map.current?.removeEventListener(event, handler);
+      });
+    };
+  }, [map, events]);
+}
+
+// Usage
+function MapWithEvents() {
+  const [clickCount, setClickCount] = useState(0);
+
+  useMapEvents({
+    tap: (evt) => {
+      setClickCount((c) => c + 1);
+      console.log('Map clicked', evt);
+    },
+    mapviewchangeend: () => {
+      console.log('View changed');
+    },
+  });
+
+  return <div>Clicks: {clickCount}</div>;
+}
+```
+
+### Distance Measurement Hook
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import { useState, useEffect } from 'react';
+
+function useDistanceMeasurement() {
+  const { map } = useMapContext();
+  const [points, setPoints] = useState<Array<{ lat: number; lng: number }>>([]);
+  const [totalDistance, setTotalDistance] = useState(0);
+
+  const addPoint = (lat: number, lng: number) => {
+    setPoints([...points, { lat, lng }]);
+  };
+
+  const clearPoints = () => {
+    setPoints([]);
+    setTotalDistance(0);
+  };
+
+  useEffect(() => {
+    if (points.length < 2) {
+      setTotalDistance(0);
+      return;
+    }
+
+    let distance = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = new H.geo.Point(points[i].lat, points[i].lng);
+      const p2 = new H.geo.Point(points[i + 1].lat, points[i + 1].lng);
+      distance += p1.distance(p2);
+    }
+
+    setTotalDistance(distance);
+  }, [points]);
+
+  return { points, totalDistance, addPoint, clearPoints };
+}
+
+// Usage
+function DistanceMeasureTool() {
+  const { points, totalDistance, addPoint, clearPoints } = useDistanceMeasurement();
+
+  useMapEvents({
+    tap: (evt) => {
+      const coord = map.current!.screenToGeo(
+        evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY
+      );
+      addPoint(coord.lat, coord.lng);
+    },
+  });
+
+  return (
+    <div>
+      <p>Distance: {(totalDistance / 1000).toFixed(2)} km</p>
+      <button onClick={clearPoints}>Clear</button>
+      {points.length > 1 && <Polyline points={points} />}
+      {points.map((point, i) => (
+        <Marker key={i} position={point} label={`${i + 1}`} />
+      ))}
+    </div>
+  );
+}
+```
+
+## Hook Best Practices
+
+<AccordionGroup>
+  <Accordion title="Composition over inheritance">
+    Build complex functionality by composing simple hooks:
+    ```tsx
+    function useAdvancedMap() {
+      const context = useMapContext();
+      const bounds = useMapBounds();
+      const location = useGeolocation();
+
+      return { context, bounds, location };
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Memoization">
+    Use `useMemo` and `useCallback` for expensive computations:
+    ```tsx
+    const filteredMarkers = useMemo(() => {
+      return markers.filter(m => bounds.contains(m.position));
+    }, [markers, bounds]);
+    ```
+  </Accordion>
+
+  <Accordion title="Cleanup">
+    Always clean up side effects:
+    ```tsx
+    useEffect(() => {
+      const listener = () => { /* ... */ };
+      map.current?.addEventListener('tap', listener);
+      return () => map.current?.removeEventListener('tap', listener);
+    }, [map]);
+    ```
+  </Accordion>
+
+  <Accordion title="Type safety">
+    Define proper TypeScript types for custom hooks:
+    ```tsx
+    interface UseMapBoundsReturn {
+      bounds: H.geo.Rect | null;
+      refresh: () => void;
+    }
+
+    function useMapBounds(): UseMapBoundsReturn {
+      // Implementation
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Map Context" icon="layer-group" href="/guides/map-context">
+    Understanding the context system
+  </Card>
+  <Card title="TypeScript" icon="code" href="/guides/typescript-support">
+    Type-safe hooks
+  </Card>
+  <Card title="Examples" icon="sparkles" href="/examples/basic-map">
+    Practical hook examples
+  </Card>
+</CardGroup>

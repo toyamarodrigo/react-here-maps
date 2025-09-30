@@ -1,0 +1,452 @@
+---
+title: 'TypeScript Support'
+description: 'Type-safe development with React HERE Maps'
+---
+
+# TypeScript Support
+
+React HERE Maps is built with TypeScript and provides comprehensive type definitions for a superior development experience.
+
+## Installation
+
+Install the HERE Maps type definitions:
+
+```bash
+npm install --save-dev @types/heremaps
+```
+
+The library's own types are included automatically.
+
+## Type Imports
+
+### Component Props
+
+```tsx
+import type {
+  HereMapProps,
+  MarkerProps,
+  PolylineProps,
+  PolygonProps,
+} from '@rodrito/react-here-maps';
+
+const mapConfig: HereMapProps = {
+  apikey: 'YOUR_KEY',
+  options: {
+    center: { lat: 40.7128, lng: -74.0060 },
+    zoom: 12,
+  },
+};
+
+const markerConfig: MarkerProps = {
+  position: { lat: 40.7128, lng: -74.0060 },
+  label: 'New York',
+  draggable: true,
+};
+```
+
+### HERE Maps Types
+
+Use official HERE Maps types from `@types/heremaps`:
+
+```tsx
+import type H from '@here/maps-api-for-javascript';
+
+function handleMapEvent(evt: H.mapevents.Event) {
+  const pointer = evt.currentPointer;
+  console.log('Clicked at:', pointer.viewportX, pointer.viewportY);
+}
+
+function processMap(map: H.Map) {
+  const center: H.geo.Point = map.getCenter();
+  const zoom: number = map.getZoom();
+  const bounds: H.geo.Rect = map.getViewBounds();
+}
+```
+
+## Zod Schema Validation
+
+The library uses Zod for runtime prop validation. You can access schemas for custom validation:
+
+```tsx
+import { HereMapPropsSchema, MarkerPropsSchema } from '@rodrito/react-here-maps';
+
+// Validate props at runtime
+const result = HereMapPropsSchema.safeParse({
+  apikey: 'test',
+  options: {
+    center: { lat: 40.7128, lng: -74.0060 },
+    zoom: 12,
+  },
+});
+
+if (result.success) {
+  console.log('Valid props:', result.data);
+} else {
+  console.error('Validation errors:', result.error);
+}
+```
+
+## Generic Components
+
+### Typed Marker Component
+
+```tsx
+import { Marker } from '@rodrito/react-here-maps';
+import type { MarkerProps } from '@rodrito/react-here-maps';
+
+interface LocationData {
+  id: number;
+  name: string;
+  coordinates: { lat: number; lng: number };
+}
+
+interface LocationMarkerProps {
+  location: LocationData;
+  onClick?: (location: LocationData) => void;
+}
+
+function LocationMarker({ location, onClick }: LocationMarkerProps) {
+  return (
+    <Marker
+      position={location.coordinates}
+      label={location.name}
+      onClick={() => onClick?.(location)}
+    />
+  );
+}
+```
+
+### Generic Map Component
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+import type { ReactNode } from 'react';
+
+interface MapWithDataProps<T> {
+  apikey: string;
+  data: T[];
+  getPosition: (item: T) => { lat: number; lng: number };
+  getLabel?: (item: T) => string;
+  children?: ReactNode;
+}
+
+function MapWithData<T extends { id: string | number }>({
+  apikey,
+  data,
+  getPosition,
+  getLabel,
+  children,
+}: MapWithDataProps<T>) {
+  const center = data.length > 0 ? getPosition(data[0]) : { lat: 0, lng: 0 };
+
+  return (
+    <HereMap apikey={apikey} options={{ center, zoom: 10 }}>
+      {data.map((item) => (
+        <Marker
+          key={item.id}
+          position={getPosition(item)}
+          label={getLabel?.(item)}
+        />
+      ))}
+      {children}
+    </HereMap>
+  );
+}
+
+// Usage
+interface City {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+}
+
+const cities: City[] = [
+  { id: 1, name: 'New York', lat: 40.7128, lng: -74.0060 },
+  { id: 2, name: 'Los Angeles', lat: 34.0522, lng: -118.2437 },
+];
+
+<MapWithData
+  apikey="YOUR_KEY"
+  data={cities}
+  getPosition={(city) => ({ lat: city.lat, lng: city.lng })}
+  getLabel={(city) => city.name}
+/>
+```
+
+## Utility Types
+
+### Coordinate Types
+
+```tsx
+// Define reusable coordinate types
+type Coordinate = { lat: number; lng: number };
+type CoordinatePath = Coordinate[];
+
+interface Route {
+  id: string;
+  name: string;
+  path: CoordinatePath;
+  distance: number;
+}
+
+const route: Route = {
+  id: 'route-1',
+  name: 'Manhattan Loop',
+  path: [
+    { lat: 40.7128, lng: -74.0060 },
+    { lat: 40.7614, lng: -73.9776 },
+  ],
+  distance: 5.2,
+};
+```
+
+### Map Configuration Types
+
+```tsx
+import type { HereMapProps } from '@rodrito/react-here-maps';
+
+type MapStyle = 'normal' | 'satellite' | 'terrain' | 'night';
+
+interface MapConfig {
+  apikey: string;
+  style: MapStyle;
+  center: { lat: number; lng: number };
+  zoom: number;
+}
+
+const mapStyleMap: Record<MapStyle, string> = {
+  normal: 'vector.normal.map',
+  satellite: 'raster.satellite.map',
+  terrain: 'raster.terrain.map',
+  night: 'raster.normal.mapnight',
+};
+
+function createMapProps(config: MapConfig): HereMapProps {
+  return {
+    apikey: config.apikey,
+    mapStyle: mapStyleMap[config.style],
+    options: {
+      center: config.center,
+      zoom: config.zoom,
+    },
+  };
+}
+```
+
+## Type Guards
+
+### Coordinate Validation
+
+```tsx
+function isValidCoordinate(
+  coord: unknown
+): coord is { lat: number; lng: number } {
+  return (
+    typeof coord === 'object' &&
+    coord !== null &&
+    'lat' in coord &&
+    'lng' in coord &&
+    typeof coord.lat === 'number' &&
+    typeof coord.lng === 'number' &&
+    coord.lat >= -90 &&
+    coord.lat <= 90 &&
+    coord.lng >= -180 &&
+    coord.lng <= 180
+  );
+}
+
+// Usage
+function SafeMarker({ position }: { position: unknown }) {
+  if (!isValidCoordinate(position)) {
+    console.error('Invalid coordinate:', position);
+    return null;
+  }
+
+  return <Marker position={position} />;
+}
+```
+
+## Context Typing
+
+### Typed Map Context Hook
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+import type { RefObject } from 'react';
+
+interface MapContextValue {
+  map: RefObject<H.Map | null>;
+  platform: RefObject<H.service.Platform | null>;
+  ui: RefObject<H.ui.UI | null>;
+  behavior: RefObject<H.mapevents.Behavior | null>;
+}
+
+function useTypedMapContext(): MapContextValue {
+  return useMapContext();
+}
+
+// Use with type safety
+function MyComponent() {
+  const { map, platform, ui, behavior } = useTypedMapContext();
+
+  // TypeScript knows the exact types
+  if (map.current) {
+    const center: H.geo.Point = map.current.getCenter();
+  }
+
+  return null;
+}
+```
+
+## Advanced Patterns
+
+### Discriminated Unions
+
+```tsx
+type MapLayer =
+  | { type: 'marker'; position: { lat: number; lng: number }; label: string }
+  | { type: 'polyline'; points: Array<{ lat: number; lng: number }> }
+  | { type: 'polygon'; points: Array<{ lat: number; lng: number }>; fillColor: string };
+
+function renderLayer(layer: MapLayer) {
+  switch (layer.type) {
+    case 'marker':
+      return <Marker position={layer.position} label={layer.label} />;
+    case 'polyline':
+      return <Polyline points={layer.points} />;
+    case 'polygon':
+      return (
+        <Polygon
+          points={layer.points}
+          options={{ style: { fillColor: layer.fillColor } }}
+        />
+      );
+  }
+}
+```
+
+### Builder Pattern
+
+```tsx
+class MarkerBuilder {
+  private config: Partial<MarkerProps> = {};
+
+  position(lat: number, lng: number): this {
+    this.config.position = { lat, lng };
+    return this;
+  }
+
+  label(label: string): this {
+    this.config.label = label;
+    return this;
+  }
+
+  draggable(draggable = true): this {
+    this.config.draggable = draggable;
+    return this;
+  }
+
+  build(): MarkerProps {
+    if (!this.config.position) {
+      throw new Error('Marker position is required');
+    }
+    return this.config as MarkerProps;
+  }
+}
+
+// Usage
+const markerProps = new MarkerBuilder()
+  .position(40.7128, -74.0060)
+  .label('NYC')
+  .draggable()
+  .build();
+
+<Marker {...markerProps} />
+```
+
+## Type-Safe Configuration
+
+### Environment Variables
+
+```tsx
+// env.d.ts
+interface ImportMetaEnv {
+  readonly VITE_HERE_API_KEY: string;
+  readonly VITE_MAP_DEFAULT_CENTER_LAT: string;
+  readonly VITE_MAP_DEFAULT_CENTER_LNG: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+// config.ts
+export const mapConfig = {
+  apikey: import.meta.env.VITE_HERE_API_KEY,
+  defaultCenter: {
+    lat: Number(import.meta.env.VITE_MAP_DEFAULT_CENTER_LAT),
+    lng: Number(import.meta.env.VITE_MAP_DEFAULT_CENTER_LNG),
+  },
+} as const;
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Strict mode">
+    Enable strict TypeScript settings in `tsconfig.json`:
+    ```json
+    {
+      "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Avoid 'any'">
+    Use specific types instead of `any`:
+    ```tsx
+    // Bad
+    function handleEvent(evt: any) { }
+
+    // Good
+    function handleEvent(evt: H.mapevents.Event) { }
+    ```
+  </Accordion>
+
+  <Accordion title="Type imports">
+    Use `import type` for type-only imports:
+    ```tsx
+    import type { MarkerProps } from '@rodrito/react-here-maps';
+    import { Marker } from '@rodrito/react-here-maps';
+    ```
+  </Accordion>
+
+  <Accordion title="Generics for reusability">
+    Use generics for flexible, reusable components:
+    ```tsx
+    function MapWithData<T>({ data, render }: {
+      data: T[];
+      render: (item: T) => ReactNode;
+    }) { }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Components" icon="cube" href="/components/here-map">
+    Component API reference
+  </Card>
+  <Card title="Hooks" icon="code" href="/guides/hooks-system">
+    Custom hooks with types
+  </Card>
+  <Card title="Examples" icon="sparkles" href="/examples/basic-map">
+    TypeScript examples
+  </Card>
+</CardGroup>

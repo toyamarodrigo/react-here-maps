@@ -1,0 +1,209 @@
+---
+title: 'ScaleBar'
+description: 'Display distance scale indicator on the map'
+---
+
+# ScaleBar
+
+The `ScaleBar` component displays a visual scale showing map distances in metric and/or imperial units.
+
+## Props
+
+<ParamField path="alignment" type="string">
+  Position of the scale bar on the map
+
+  Options:
+  - `'left-top'`
+  - `'left-middle'`
+  - `'left-bottom'`
+  - `'right-top'`
+  - `'right-middle'`
+  - `'right-bottom'`
+  - `'top-left'`
+  - `'top-center'`
+  - `'top-right'`
+  - `'bottom-left'`
+  - `'bottom-center'`
+  - `'bottom-right'` (default)
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default={false}>
+  Disable the scale bar
+</ParamField>
+
+<ParamField path="visibility" type="boolean" default={true}>
+  Control visibility of the scale bar
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap, ScaleBar } from '@rodrito/react-here-maps';
+
+function MapWithScale() {
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    >
+      <ScaleBar />
+    </HereMap>
+  );
+}
+```
+
+## Custom Position
+
+```tsx
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <ScaleBar alignment="bottom-left" />
+</HereMap>
+```
+
+## With Other Controls
+
+```tsx
+import { HereMap, ScaleBar, ZoomControl } from '@rodrito/react-here-maps';
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+  <ZoomControl alignment="right-top" />
+  <ScaleBar alignment="bottom-right" />
+</HereMap>
+```
+
+## Dynamic Behavior
+
+The scale bar automatically updates:
+- When the map zoom level changes
+- When the map is panned to different latitudes (scale varies by latitude)
+- Shows appropriate units based on zoom level
+
+```tsx
+import { HereMap, ScaleBar, Marker } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+function DynamicScale() {
+  const [center, setCenter] = useState({ lat: 40.7128, lng: -74.0060 });
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center, zoom: 12 }}
+    >
+      <ScaleBar />
+      <Marker position={center} />
+    </HereMap>
+  );
+}
+```
+
+## Units Display
+
+The scale bar shows:
+- **Metric** (meters/kilometers)
+- **Imperial** (feet/miles)
+- Both units simultaneously
+
+The displayed unit automatically switches based on the appropriate scale:
+- At high zoom: meters/feet
+- At low zoom: kilometers/miles
+
+## Positioning Examples
+
+<Tabs>
+  <Tab title="Bottom Right">
+    ```tsx
+    <ScaleBar alignment="bottom-right" />
+    ```
+    Best for most layouts (default)
+  </Tab>
+
+  <Tab title="Bottom Left">
+    ```tsx
+    <ScaleBar alignment="bottom-left" />
+    ```
+    Good when right side has other controls
+  </Tab>
+
+  <Tab title="Top Right">
+    ```tsx
+    <ScaleBar alignment="top-right" />
+    ```
+    Alternative placement
+  </Tab>
+</Tabs>
+
+## Conditional Visibility
+
+```tsx
+import { useState } from 'react';
+
+function ToggleableScale() {
+  const [showScale, setShowScale] = useState(true);
+
+  return (
+    <>
+      <button onClick={() => setShowScale(!showScale)}>
+        Toggle Scale Bar
+      </button>
+
+      <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+        <ScaleBar visibility={showScale} />
+      </HereMap>
+    </>
+  );
+}
+```
+
+## Full Controls Layout
+
+```tsx
+import { HereMap, ZoomControl, ScaleBar, MapSettings } from '@rodrito/react-here-maps';
+
+<HereMap
+  apikey="YOUR_API_KEY"
+  options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+>
+  <ZoomControl alignment="right-top" />
+  <MapSettings alignment="right-bottom" />
+  <ScaleBar alignment="bottom-right" />
+</HereMap>
+```
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Distance Reference" icon="ruler">
+    Help users understand real-world distances on the map
+  </Card>
+  <Card title="Planning" icon="route">
+    Useful for route planning and measuring areas
+  </Card>
+  <Card title="Navigation" icon="compass">
+    Essential for navigation applications
+  </Card>
+  <Card title="Context" icon="map-location-dot">
+    Provides geographic context at different zoom levels
+  </Card>
+</CardGroup>
+
+## Accessibility
+
+The scale bar provides visual reference for:
+- Screen magnification users
+- Print versions of the map
+- Screenshots and documentation
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="ZoomControl" icon="magnifying-glass" href="/components/zoom-control">
+    Zoom controls
+  </Card>
+  <Card title="MapSettings" icon="sliders" href="/components/map-settings">
+    Map configuration
+  </Card>
+  <Card title="HereMap" icon="map" href="/components/here-map">
+    Main map component
+  </Card>
+</CardGroup>

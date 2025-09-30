@@ -1,0 +1,206 @@
+---
+title: 'Marker'
+description: 'Display markers on the map with drag support'
+---
+
+# Marker
+
+The `Marker` component displays markers (pins) on the map at specific coordinates. Supports custom icons, labels, and drag behavior.
+
+## Props
+
+<ParamField path="position" type="{ lat: number; lng: number }" required>
+  Marker position coordinates
+</ParamField>
+
+<ParamField path="label" type="string">
+  Text label to display on the marker
+</ParamField>
+
+<ParamField path="draggable" type="boolean" default={false}>
+  Enable drag behavior for the marker
+</ParamField>
+
+<ParamField path="icon" type="string">
+  URL to custom icon image
+</ParamField>
+
+<ParamField path="iconSize" type="{ w: number; h: number }">
+  Custom icon size in pixels
+</ParamField>
+
+<ParamField path="iconAnchor" type="{ x: number; y: number }">
+  Icon anchor point (where the icon points to on the map)
+</ParamField>
+
+<ParamField path="onDragEnd" type="(event: H.mapevents.Event) => void">
+  Callback fired when marker drag ends
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+
+function MapWithMarker() {
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    >
+      <Marker
+        position={{ lat: 40.7128, lng: -74.0060 }}
+        label="New York City"
+      />
+    </HereMap>
+  );
+}
+```
+
+## Multiple Markers
+
+```tsx
+const cities = [
+  { id: 1, lat: 40.7128, lng: -74.0060, name: 'New York' },
+  { id: 2, lat: 34.0522, lng: -118.2437, name: 'Los Angeles' },
+  { id: 3, lat: 41.8781, lng: -87.6298, name: 'Chicago' },
+];
+
+<HereMap
+  apikey="YOUR_API_KEY"
+  options={{ center: { lat: 39.8283, lng: -98.5795 }, zoom: 4 }}
+>
+  {cities.map((city) => (
+    <Marker
+      key={city.id}
+      position={{ lat: city.lat, lng: city.lng }}
+      label={city.name}
+    />
+  ))}
+</HereMap>
+```
+
+## Draggable Marker
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+function DraggableMarkerExample() {
+  const [position, setPosition] = useState({ lat: 40.7128, lng: -74.0060 });
+
+  return (
+    <>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{ center: position, zoom: 12 }}
+      >
+        <Marker
+          position={position}
+          draggable
+          onDragEnd={(event) => {
+            const coord = event.target.getGeometry();
+            setPosition({ lat: coord.lat, lng: coord.lng });
+          }}
+        />
+      </HereMap>
+
+      <div>
+        <p>Latitude: {position.lat.toFixed(4)}</p>
+        <p>Longitude: {position.lng.toFixed(4)}</p>
+      </div>
+    </>
+  );
+}
+```
+
+## Custom Icon
+
+```tsx
+<Marker
+  position={{ lat: 48.8566, lng: 2.3522 }}
+  label="Paris"
+  icon="https://example.com/custom-marker.png"
+  iconSize={{ w: 32, h: 32 }}
+  iconAnchor={{ x: 16, y: 32 }}
+/>
+```
+
+<Info>
+  The `iconAnchor` determines which point of the icon image corresponds to the marker's geographical position. For a pin-shaped icon, set it to the bottom center (e.g., `{ x: width/2, y: height }`).
+</Info>
+
+## Interactive Markers
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+function InteractiveMarkers() {
+  const [selected, setSelected] = useState<number | null>(null);
+
+  const locations = [
+    { id: 1, lat: 40.7128, lng: -74.0060, name: 'NYC' },
+    { id: 2, lat: 34.0522, lng: -118.2437, name: 'LA' },
+  ];
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: { lat: 39.8283, lng: -98.5795 }, zoom: 4 }}
+    >
+      {locations.map((loc) => (
+        <Marker
+          key={loc.id}
+          position={{ lat: loc.lat, lng: loc.lng }}
+          label={loc.name}
+          onClick={() => setSelected(loc.id)}
+          icon={selected === loc.id ? '/selected-marker.png' : '/marker.png'}
+        />
+      ))}
+    </HereMap>
+  );
+}
+```
+
+## TypeScript Types
+
+```tsx
+import type { MarkerProps } from '@rodrito/react-here-maps';
+
+const markerConfig: MarkerProps = {
+  position: { lat: 40.7128, lng: -74.0060 },
+  label: 'New York',
+  draggable: true,
+};
+```
+
+## Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Large number of markers">
+    For 100+ markers, consider using marker clustering or virtualization techniques. Render only markers in the visible viewport.
+  </Accordion>
+
+  <Accordion title="Custom icons">
+    Optimize icon images for web (WebP format, appropriate size). Preload icons that will be used frequently.
+  </Accordion>
+
+  <Accordion title="Drag performance">
+    Avoid heavy computations in `onDragEnd`. Use debouncing for API calls triggered by marker position changes.
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="HereMap" icon="map" href="/components/here-map">
+    Map container component
+  </Card>
+  <Card title="Polyline" icon="route" href="/components/polyline">
+    Draw lines between markers
+  </Card>
+  <Card title="Examples" icon="sparkles" href="/examples/markers">
+    Interactive marker examples
+  </Card>
+</CardGroup>

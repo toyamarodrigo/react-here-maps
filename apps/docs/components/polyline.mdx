@@ -1,0 +1,267 @@
+---
+title: 'Polyline'
+description: 'Draw lines on the map between multiple points'
+---
+
+# Polyline
+
+The `Polyline` component draws lines on the map connecting multiple coordinate points. Useful for routes, paths, and connections.
+
+## Props
+
+<ParamField path="points" type="Array<{ lat: number; lng: number }>" required>
+  Array of coordinates defining the polyline path
+</ParamField>
+
+<ParamField path="options" type="object">
+  Polyline styling and behavior options
+
+  <Expandable title="options properties">
+    <ParamField path="style" type="object">
+      Visual styling for the polyline
+
+      <Expandable title="style properties">
+        <ParamField path="strokeColor" type="string" default="'#1EA7FD'">
+          Line color (hex, rgb, or named color)
+        </ParamField>
+
+        <ParamField path="lineWidth" type="number" default={4}>
+          Line width in pixels
+        </ParamField>
+
+        <ParamField path="lineDash" type="number[]">
+          Dash pattern for dashed lines. Example: `[10, 5]` creates 10px dashes with 5px gaps
+        </ParamField>
+
+        <ParamField path="lineCap" type="'butt' | 'round' | 'square'" default="'round'">
+          Line cap style
+        </ParamField>
+
+        <ParamField path="lineJoin" type="'bevel' | 'miter' | 'round'" default="'round'">
+          Line join style at corners
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap, Polyline } from '@rodrito/react-here-maps';
+
+function MapWithPolyline() {
+  const routePoints = [
+    { lat: 40.7128, lng: -74.0060 },
+    { lat: 40.7614, lng: -73.9776 },
+    { lat: 40.7589, lng: -73.9851 },
+  ];
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: routePoints[0], zoom: 13 }}
+    >
+      <Polyline points={routePoints} />
+    </HereMap>
+  );
+}
+```
+
+## Styled Polyline
+
+```tsx
+<Polyline
+  points={[
+    { lat: 52.52, lng: 13.405 },
+    { lat: 52.53, lng: 13.415 },
+    { lat: 52.54, lng: 13.425 },
+  ]}
+  options={{
+    style: {
+      strokeColor: '#FF5733',
+      lineWidth: 6,
+      lineCap: 'round',
+      lineJoin: 'round',
+    }
+  }}
+/>
+```
+
+## Dashed Line
+
+```tsx
+<Polyline
+  points={routePoints}
+  options={{
+    style: {
+      strokeColor: '#007BFF',
+      lineWidth: 4,
+      lineDash: [10, 5], // 10px dash, 5px gap
+    }
+  }}
+/>
+```
+
+## Multiple Routes
+
+```tsx
+const routes = [
+  {
+    id: 'route-1',
+    points: [
+      { lat: 40.7128, lng: -74.0060 },
+      { lat: 40.7614, lng: -73.9776 },
+    ],
+    color: '#FF5733',
+  },
+  {
+    id: 'route-2',
+    points: [
+      { lat: 40.7589, lng: -73.9851 },
+      { lat: 40.7489, lng: -73.9680 },
+    ],
+    color: '#33FF57',
+  },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7489, lng: -73.9851 }, zoom: 12 }}>
+  {routes.map((route) => (
+    <Polyline
+      key={route.id}
+      points={route.points}
+      options={{
+        style: {
+          strokeColor: route.color,
+          lineWidth: 5,
+        }
+      }}
+    />
+  ))}
+</HereMap>
+```
+
+## Drawing Path with Markers
+
+```tsx
+import { HereMap, Polyline, Marker } from '@rodrito/react-here-maps';
+
+function RouteWithWaypoints() {
+  const waypoints = [
+    { lat: 40.7128, lng: -74.0060, label: 'Start' },
+    { lat: 40.7614, lng: -73.9776, label: 'Stop 1' },
+    { lat: 40.7589, lng: -73.9851, label: 'End' },
+  ];
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: waypoints[0], zoom: 13 }}
+    >
+      <Polyline
+        points={waypoints}
+        options={{
+          style: {
+            strokeColor: '#1EA7FD',
+            lineWidth: 4,
+          }
+        }}
+      />
+
+      {waypoints.map((point, index) => (
+        <Marker
+          key={index}
+          position={point}
+          label={point.label}
+        />
+      ))}
+    </HereMap>
+  );
+}
+```
+
+## Dynamic Polyline
+
+```tsx
+import { useState } from 'react';
+
+function DynamicPolyline() {
+  const [points, setPoints] = useState([
+    { lat: 40.7128, lng: -74.0060 },
+  ]);
+
+  const addPoint = (lat: number, lng: number) => {
+    setPoints([...points, { lat, lng }]);
+  };
+
+  return (
+    <HereMap
+      apikey="YOUR_API_KEY"
+      options={{ center: points[0], zoom: 12 }}
+    >
+      {points.length > 1 && (
+        <Polyline
+          points={points}
+          options={{
+            style: {
+              strokeColor: '#28A745',
+              lineWidth: 4,
+            }
+          }}
+        />
+      )}
+
+      {points.map((point, index) => (
+        <Marker key={index} position={point} label={`${index + 1}`} />
+      ))}
+    </HereMap>
+  );
+}
+```
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Routes" icon="route">
+    Display navigation routes between locations
+  </Card>
+  <Card title="Boundaries" icon="border-all">
+    Show property or region boundaries
+  </Card>
+  <Card title="Trails" icon="person-hiking">
+    Visualize hiking or biking trails
+  </Card>
+  <Card title="Connections" icon="diagram-project">
+    Connect related points or locations
+  </Card>
+</CardGroup>
+
+## Performance Tips
+
+<AccordionGroup>
+  <Accordion title="Simplify complex paths">
+    For paths with many points, consider simplifying using the Douglas-Peucker algorithm to reduce the number of coordinates while maintaining visual accuracy.
+  </Accordion>
+
+  <Accordion title="Batch updates">
+    When updating polylines dynamically, batch coordinate changes instead of updating on every point change.
+  </Accordion>
+
+  <Accordion title="Visibility culling">
+    Remove or don't render polylines that are outside the visible map bounds.
+  </Accordion>
+</AccordionGroup>
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Polygon" icon="draw-polygon" href="/components/polygon">
+    Draw filled polygons
+  </Card>
+  <Card title="Marker" icon="map-pin" href="/components/marker">
+    Add markers to polyline endpoints
+  </Card>
+  <Card title="Examples" icon="code" href="/examples/polylines-polygons">
+    Interactive examples
+  </Card>
+</CardGroup>

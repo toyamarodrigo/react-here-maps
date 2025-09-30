@@ -1,0 +1,90 @@
+---
+title: Introduction
+description: 'Modern React components and hooks for HERE Maps Platform'
+---
+
+# Welcome to React HERE Maps
+
+React HERE Maps is a modern, type-safe library that provides React components and hooks for integrating the [HERE Maps Platform](https://www.here.com/platform/mapping) into your applications.
+
+<Card title="Quick Start" icon="rocket" href="/quickstart">
+  Get up and running in under 5 minutes
+</Card>
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Type-Safe" icon="shield-check">
+    Built with TypeScript and Zod for runtime validation
+  </Card>
+  <Card title="Hook-Based" icon="code">
+    Modern React hooks for map functionality
+  </Card>
+  <Card title="Tree-Shakeable" icon="tree">
+    Optimized bundle size with Rolldown
+  </Card>
+  <Card title="Context System" icon="layer-group">
+    Clean API using React Context
+  </Card>
+</CardGroup>
+
+## Components
+
+The library provides a comprehensive set of components for building map applications:
+
+- **HereMap** - Main map container with context provider
+- **Marker** - Map markers with drag support
+- **Polyline** - Draw lines on the map
+- **Polygon** - Draw polygons with holes support
+- **MapSettings** - Map configuration controls
+- **ZoomControl** - Zoom in/out controls
+- **ScaleBar** - Distance scale indicator
+
+## Installation
+
+```bash
+npm install @rodrito/react-here-maps @here/maps-api-for-javascript
+```
+
+## Basic Usage
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+
+function App() {
+  const apiKey = 'YOUR_HERE_API_KEY';
+
+  return (
+    <HereMap
+      apiKey={apiKey}
+      center={{ lat: 40.7128, lng: -74.0060 }}
+      zoom={12}
+    >
+      <Marker lat={40.7128} lng={-74.0060} />
+    </HereMap>
+  );
+}
+```
+
+## Requirements
+
+- React 18+
+- HERE Maps API key ([Get one here](https://developer.here.com/))
+- HERE Maps CSS (included automatically)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="play" href="/quickstart">
+    Build your first map application
+  </Card>
+  <Card title="Components" icon="cube" href="/components/here-map">
+    Explore available components
+  </Card>
+  <Card title="Guides" icon="book" href="/guides/map-context">
+    Learn core concepts
+  </Card>
+  <Card title="Examples" icon="code" href="/examples/basic-map">
+    View interactive examples
+  </Card>
+</CardGroup>

@@ -1,0 +1,290 @@
+---
+title: 'Basic Map'
+description: 'Simple map implementation examples'
+---
+
+# Basic Map Examples
+
+Get started with simple map implementations.
+
+## Minimal Setup
+
+The simplest possible map:
+
+```tsx
+import { HereMap } from '@rodrito/react-here-maps';
+
+export function MinimalMap() {
+  return (
+    <div style={{ height: '400px', width: '100%' }}>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: { lat: 40.7128, lng: -74.0060 },
+          zoom: 12
+        }}
+      />
+    </div>
+  );
+}
+```
+
+## Centered on a City
+
+```tsx
+import { HereMap } from '@rodrito/react-here-maps';
+
+const cities = {
+  newYork: { lat: 40.7128, lng: -74.0060 },
+  london: { lat: 51.5074, lng: -0.1278 },
+  tokyo: { lat: 35.6762, lng: 139.6503 },
+  sydney: { lat: -33.8688, lng: 151.2093 },
+};
+
+export function CityMap() {
+  return (
+    <div style={{ height: '500px', width: '100%' }}>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: cities.london,
+          zoom: 11
+        }}
+      />
+    </div>
+  );
+}
+```
+
+## Responsive Map
+
+Full-screen responsive map:
+
+```tsx
+import { HereMap } from '@rodrito/react-here-maps';
+
+export function ResponsiveMap() {
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    }}>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: { lat: 34.0522, lng: -118.2437 },
+          zoom: 10
+        }}
+      />
+    </div>
+  );
+}
+```
+
+## With Controls
+
+Add zoom and scale controls:
+
+```tsx
+import { HereMap, ZoomControl, ScaleBar } from '@rodrito/react-here-maps';
+
+export function MapWithControls() {
+  return (
+    <div style={{ height: '500px', width: '100%' }}>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: { lat: 48.8566, lng: 2.3522 },
+          zoom: 13
+        }}
+      >
+        <ZoomControl alignment="right-top" />
+        <ScaleBar alignment="bottom-right" />
+      </HereMap>
+    </div>
+  );
+}
+```
+
+## Different Map Styles
+
+### Satellite View
+
+```tsx
+<HereMap
+  apikey="YOUR_API_KEY"
+  mapStyle="raster.satellite.map"
+  options={{ center: { lat: 25.7617, lng: -80.1918 }, zoom: 14 }}
+/>
+```
+
+### Terrain View
+
+```tsx
+<HereMap
+  apikey="YOUR_API_KEY"
+  mapStyle="raster.terrain.map"
+  options={{ center: { lat: 46.8182, lng: 8.2275 }, zoom: 10 }}
+/>
+```
+
+### Night Mode
+
+```tsx
+<HereMap
+  apikey="YOUR_API_KEY"
+  mapStyle="raster.normal.mapnight"
+  options={{ center: { lat: 35.6762, lng: 139.6503 }, zoom: 12 }}
+/>
+```
+
+## Dynamic Style Switching
+
+```tsx
+import { HereMap, MapSettings } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+type MapStyleType = 'normal' | 'satellite' | 'terrain' | 'night';
+
+const styles: Record<MapStyleType, string> = {
+  normal: 'vector.normal.map',
+  satellite: 'raster.satellite.map',
+  terrain: 'raster.terrain.map',
+  night: 'raster.normal.mapnight',
+};
+
+export function DynamicStyleMap() {
+  const [style, setStyle] = useState<MapStyleType>('normal');
+
+  return (
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        {Object.keys(styles).map((key) => (
+          <button
+            key={key}
+            onClick={() => setStyle(key as MapStyleType)}
+            style={{
+              padding: '8px 16px',
+              margin: '0 4px',
+              backgroundColor: style === key ? '#1EA7FD' : '#fff',
+              color: style === key ? '#fff' : '#000',
+              border: '1px solid #1EA7FD',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            {key.charAt(0).toUpperCase() + key.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ height: '500px', width: '100%' }}>
+        <HereMap
+          apikey="YOUR_API_KEY"
+          mapStyle={styles[style]}
+          options={{
+            center: { lat: 37.7749, lng: -122.4194 },
+            zoom: 12
+          }}
+        >
+          <MapSettings alignment="right-bottom" />
+        </HereMap>
+      </div>
+    </div>
+  );
+}
+```
+
+## Controlled Center and Zoom
+
+```tsx
+import { HereMap } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+export function ControlledMap() {
+  const [center, setCenter] = useState({ lat: 40.7128, lng: -74.0060 });
+  const [zoom, setZoom] = useState(12);
+
+  const locations = {
+    newYork: { lat: 40.7128, lng: -74.0060 },
+    london: { lat: 51.5074, lng: -0.1278 },
+    tokyo: { lat: 35.6762, lng: 139.6503 },
+  };
+
+  return (
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={() => setCenter(locations.newYork)}>
+          New York
+        </button>
+        <button onClick={() => setCenter(locations.london)}>
+          London
+        </button>
+        <button onClick={() => setCenter(locations.tokyo)}>
+          Tokyo
+        </button>
+
+        <div style={{ marginTop: '0.5rem' }}>
+          Zoom: {zoom}
+          <button onClick={() => setZoom(Math.min(zoom + 1, 20))}>+</button>
+          <button onClick={() => setZoom(Math.max(zoom - 1, 0))}>-</button>
+        </div>
+      </div>
+
+      <div style={{ height: '500px', width: '100%' }}>
+        <HereMap
+          apikey="YOUR_API_KEY"
+          options={{ center, zoom }}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+## Map with Container Styling
+
+```tsx
+export function StyledMap() {
+  return (
+    <div
+      style={{
+        height: '600px',
+        width: '100%',
+        border: '4px solid #1EA7FD',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+      }}
+    >
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: { lat: -33.8688, lng: 151.2093 },
+          zoom: 13
+        }}
+      />
+    </div>
+  );
+}
+```
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Markers" icon="map-pin" href="/examples/markers">
+    Add markers to your map
+  </Card>
+  <Card title="Polylines" icon="route" href="/examples/polylines-polygons">
+    Draw lines and shapes
+  </Card>
+  <Card title="Interactive" icon="hand-pointer" href="/examples/interactive-map">
+    User interactions
+  </Card>
+  <Card title="Components" icon="cube" href="/components/here-map">
+    Full API reference
+  </Card>
+</CardGroup>

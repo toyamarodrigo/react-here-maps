@@ -1,0 +1,295 @@
+---
+title: 'Polylines & Polygons'
+description: 'Drawing lines and shapes on the map'
+---
+
+# Polylines & Polygons
+
+Learn how to draw lines and polygons on your maps.
+
+## Simple Polyline
+
+```tsx
+import { HereMap, Polyline } from '@rodrito/react-here-maps';
+
+const route = [
+  { lat: 40.7128, lng: -74.0060 },
+  { lat: 40.7589, lng: -73.9851 },
+  { lat: 40.7614, lng: -73.9776 },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: route[0], zoom: 13 }}>
+  <Polyline points={route} />
+</HereMap>
+```
+
+## Styled Polyline
+
+```tsx
+<Polyline
+  points={route}
+  options={{
+    style: {
+      strokeColor: '#FF5733',
+      lineWidth: 6,
+      lineCap: 'round',
+      lineJoin: 'round',
+    }
+  }}
+/>
+```
+
+## Multiple Routes
+
+```tsx
+const routes = [
+  {
+    id: 'route-1',
+    name: 'Route A',
+    points: [
+      { lat: 40.7128, lng: -74.0060 },
+      { lat: 40.7589, lng: -73.9851 },
+    ],
+    color: '#FF5733',
+  },
+  {
+    id: 'route-2',
+    name: 'Route B',
+    points: [
+      { lat: 40.7128, lng: -74.0060 },
+      { lat: 40.7614, lng: -73.9776 },
+    ],
+    color: '#33FF57',
+  },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7358, lng: -73.9955 }, zoom: 12 }}>
+  {routes.map((route) => (
+    <Polyline
+      key={route.id}
+      points={route.points}
+      options={{
+        style: {
+          strokeColor: route.color,
+          lineWidth: 5,
+        }
+      }}
+    />
+  ))}
+</HereMap>
+```
+
+## Simple Polygon
+
+```tsx
+import { Polygon } from '@rodrito/react-here-maps';
+
+const area = [
+  { lat: 40.7128, lng: -74.0060 },
+  { lat: 40.7228, lng: -74.0060 },
+  { lat: 40.7228, lng: -73.9960 },
+  { lat: 40.7128, lng: -73.9960 },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: area[0], zoom: 13 }}>
+  <Polygon points={area} />
+</HereMap>
+```
+
+## Styled Polygon
+
+```tsx
+<Polygon
+  points={area}
+  options={{
+    style: {
+      fillColor: 'rgba(30, 167, 253, 0.4)',
+      strokeColor: '#1EA7FD',
+      lineWidth: 3,
+    }
+  }}
+/>
+```
+
+## Polygon with Hole
+
+```tsx
+const outerBoundary = [
+  { lat: 40.7, lng: -74.02 },
+  { lat: 40.73, lng: -74.02 },
+  { lat: 40.73, lng: -73.98 },
+  { lat: 40.7, lng: -73.98 },
+];
+
+const innerHole = [
+  { lat: 40.715, lng: -74.01 },
+  { lat: 40.7225, lng: -74.01 },
+  { lat: 40.7225, lng: -73.99 },
+  { lat: 40.715, lng: -73.99 },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7163, lng: -74.0 }, zoom: 13 }}>
+  <Polygon
+    points={outerBoundary}
+    holes={[innerHole]}
+    options={{
+      style: {
+        fillColor: 'rgba(255, 0, 0, 0.3)',
+        strokeColor: '#FF0000',
+        lineWidth: 2,
+      }
+    }}
+  />
+</HereMap>
+```
+
+## Route with Waypoints
+
+```tsx
+import { HereMap, Polyline, Marker } from '@rodrito/react-here-maps';
+
+const waypoints = [
+  { lat: 40.7128, lng: -74.0060, label: 'Start' },
+  { lat: 40.7589, lng: -73.9851, label: 'Stop 1' },
+  { lat: 40.7614, lng: -73.9776, label: 'End' },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: waypoints[0], zoom: 12 }}>
+  <Polyline
+    points={waypoints}
+    options={{
+      style: {
+        strokeColor: '#1EA7FD',
+        lineWidth: 4,
+      }
+    }}
+  />
+
+  {waypoints.map((point, index) => (
+    <Marker key={index} position={point} label={point.label} />
+  ))}
+</HereMap>
+```
+
+## Interactive Drawing
+
+```tsx
+import { useState } from 'react';
+
+export function DrawingTool() {
+  const [points, setPoints] = useState<Array<{ lat: number; lng: number }>>([]);
+  const [mode, setMode] = useState<'polyline' | 'polygon'>('polyline');
+
+  const handleMapClick = (lat: number, lng: number) => {
+    setPoints([...points, { lat, lng }]);
+  };
+
+  const clearPoints = () => setPoints([]);
+
+  return (
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={() => setMode('polyline')}>
+          Draw Polyline
+        </button>
+        <button onClick={() => setMode('polygon')}>
+          Draw Polygon
+        </button>
+        <button onClick={clearPoints}>Clear</button>
+        <span> Points: {points.length}</span>
+      </div>
+
+      <HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}>
+        {points.length > 0 && mode === 'polyline' && (
+          <Polyline points={points} />
+        )}
+
+        {points.length > 2 && mode === 'polygon' && (
+          <Polygon points={points} />
+        )}
+
+        {points.map((point, index) => (
+          <Marker key={index} position={point} label={`${index + 1}`} />
+        ))}
+      </HereMap>
+    </div>
+  );
+}
+```
+
+## Zones and Regions
+
+```tsx
+const zones = [
+  {
+    id: 'zone-1',
+    name: 'Zone A',
+    points: [
+      { lat: 40.70, lng: -74.02 },
+      { lat: 40.72, lng: -74.02 },
+      { lat: 40.72, lng: -74.00 },
+      { lat: 40.70, lng: -74.00 },
+    ],
+    color: 'rgba(255, 0, 0, 0.3)',
+  },
+  {
+    id: 'zone-2',
+    name: 'Zone B',
+    points: [
+      { lat: 40.72, lng: -74.02 },
+      { lat: 40.74, lng: -74.02 },
+      { lat: 40.74, lng: -74.00 },
+      { lat: 40.72, lng: -74.00 },
+    ],
+    color: 'rgba(0, 255, 0, 0.3)',
+  },
+];
+
+<HereMap apikey="YOUR_API_KEY" options={{ center: { lat: 40.72, lng: -74.01 }, zoom: 13 }}>
+  {zones.map((zone) => (
+    <Polygon
+      key={zone.id}
+      points={zone.points}
+      options={{
+        style: {
+          fillColor: zone.color,
+          strokeColor: zone.color.replace('0.3', '1'),
+          lineWidth: 2,
+        }
+      }}
+    />
+  ))}
+</HereMap>
+```
+
+## Dashed Lines
+
+```tsx
+<Polyline
+  points={route}
+  options={{
+    style: {
+      strokeColor: '#007BFF',
+      lineWidth: 4,
+      lineDash: [10, 5], // 10px line, 5px gap
+    }
+  }}
+/>
+```
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Polyline API" icon="route" href="/components/polyline">
+    Polyline component reference
+  </Card>
+  <Card title="Polygon API" icon="draw-polygon" href="/components/polygon">
+    Polygon component reference
+  </Card>
+  <Card title="Markers" icon="map-pin" href="/examples/markers">
+    Add markers to shapes
+  </Card>
+  <Card title="Interactive" icon="hand-pointer" href="/examples/interactive-map">
+    User interactions
+  </Card>
+</CardGroup>

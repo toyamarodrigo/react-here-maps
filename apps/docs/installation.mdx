@@ -1,0 +1,142 @@
+---
+title: Installation
+description: 'Installation guide for React HERE Maps'
+---
+
+# Installation
+
+## Package Manager
+
+<CodeGroup>
+
+```bash npm
+npm install @rodrito/react-here-maps @here/maps-api-for-javascript
+```
+
+```bash pnpm
+pnpm add @rodrito/react-here-maps @here/maps-api-for-javascript
+```
+
+```bash yarn
+yarn add @rodrito/react-here-maps @here/maps-api-for-javascript
+```
+
+</CodeGroup>
+
+## TypeScript Support
+
+Install type definitions for HERE Maps:
+
+```bash
+npm install --save-dev @types/heremaps
+```
+
+The library is built with TypeScript and includes type definitions out of the box.
+
+## Peer Dependencies
+
+React HERE Maps requires the following peer dependencies:
+
+- **React** `^18.0.0` - For React 18+ features
+- **React DOM** `^18.0.0` - For rendering
+- **@here/maps-api-for-javascript** `^1.50.0` - HERE Maps JavaScript API
+
+## Environment Setup
+
+### Get HERE API Key
+
+1. Visit [developer.here.com](https://developer.here.com/)
+2. Sign up for a free account
+3. Create a new project
+4. Generate an API key
+5. Enable the following services:
+   - Maps API
+   - Geocoding & Search
+   - Routing
+
+### Configure Environment Variables
+
+<Tabs>
+  <Tab title="Vite">
+    ```env .env.local
+    VITE_HERE_API_KEY=your_api_key_here
+    ```
+
+    Usage:
+    ```tsx
+    const apiKey = import.meta.env.VITE_HERE_API_KEY;
+    ```
+  </Tab>
+
+  <Tab title="Next.js">
+    ```env .env.local
+    NEXT_PUBLIC_HERE_API_KEY=your_api_key_here
+    ```
+
+    Usage:
+    ```tsx
+    const apiKey = process.env.NEXT_PUBLIC_HERE_API_KEY;
+    ```
+  </Tab>
+
+  <Tab title="Create React App">
+    ```env .env
+    REACT_APP_HERE_API_KEY=your_api_key_here
+    ```
+
+    Usage:
+    ```tsx
+    const apiKey = process.env.REACT_APP_HERE_API_KEY;
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+  Never commit your API keys to version control. Add `.env.local` to your `.gitignore` file.
+</Warning>
+
+## CSS Requirements
+
+The library automatically loads the required HERE Maps CSS. No manual CSS imports are needed.
+
+If you prefer to load it manually:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://js.api.here.com/v3/3.1/mapsjs-ui.css"
+/>
+```
+
+## Verify Installation
+
+Create a test component to verify everything is working:
+
+```tsx
+import { HereMap } from '@rodrito/react-here-maps';
+
+export function TestMap() {
+  return (
+    <div style={{ height: '400px', width: '100%' }}>
+      <HereMap
+        apiKey="YOUR_API_KEY"
+        center={{ lat: 0, lng: 0 }}
+        zoom={2}
+      />
+    </div>
+  );
+}
+```
+
+If you see a map, you're all set!
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Build your first application
+  </Card>
+  <Card title="Components" icon="cube" href="/components/here-map">
+    Explore available components
+  </Card>
+</CardGroup>

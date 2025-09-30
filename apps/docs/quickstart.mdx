@@ -1,0 +1,212 @@
+---
+title: Quickstart
+description: 'Get started with React HERE Maps in 5 minutes'
+---
+
+# Quickstart Guide
+
+This guide will help you create your first map application using React HERE Maps.
+
+## Prerequisites
+
+<AccordionGroup>
+  <Accordion title="HERE Maps API Key">
+    You'll need a HERE Maps API key. Get one for free at [developer.here.com](https://developer.here.com/).
+  </Accordion>
+  <Accordion title="React 18+">
+    This library requires React 18 or higher for concurrent features and improved SSR support.
+  </Accordion>
+</AccordionGroup>
+
+## Installation
+
+<Steps>
+  <Step title="Install the packages">
+    Install both the React HERE Maps library and the HERE Maps JavaScript API:
+
+    ```bash
+    npm install @rodrito/react-here-maps @here/maps-api-for-javascript
+    ```
+
+    Or with pnpm:
+
+    ```bash
+    pnpm add @rodrito/react-here-maps @here/maps-api-for-javascript
+    ```
+
+    Or with yarn:
+
+    ```bash
+    yarn add @rodrito/react-here-maps @here/maps-api-for-javascript
+    ```
+  </Step>
+
+  <Step title="Get your HERE API key">
+    1. Sign up at [developer.here.com](https://developer.here.com/)
+    2. Create a new project
+    3. Generate an API key
+    4. Copy your API key for the next step
+  </Step>
+
+  <Step title="Create your first map">
+    Create a new component with a basic map:
+
+    ```tsx
+    import { HereMap, Marker } from '@rodrito/react-here-maps';
+
+    export function MyMap() {
+      const apiKey = 'YOUR_HERE_API_KEY';
+
+      return (
+        <div style={{ height: '500px', width: '100%' }}>
+          <HereMap
+            apiKey={apiKey}
+            center={{ lat: 40.7128, lng: -74.0060 }}
+            zoom={12}
+          >
+            <Marker lat={40.7128} lng={-74.0060} />
+          </HereMap>
+        </div>
+      );
+    }
+    ```
+
+    <Warning>
+      Make sure to set a height on the container. The map needs a defined height to render properly.
+    </Warning>
+  </Step>
+
+  <Step title="Add environment variables (recommended)">
+    For security, store your API key in environment variables:
+
+    ```env .env.local
+    VITE_HERE_API_KEY=your_api_key_here
+    ```
+
+    Then use it in your component:
+
+    ```tsx
+    const apiKey = import.meta.env.VITE_HERE_API_KEY;
+    ```
+  </Step>
+</Steps>
+
+## Your First Interactive Map
+
+Let's add some interactivity with a draggable marker:
+
+```tsx
+import { HereMap, Marker } from '@rodrito/react-here-maps';
+import { useState } from 'react';
+
+export function InteractiveMap() {
+  const apiKey = 'YOUR_HERE_API_KEY';
+  const [position, setPosition] = useState({ lat: 40.7128, lng: -74.0060 });
+
+  return (
+    <div style={{ height: '500px', width: '100%' }}>
+      <HereMap
+        apiKey={apiKey}
+        center={position}
+        zoom={12}
+      >
+        <Marker
+          lat={position.lat}
+          lng={position.lng}
+          draggable
+          onDragEnd={(event) => {
+            const coord = event.target.getGeometry();
+            setPosition({ lat: coord.lat, lng: coord.lng });
+          }}
+        />
+      </HereMap>
+
+      <div style={{ marginTop: '1rem' }}>
+        <p>Marker Position:</p>
+        <p>Latitude: {position.lat.toFixed(4)}</p>
+        <p>Longitude: {position.lng.toFixed(4)}</p>
+      </div>
+    </div>
+  );
+}
+```
+
+## Common Patterns
+
+### Multiple Markers
+
+```tsx
+const locations = [
+  { id: 1, lat: 40.7128, lng: -74.0060, label: 'New York' },
+  { id: 2, lat: 34.0522, lng: -118.2437, label: 'Los Angeles' },
+  { id: 3, lat: 41.8781, lng: -87.6298, label: 'Chicago' },
+];
+
+<HereMap apiKey={apiKey} center={{ lat: 39.8283, lng: -98.5795 }} zoom={4}>
+  {locations.map((loc) => (
+    <Marker key={loc.id} lat={loc.lat} lng={loc.lng} />
+  ))}
+</HereMap>
+```
+
+### Drawing Polylines
+
+```tsx
+import { HereMap, Polyline } from '@rodrito/react-here-maps';
+
+const route = [
+  { lat: 40.7128, lng: -74.0060 },
+  { lat: 40.7614, lng: -73.9776 },
+  { lat: 40.7589, lng: -73.9851 },
+];
+
+<HereMap apiKey={apiKey} center={route[0]} zoom={13}>
+  <Polyline
+    points={route}
+    strokeColor="#1EA7FD"
+    lineWidth={4}
+  />
+</HereMap>
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Map Context" icon="layer-group" href="/guides/map-context">
+    Learn about the context system
+  </Card>
+  <Card title="Components API" icon="cube" href="/components/here-map">
+    Explore all available components
+  </Card>
+  <Card title="TypeScript Guide" icon="code" href="/guides/typescript-support">
+    Type-safe development patterns
+  </Card>
+  <Card title="Examples" icon="sparkles" href="/examples/basic-map">
+    View more interactive examples
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Map not displaying">
+    Make sure you have:
+    - Set a height on the map container
+    - Provided a valid HERE API key
+    - Installed both required packages
+  </Accordion>
+
+  <Accordion title="TypeScript errors">
+    Install the type definitions:
+    ```bash
+    npm install --save-dev @types/heremaps
+    ```
+  </Accordion>
+
+  <Accordion title="API key errors">
+    Verify that:
+    - Your API key is valid and active
+    - The key has the required permissions
+    - You're not hitting rate limits
+  </Accordion>
+</AccordionGroup>

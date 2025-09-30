@@ -1,0 +1,201 @@
+---
+title: 'HereMap'
+description: 'Main map container component with context provider'
+---
+
+# HereMap
+
+The `HereMap` component is the main container for HERE Maps. It provides the map context to all child components through React Context.
+
+## Props
+
+<ParamField path="apikey" type="string" required>
+  Your HERE Maps API key. Get one at [developer.here.com](https://developer.here.com/)
+</ParamField>
+
+<ParamField path="options" type="object">
+  Map initialization options
+
+  <Expandable title="options properties">
+    <ParamField path="center" type="{ lat: number; lng: number }">
+      Initial center coordinates of the map. Defaults to `{ lat: 0, lng: 0 }`
+    </ParamField>
+
+    <ParamField path="zoom" type="number">
+      Initial zoom level (0-22). Defaults to `10`
+    </ParamField>
+
+    <ParamField path="engineType" type="'P2D' | 'WEBGL'">
+      Rendering engine type. Defaults to `'P2D'`
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="mapStyle" type="string">
+  Map style/theme. Defaults to `"vector.normal.map"`
+
+  Available styles:
+  - `vector.normal.map` - Standard vector map
+  - `raster.satellite.map` - Satellite imagery
+  - `raster.terrain.map` - Terrain view
+  - `raster.normal.mapnight` - Night mode
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+  Child components (Markers, Polylines, Controls, etc.)
+</ParamField>
+
+## Basic Usage
+
+```tsx
+import { HereMap } from '@rodrito/react-here-maps';
+
+function App() {
+  return (
+    <div style={{ height: '500px', width: '100%' }}>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: { lat: 52.52, lng: 13.405 },
+          zoom: 12
+        }}
+      />
+    </div>
+  );
+}
+```
+
+<Warning>
+  The container must have a defined height for the map to render properly.
+</Warning>
+
+## Map Styles
+
+<Tabs>
+  <Tab title="Normal">
+    ```tsx
+    <HereMap
+      apikey={apiKey}
+      mapStyle="vector.normal.map"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    />
+    ```
+  </Tab>
+
+  <Tab title="Satellite">
+    ```tsx
+    <HereMap
+      apikey={apiKey}
+      mapStyle="raster.satellite.map"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    />
+    ```
+  </Tab>
+
+  <Tab title="Terrain">
+    ```tsx
+    <HereMap
+      apikey={apiKey}
+      mapStyle="raster.terrain.map"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    />
+    ```
+  </Tab>
+
+  <Tab title="Night Mode">
+    ```tsx
+    <HereMap
+      apikey={apiKey}
+      mapStyle="raster.normal.mapnight"
+      options={{ center: { lat: 40.7128, lng: -74.0060 }, zoom: 12 }}
+    />
+    ```
+  </Tab>
+</Tabs>
+
+## With Child Components
+
+```tsx
+import { HereMap, Marker, Polyline, ZoomControl, ScaleBar } from '@rodrito/react-here-maps';
+
+function CompleteMap() {
+  return (
+    <div style={{ height: '600px', width: '100%' }}>
+      <HereMap
+        apikey="YOUR_API_KEY"
+        options={{
+          center: { lat: 52.52, lng: 13.405 },
+          zoom: 12
+        }}
+      >
+        <Marker position={{ lat: 52.52, lng: 13.405 }} label="Berlin" />
+
+        <Polyline
+          points={[
+            { lat: 52.52, lng: 13.405 },
+            { lat: 52.53, lng: 13.415 }
+          ]}
+          options={{ style: { strokeColor: 'blue', lineWidth: 4 } }}
+        />
+
+        <ZoomControl alignment="right-top" />
+        <ScaleBar alignment="bottom-right" />
+      </HereMap>
+    </div>
+  );
+}
+```
+
+## Context Provider
+
+The `HereMap` component provides a context that can be accessed by child components:
+
+```tsx
+import { useMapContext } from '@rodrito/react-here-maps';
+
+function CustomComponent() {
+  const { map, platform, ui, behavior } = useMapContext();
+
+  // Access map instance and other HERE Maps objects
+  // ...
+
+  return null;
+}
+```
+
+## Engine Types
+
+<CardGroup cols={2}>
+  <Card title="P2D (Default)">
+    2D rendering engine. Better performance on older devices.
+  </Card>
+  <Card title="WEBGL">
+    WebGL rendering engine. Better performance with complex visualizations.
+  </Card>
+</CardGroup>
+
+```tsx
+// Use WebGL engine
+<HereMap
+  apikey={apiKey}
+  options={{
+    center: { lat: 40.7128, lng: -74.0060 },
+    zoom: 12,
+    engineType: 'WEBGL'
+  }}
+/>
+```
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Map Context" icon="layer-group" href="/guides/map-context">
+    Learn about the context system
+  </Card>
+  <Card title="Marker" icon="map-pin" href="/components/marker">
+    Add markers to the map
+  </Card>
+  <Card title="Controls" icon="sliders" href="/components/zoom-control">
+    Add interactive controls
+  </Card>
+</CardGroup>
