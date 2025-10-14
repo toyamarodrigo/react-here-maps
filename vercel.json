@@ -1,6 +1,0 @@
-{
-  "buildCommand": "pnpm build:docs",
-  "outputDirectory": "apps/docs/.mintlify",
-  "installCommand": "pnpm install",
-  "framework": null
-}
