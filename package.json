@@ -10,6 +10,7 @@
     "run:web": "pnpm --filter @rodrito/www dev",
     "run:docs": "pnpm --filter @rodrito/docs dev",
     "run:storybook": "pnpm --filter @rodrito/react-here-maps storybook",
+    "build": "pnpm build:lib && pnpm build:web && pnpm build:docs",
     "build:web": "pnpm --filter @rodrito/www build",
     "build:docs": "pnpm --filter @rodrito/docs build",
     "build:lib": "pnpm --filter @rodrito/react-here-maps build",
