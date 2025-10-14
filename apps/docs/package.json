@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "dev": "mint dev",
-    "build": "mint build",
     "install-cli": "npm install -g mint"
   },
   "keywords": [

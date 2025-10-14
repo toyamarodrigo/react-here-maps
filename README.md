@@ -4,7 +4,7 @@ Modern React components and hooks for HERE Maps Platform integration.
 
 ![image](https://user-images.githubusercontent.com/41844101/221454450-4d1128e0-fb35-4385-969d-c7fae5493beb.png)
 
-**[Documentation](https://github.com/toyamarodrigo/react-here-maps/tree/main/apps/docs)** | **[Demo](https://react-here-maps.vercel.app/)** | **[npm](https://www.npmjs.com/package/@rodrito/react-here-maps)**
+**[Documentation](https://rodrito.mintlify.app/)** | **[Demo](https://react-here-maps.vercel.app/)** | **[npm](https://www.npmjs.com/package/@rodrito/react-here-maps)**
 
 ## Installation
 
@@ -69,17 +69,20 @@ const App = () => {
 
 ## Documentation
 
-For detailed documentation, visit the [docs directory](./apps/docs) or run the documentation locally:
-
-```bash
-pnpm run:docs
-```
+The complete documentation is available at [https://rodrito.mintlify.app/](https://rodrito.mintlify.app/)
 
 The documentation is built with [Mintlify](https://mintlify.com/) and includes:
+
 - Component API reference
 - Usage guides and examples
 - TypeScript support guide
 - Interactive examples
+
+You can also run the documentation locally:
+
+```bash
+pnpm run:docs
+```
 
 ## Components
 

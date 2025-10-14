@@ -10,11 +10,10 @@
     "run:web": "pnpm --filter @rodrito/www dev",
     "run:docs": "pnpm --filter @rodrito/docs dev",
     "run:storybook": "pnpm --filter @rodrito/react-here-maps storybook",
-    "build": "pnpm build:lib && pnpm build:web && pnpm build:docs",
+    "build": "pnpm build:lib && pnpm build:web",
     "build:web": "pnpm --filter @rodrito/www build",
-    "build:docs": "pnpm --filter @rodrito/docs build",
     "build:lib": "pnpm --filter @rodrito/react-here-maps build",
-    "build:all": "pnpm build:lib && pnpm build:web && pnpm build:docs",
+    "build:all": "pnpm build:lib && pnpm build:web",
     "lint:web": "pnpm --filter @rodrito/www lint",
     "check:lib": "pnpm --filter @rodrito/react-here-maps publish --access public --dry-run",
     "publish:lib": "pnpm --filter @rodrito/react-here-maps publish --access public"
